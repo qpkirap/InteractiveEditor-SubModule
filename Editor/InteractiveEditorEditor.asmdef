@@ -1,0 +1,18 @@
+{
+    "name": "InterctiveEditorEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1c61ac8f4ca4a924cb5d2d30a7c78376"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
