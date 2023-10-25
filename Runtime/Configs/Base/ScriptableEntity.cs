@@ -6,8 +6,8 @@ namespace Module.InteractiveEditor.Configs
 {
     public class ScriptableEntity : ScriptableObject, IEntity
     {
-        [SerializeField] protected string id;
-        [SerializeField] protected string title;
+        [HideInInspector][SerializeField] protected string id;
+        [HideInInspector][SerializeField] protected string title;
 
         public string Id => id;
         public string Title => title;

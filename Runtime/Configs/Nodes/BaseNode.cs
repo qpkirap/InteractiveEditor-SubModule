@@ -6,7 +6,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public abstract class BaseNode : ScriptableEntity
     {
-        [SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
+        [HideInInspector][SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
 
         public ExecuteResult ExecuteResult { get; protected set; }
         public ExecuteResult CancelResult { get; protected set; }
@@ -14,7 +14,7 @@ namespace Module.InteractiveEditor.Configs
 
         #region Editor
 
-        [SerializeField] private Vector2 positionEditor;
+        [HideInInspector][SerializeField] private Vector2 positionEditor;
 
         public const string PositionEditorKey = nameof(positionEditor);
         public const string ChildNodeKey = nameof(childrenNodes);
