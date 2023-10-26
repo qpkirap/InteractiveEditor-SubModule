@@ -1,4 +1,6 @@
-﻿using Module.InteractiveEditor.Configs;
+﻿using System;
+using System.Linq;
+using Module.InteractiveEditor.Configs;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Runtime
@@ -9,9 +11,42 @@ namespace Module.InteractiveEditor.Runtime
         
         public StoryObject StoryObject => storyObject;
 
-        private void Start()
+        public void Init()
         {
             storyObject = storyObject.Clone();
+        }
+        
+        private BaseNode ExecuteNode(BaseNode currentNode)
+        {
+            if (currentNode == null) return null;
+
+            switch (currentNode.Execute())
+            {
+                case ExecuteResult.NoneState:
+                    break;
+                case ExecuteResult.RunningState:
+                    break;
+                case ExecuteResult.SuccessState:
+                {
+                    if(currentNode.ChildrenNodes is { Count: > 0 })
+                    {
+                        foreach (var childrenNode in currentNode.ChildrenNodes)
+                        {
+                            ExecuteNode(childrenNode);
+                        }
+                    }
+                    
+                    break;
+                }
+                case ExecuteResult.SkipState:
+                    break;
+                case ExecuteResult.ResetState:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return currentNode;
         }
     }
 }
