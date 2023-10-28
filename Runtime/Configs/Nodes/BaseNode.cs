@@ -35,6 +35,9 @@ namespace Module.InteractiveEditor.Configs
 
         public ExecuteResult Cancel()
         {
+            ExecuteResult = ExecuteResult.NoneState;
+            CancelResult = ExecuteResult.NoneState;
+            
             CancelResult = CancelTask();
 
             return CancelResult;
@@ -52,7 +55,7 @@ namespace Module.InteractiveEditor.Configs
         NoneState = 1,
         RunningState = 2,
         SuccessState = 4,
-        SkipState = 8,
+        BackState = 8,
         ResetState = 16
     }
 }

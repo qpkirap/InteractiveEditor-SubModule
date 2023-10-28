@@ -102,7 +102,7 @@ namespace Module.InteractiveEditor.Editor
             RemoveFromClassList(ExecuteResult.NoneState.ToString());
             RemoveFromClassList(ExecuteResult.RunningState.ToString());
             RemoveFromClassList(ExecuteResult.SuccessState.ToString());
-            RemoveFromClassList(ExecuteResult.SkipState.ToString());
+            RemoveFromClassList(ExecuteResult.BackState.ToString());
             RemoveFromClassList(ExecuteResult.ResetState.ToString());
             
             if (Application.isPlaying) AddToClassList(Node.ExecuteResult.ToString());
