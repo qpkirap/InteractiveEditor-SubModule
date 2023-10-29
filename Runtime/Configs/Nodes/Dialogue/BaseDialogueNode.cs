@@ -7,10 +7,13 @@ namespace Module.InteractiveEditor.Configs
     {
         [SerializeField] private LocalizedString dialogue;
         
+        private const string DialogueKey = nameof(dialogue);
+        
         public override NodeType NodeType => NodeType.Dialogue;
+        
         protected override ExecuteResult ExecuteTask()
         {
-            dialogue.GetLocalizedString();
+            if (dialogue is { IsEmpty: false }) dialogue.GetLocalizedString();
             
             return ExecuteResult.SuccessState;
         }
@@ -18,6 +21,15 @@ namespace Module.InteractiveEditor.Configs
         protected override ExecuteResult CancelTask()
         {
             return ExecuteResult.SuccessState;
+        }
+
+        public override object Clone()
+        {
+            var item =  base.Clone();
+            
+            item.SetFieldValue(DialogueKey, dialogue);
+
+            return item;
         }
     }
 }

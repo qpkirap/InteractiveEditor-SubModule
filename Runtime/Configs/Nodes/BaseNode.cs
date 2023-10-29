@@ -8,8 +8,8 @@ namespace Module.InteractiveEditor.Configs
     {
         [HideInInspector][SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
 
-        public ExecuteResult ExecuteResult { get; protected set; }
-        public ExecuteResult CancelResult { get; protected set; }
+        public ExecuteResult ExecuteResult { get; protected set; } = ExecuteResult.NoneState;
+        public ExecuteResult CancelResult { get; protected set; } = ExecuteResult.NoneState;
         public abstract NodeType NodeType { get; }
 
         #region Editor

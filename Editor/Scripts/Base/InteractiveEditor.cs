@@ -116,12 +116,12 @@ namespace Module.InteractiveEditor.Editor
             {
                 if (story)
                 {
-                    graphView.OnOpen(story);
+                    graphView?.OnOpen(story);
                 }
             }
             else if(story && AssetDatabase.CanOpenAssetInEditor(story.GetInstanceID()))
             {
-                graphView.OnOpen(story);
+                graphView?.OnOpen(story);
             }
         }
 

@@ -119,7 +119,7 @@ GridBackground {
     background-color: rgb(102, 255, 0);
 }
 
-.SkipState #node-state {
+.BackState #node-state {
     background-color: rgb(255, 3, 3);
 }
 

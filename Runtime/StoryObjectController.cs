@@ -2,6 +2,8 @@
 using System.Linq;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -10,19 +12,31 @@ namespace Module.InteractiveEditor.Runtime
         [SerializeField] private StoryObject storyObject;
         
         private readonly LinkedList<BaseNode> history = new();
+        private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
         
-        public StoryObject StoryObject => storyObject;
+        public StoryObject StoryObject => storyObjectCache;
+
+        private void Start()
+        {
+            Init();
+        }
+
 
         public void Init()
         {
-            storyObject = storyObject.Clone();
+            storyObjectCache = storyObject.Clone();
+            
+            currentNodeCache ??= GetStartNode();
+        }
+
+        public void Update()
+        {
+            Tick();
         }
 
         private void Tick()
         {
-            currentNodeCache ??= GetStartNode();
-
             currentNodeCache = ExecuteNode(currentNodeCache);
         }
         
@@ -31,6 +45,8 @@ namespace Module.InteractiveEditor.Runtime
             if (currentNode == null) return null;
 
             var calcNode = currentNode;
+            
+            if (calcNode != null) Debug.Log($"Execute: {calcNode.Id}");
 
             switch (currentNode.Execute())
             {
@@ -44,8 +60,22 @@ namespace Module.InteractiveEditor.Runtime
                 {
                     if (currentNode.ChildrenNodes is { Count: > 0 })
                     {
-                        calcNode = currentNode.ChildrenNodes.FirstOrDefault(x =>
-                            x.ExecuteResult == ExecuteResult.NoneState);
+                        var filter = currentNode.ChildrenNodes
+                            .Where(x => x.ExecuteResult == ExecuteResult.NoneState)
+                            .ToArray();
+                        
+                        if (filter.Length > 0)
+                        {
+                            calcNode = filter[Random.Range(0, filter.Count())];
+                        }
+                        else
+                        {
+                            filter = currentNode.ChildrenNodes
+                                .Where(x => x.ExecuteResult != ExecuteResult.SuccessState)
+                                .ToArray();
+                            
+                            if (filter.Length > 0) calcNode = filter[Random.Range(0, filter.Count())];
+                        }
                     }
                     
                     break;
@@ -55,6 +85,8 @@ namespace Module.InteractiveEditor.Runtime
                     if (history.Count > 0)
                     {
                         calcNode = history.Last.Value;
+
+                        calcNode.Cancel();
                         
                         history.RemoveLast();
                     }
@@ -73,21 +105,28 @@ namespace Module.InteractiveEditor.Runtime
                     break;
             }
 
-            if (calcNode != null && !calcNode.Id.Equals(history.Last.Value.Id))
+            if (calcNode != null && history.Count > 0 && !calcNode.Id.Equals(history.Last.Value.Id)
+                || 
+                calcNode != null && history.Count == 0)
             {
-                history.AddAfter(history.Last, calcNode);
+                history.AddLast(calcNode);
             }
             
-            return calcNode;
+            return calcNode != null ? calcNode.ExecuteResult != ExecuteResult.SuccessState ? calcNode : null : null;
         }
 
         private BaseNode GetStartNode()
         {
             if (StoryObject == null || StoryObject.Nodes == null) return null;
             
-            var item = StoryObject.Nodes.FirstOrDefault(x=> x != null);
+            var item = StoryObject.Nodes.FirstOrDefault(x=> x != null && x.ExecuteResult != ExecuteResult.SuccessState);
 
             return item;
+        }
+
+        private void OnDestroy()
+        {
+            if (storyObjectCache != null) Object.DestroyImmediate(storyObjectCache);
         }
     }
 }
