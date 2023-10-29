@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
@@ -13,11 +14,11 @@ namespace Module.InteractiveEditor.Configs
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
 
-        public BaseNode Traverse(BaseNode firstNode, Func<BaseNode, BaseNode> visitor)
+        public BaseNode Traverse(BaseNode firstNode, Action<BaseNode> visitor)
         {
             if (firstNode)
             {
-                var test = visitor.Invoke(firstNode);
+                visitor.Invoke(firstNode);
                 
                 var children = firstNode.ChildrenNodes;
 
@@ -25,8 +26,6 @@ namespace Module.InteractiveEditor.Configs
                 {
                     Traverse(baseNode, visitor);
                 }
-
-                return test;
             }
 
             return null;
@@ -40,20 +39,16 @@ namespace Module.InteractiveEditor.Configs
 
             if (nodes != null)
             {
-                foreach (var baseNode in nodes)
-                {
-                    if (baseNode == null) continue;
-                    
-                    var first = Traverse(baseNode, (node) =>
-                    {
-                        var clone = (BaseNode)node.Clone();
-                        
-                        clone.AddToList(BaseNode.ChildNodeKey, clone);
+                var first = nodes.FirstOrDefault(x=> x.ChildrenNodes is { Count: > 0 });
 
-                        return clone;
+                if (first != null)
+                {
+                    var clone = (BaseNode)first.Clone();
+
+                    Traverse(clone, (cloneNode) =>
+                    {
+                        story.nodes.Add(cloneNode);
                     });
-                    
-                    story.AddToList(NodesKey, first);
                 }
             }
 

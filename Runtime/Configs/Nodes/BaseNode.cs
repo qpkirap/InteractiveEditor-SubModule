@@ -42,6 +42,25 @@ namespace Module.InteractiveEditor.Configs
 
             return CancelResult;
         }
+
+        public override object Clone()
+        {
+            var item = (BaseNode)base.Clone();
+
+            item.childrenNodes = new();
+
+            if (childrenNodes != null)
+            {
+                foreach (var children in childrenNodes)
+                {
+                    if (children == null) continue;
+                    
+                    item.childrenNodes.Add((BaseNode)children.Clone());
+                }
+            }
+
+            return item;
+        }
     }
     
     public enum NodeType

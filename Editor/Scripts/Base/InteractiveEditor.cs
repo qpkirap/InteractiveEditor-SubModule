@@ -101,7 +101,7 @@ namespace Module.InteractiveEditor.Editor
             
             if (!story)
             {
-                if (Selection.activeObject)
+                if (Selection.activeGameObject)
                 {
                     var controller = Selection.activeGameObject.GetComponent<StoryObjectController>();
 
