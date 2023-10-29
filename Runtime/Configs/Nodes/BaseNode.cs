@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Module.InteractiveEditor.Configs
 {
     public abstract class BaseNode : ScriptableEntity
     {
         [HideInInspector][SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
+        [SerializeField] private List<AssetReference> images = new();
 
         public ExecuteResult ExecuteResult { get; protected set; } = ExecuteResult.NoneState;
         public ExecuteResult CancelResult { get; protected set; } = ExecuteResult.NoneState;
@@ -18,10 +20,12 @@ namespace Module.InteractiveEditor.Configs
 
         public const string PositionEditorKey = nameof(positionEditor);
         public const string ChildNodeKey = nameof(childrenNodes);
+        public const string ImageKey = nameof(images);
 
         #endregion
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
+        public IReadOnlyList<AssetReference> Images => images;
 
         protected abstract ExecuteResult ExecuteTask();
         protected abstract ExecuteResult CancelTask();

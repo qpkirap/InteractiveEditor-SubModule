@@ -11,6 +11,8 @@ namespace Module.InteractiveEditor.Editor
 {
     public abstract class NodeView : Node
     {
+        private readonly ImageListVisualElement imagePreview;
+        
         public BaseNode Node { get; protected set; }
         public Port InputPort { get; protected set; }
         public Port OutputPort { get; protected set; }
@@ -31,6 +33,9 @@ namespace Module.InteractiveEditor.Editor
             this.viewDataKey = node.Id;
 
             var position = Node.GetFieldValue<Vector2>(BaseNode.PositionEditorKey);
+
+            var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
+            this.imagePreview = new ImageListVisualElement(imageElement, node.Images);
 
             style.left = position.x;
             style.top = position.y;

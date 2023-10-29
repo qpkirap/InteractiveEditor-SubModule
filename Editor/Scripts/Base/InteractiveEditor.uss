@@ -126,3 +126,6 @@ GridBackground {
 .ResetState #node-state {
     background-color: rgb(255, 173, 0);
 }
+
+#ImagePreview {
+}
