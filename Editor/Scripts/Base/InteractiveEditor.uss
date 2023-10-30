@@ -84,6 +84,8 @@ GridBackground {
 
 #description {
     font-size: 10px;
+    white-space: normal;
+    max-width: 150px;
 }
 
 #divider {

@@ -4,6 +4,7 @@ using System.Linq;
 using Module.InteractiveEditor.Configs;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,6 +12,7 @@ namespace Module.InteractiveEditor.Editor
 {
     public abstract class NodeView : Node
     {
+        private readonly Label description;
         private readonly ImageListVisualElement imagePreview;
         
         public BaseNode Node { get; protected set; }
@@ -36,6 +38,10 @@ namespace Module.InteractiveEditor.Editor
 
             var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
             this.imagePreview = new ImageListVisualElement(imageElement, node.Images);
+
+            description = this.Q<Label>(VisualElementKeys.Description);
+            description.bindingPath = BaseNode.DescriptionKey;
+            description.Bind(new SerializedObject(node));
 
             style.left = position.x;
             style.top = position.y;

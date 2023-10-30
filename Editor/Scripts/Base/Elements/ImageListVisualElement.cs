@@ -32,6 +32,7 @@ namespace Module.InteractiveEditor.Editor
             if (items == null || items.All(x => x == null))
             {
                 visualElement.style.backgroundImage = null;
+                visualElement.style.height = 0;
             }
             else
             {
@@ -44,6 +45,7 @@ namespace Module.InteractiveEditor.Editor
                 var sprite = await adrSprite.LoadAsync();
             
                 visualElement.style.backgroundImage = sprite.texture;
+                visualElement.style.height = 100;
             }
         }
     }

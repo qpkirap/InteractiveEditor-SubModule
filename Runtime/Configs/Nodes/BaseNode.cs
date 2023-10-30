@@ -17,10 +17,12 @@ namespace Module.InteractiveEditor.Configs
         #region Editor
 
         [HideInInspector][SerializeField] private Vector2 positionEditor;
+        [SerializeField][TextArea] private string description;
 
         public const string PositionEditorKey = nameof(positionEditor);
         public const string ChildNodeKey = nameof(childrenNodes);
         public const string ImageKey = nameof(images);
+        public const string DescriptionKey = nameof(description);
 
         #endregion
 
