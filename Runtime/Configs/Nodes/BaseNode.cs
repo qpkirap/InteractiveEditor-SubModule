@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Module.InteractiveEditor.Runtime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -27,7 +29,8 @@ namespace Module.InteractiveEditor.Configs
         #endregion
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
-        public IReadOnlyList<AssetReference> Images => images;
+        public IReadOnlyList<AddressableSprite> Images => new AddressableSpriteList(images);
+        public AddressableSprite GetRandomItem => Images.RandomItem();
 
         protected abstract ExecuteResult ExecuteTask();
         protected abstract ExecuteResult CancelTask();

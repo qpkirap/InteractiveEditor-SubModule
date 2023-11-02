@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 
 namespace Module.InteractiveEditor.Editor
@@ -37,7 +38,9 @@ namespace Module.InteractiveEditor.Editor
             var position = Node.GetFieldValue<Vector2>(BaseNode.PositionEditorKey);
 
             var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
-            this.imagePreview = new ImageListVisualElement(imageElement, node.Images);
+
+            var listImages = node.GetFieldValue<List<AssetReference>>(BaseNode.ImageKey);
+            this.imagePreview = new ImageListVisualElement(imageElement, listImages);
 
             description = this.Q<Label>(VisualElementKeys.Description);
             description.bindingPath = BaseNode.DescriptionKey;
