@@ -1,5 +1,6 @@
-﻿using Module.InteractiveEditor.Configs;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Runtime
@@ -7,17 +8,23 @@ namespace Module.InteractiveEditor.Runtime
     public class StoryImageController : MonoBehaviour
     {
         [SerializeField] private Image image;
-        
-        private BaseNode currentNodeCache;
 
-        public void ExecuteNode(BaseNode currentNode)
+        private readonly CancellationTokenHandler tokenHandler = new();
+
+        public async UniTask SetImage(AddressableSprite sprite)
         {
-            if (currentNode == null 
-                || currentNodeCache != null && currentNodeCache.Id .Equals(currentNode.Id)) return;
+            if (sprite == null) return;
 
-            var random = currentNode.GetRandomItem;
+            var load = await sprite.LoadAsync(token: tokenHandler.Token);
             
-            if (random == null) return;
+            if (tokenHandler.Token.IsCancellationRequested || load == null) return;
+
+            if (image != null) image.sprite = load;
+        }
+
+        public void Disable()
+        {
+            tokenHandler.CancelOperation();
         }
     }
 }

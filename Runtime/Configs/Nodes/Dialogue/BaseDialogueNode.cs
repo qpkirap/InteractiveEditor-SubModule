@@ -1,13 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Configs
 {
     public class BaseDialogueNode : BaseNode
     {
+        [SerializeField] private List<AssetReference> images = new();
         [SerializeField] private LocalizedString dialogue;
-        
+
+        #region Editor
+
         private const string DialogueKey = nameof(dialogue);
+        public const string ImagesKey = nameof(images);
+
+        #endregion
         
         public override NodeType NodeType => NodeType.Dialogue;
         
@@ -28,6 +36,7 @@ namespace Module.InteractiveEditor.Configs
             var item =  base.Clone();
             
             item.SetFieldValue(DialogueKey, dialogue);
+            item.SetFieldValue(ImagesKey, images);
 
             return item;
         }

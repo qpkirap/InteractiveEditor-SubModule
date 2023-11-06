@@ -1,15 +1,23 @@
 using System;
+using System.Collections.Generic;
 using Module.InteractiveEditor.Configs;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine.AddressableAssets;
+using UnityEngine.UIElements;
 
 namespace Module.InteractiveEditor.Editor
 {
     [NodeView(typeof(BaseDialogueNode))]
     public class BaseDialogueNodeView : NodeView
     {
+        private readonly ImageListVisualElement imagePreview;
+        
         public BaseDialogueNodeView(BaseNode node) : base(node)
         {
+            var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
+            var listImages = node.GetFieldValue<List<AssetReference>>(BaseDialogueNode.ImagesKey);
+            this.imagePreview = new ImageListVisualElement(imageElement, listImages);
         }
 
         public override Type InputPortType => typeof(bool);

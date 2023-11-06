@@ -37,11 +37,6 @@ namespace Module.InteractiveEditor.Editor
 
             var position = Node.GetFieldValue<Vector2>(BaseNode.PositionEditorKey);
 
-            var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
-
-            var listImages = node.GetFieldValue<List<AssetReference>>(BaseNode.ImageKey);
-            this.imagePreview = new ImageListVisualElement(imageElement, listImages);
-
             description = this.Q<Label>(VisualElementKeys.Description);
             description.bindingPath = BaseNode.DescriptionKey;
             description.Bind(new SerializedObject(node));
