@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Module.Utils.Configs;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs

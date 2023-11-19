@@ -7,37 +7,36 @@ using Random = UnityEngine.Random;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class StoryObjectController : MonoBehaviour
+    public class StoryObjectController : MonoBehaviour, IBaseController
     {
-        [SerializeField] private StoryObject storyObject;
-        
         private readonly LinkedList<BaseNode> history = new();
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
         
         public StoryObject StoryObject => storyObjectCache;
-
-        private void Start()
-        {
-            Init();
-        }
-
-
+        
         public void Init()
         {
+        }
+        
+        public void Init(StoryObject storyObject)
+        {
+            if (storyObjectCache != null) OnDestroy();
+            
             storyObjectCache = storyObject.Clone();
             
             currentNodeCache ??= GetStartNode();
         }
 
-        public void Update()
+        public void Disable()
         {
-            Tick();
         }
 
-        private void Tick()
+        public BaseNode Tick()
         {
             currentNodeCache = ExecuteNode(currentNodeCache);
+
+            return currentNodeCache;
         }
         
         private BaseNode ExecuteNode(BaseNode currentNode)

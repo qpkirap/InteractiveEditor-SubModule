@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Module.Utils.Configs;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu][Serializable]
     public class StoryObject : BaseConfig
     {
         [SerializeField] private List<BaseNode> nodes;
