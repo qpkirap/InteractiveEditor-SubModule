@@ -1,131 +1,62 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Module.InteractiveEditor.Configs;
+﻿using Module.InteractiveEditor.Configs;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class StoryObjectController : MonoBehaviour, IBaseController
+    public class StoryObjectController : MonoBehaviour, IBaseController, IStoryTask
     {
-        private readonly LinkedList<BaseNode> history = new();
-        private StoryObject storyObjectCache;
+        private IStoryTask task;
         private BaseNode currentNodeCache;
         
-        public StoryObject StoryObject => storyObjectCache;
+        public StoryObject StoryObject => task.StoryObject;
         
         public void Init()
         {
-        }
-        
-        public void Init(StoryObject storyObject)
-        {
-            if (storyObjectCache != null) OnDestroy();
-            
-            storyObjectCache = storyObject.Clone();
-            
-            currentNodeCache ??= GetStartNode();
         }
 
         public void Disable()
         {
         }
 
-        public BaseNode Tick()
+        public void Init(IStoryTask task)
         {
-            currentNodeCache = ExecuteNode(currentNodeCache);
+            this.task = task;
 
-            return currentNodeCache;
+            currentNodeCache = GetStartNode();
         }
         
-        private BaseNode ExecuteNode(BaseNode currentNode)
+        public void Init(StoryObject storyObject)
         {
-            if (currentNode == null) return null;
-
-            var calcNode = currentNode;
+            task?.Init(storyObject);
             
-            if (calcNode != null) Debug.Log($"Execute: {calcNode.Id}");
-
-            switch (currentNode.Execute())
-            {
-                case ExecuteResult.NoneState:
-                    break;
-                case ExecuteResult.RunningState:
-                {
-                    break;
-                }
-                case ExecuteResult.SuccessState:
-                {
-                    if (currentNode.ChildrenNodes is { Count: > 0 })
-                    {
-                        var filter = currentNode.ChildrenNodes
-                            .Where(x => x.ExecuteResult == ExecuteResult.NoneState)
-                            .ToArray();
-                        
-                        if (filter.Length > 0)
-                        {
-                            calcNode = filter[Random.Range(0, filter.Count())];
-                        }
-                        else
-                        {
-                            filter = currentNode.ChildrenNodes
-                                .Where(x => x.ExecuteResult != ExecuteResult.SuccessState)
-                                .ToArray();
-                            
-                            if (filter.Length > 0) calcNode = filter[Random.Range(0, filter.Count())];
-                        }
-                    }
-                    
-                    break;
-                }
-                case ExecuteResult.BackState:
-                {
-                    if (history.Count > 0)
-                    {
-                        calcNode = history.Last.Value;
-
-                        calcNode.Cancel();
-                        
-                        history.RemoveLast();
-                    }
-                    
-                    break;
-                } 
-                case ExecuteResult.ResetState:
-                {
-                    currentNode.Cancel();
-
-                    calcNode = currentNode;
-
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            if (calcNode != null && history.Count > 0 && !calcNode.Id.Equals(history.Last.Value.Id)
-                || 
-                calcNode != null && history.Count == 0)
-            {
-                history.AddLast(calcNode);
-            }
-            
-            return calcNode != null ? calcNode.ExecuteResult != ExecuteResult.SuccessState ? calcNode : null : null;
+            currentNodeCache = GetStartNode();
         }
 
-        private BaseNode GetStartNode()
+        public void Tick()
         {
-            if (StoryObject == null || StoryObject.Nodes == null) return null;
-            
-            var item = StoryObject.Nodes.FirstOrDefault(x=> x != null && x.ExecuteResult != ExecuteResult.SuccessState);
-
-            return item;
+            currentNodeCache = ExecuteNode(currentNodeCache);
         }
 
+        public BaseNode ExecuteNode(BaseNode node)
+        {
+            var currentNode = task?.ExecuteNode(node);
+
+            return currentNode;
+        }
+
+        public BaseNode GetStartNode()
+        {
+            return task?.GetStartNode();
+        }
+        
         private void OnDestroy()
         {
-            if (storyObjectCache != null) Object.DestroyImmediate(storyObjectCache);
+            task?.Dispose();
+        }
+
+        public void Dispose()
+        {
+            task?.Dispose();
         }
     }
 }
