@@ -68,7 +68,8 @@ namespace Module.InteractiveEditor.Configs
     
     public enum NodeType
     {
-        Dialogue
+        Dialogue,
+        Action
     }
 
     [Flags]
