@@ -14,7 +14,8 @@ namespace Module.InteractiveEditor.Editor
     public abstract class NodeView : Node
     {
         private readonly Label description;
-        private readonly ImageListVisualElement imagePreview;
+        
+        protected readonly Dictionary<string, Action> toolbarItems = new();
         
         public BaseNode Node { get; protected set; }
         public Port InputPort { get; protected set; }
@@ -25,8 +26,9 @@ namespace Module.InteractiveEditor.Editor
         public abstract Port.Capacity InputPortCapacity { get; }
         public abstract Port.Capacity OutputPortCapacity { get; }
         public abstract string GetClassTag { get; }
-        public IReadOnlyList<BaseNode> GetChildNodes() => Node.ChildrenNodes;
         public override string title => Node.Title;
+        public IReadOnlyList<BaseNode> GetChildNodes() => Node.ChildrenNodes;
+        public IReadOnlyDictionary<string, Action> ToolbarItems => toolbarItems;
 
         public Action<NodeView> OnSelectedNode;
 

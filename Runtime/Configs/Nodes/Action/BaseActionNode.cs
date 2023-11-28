@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Module.InteractiveEditor.Runtime;
@@ -27,13 +28,13 @@ namespace Module.InteractiveEditor.Configs
         #endregion
         protected override ExecuteResult ExecuteTask()
         {
-            if (tasks == null) return ExecuteResult.SuccessState;
+            if (tasks == null || !tasks.Any()) return ExecuteResult.SuccessState;
             
             cancelTokenHandler.CancelOperation();
             
             if (executeTask == null || executeTask.HasValue && executeTask.Value.Status != UniTaskStatus.Pending)
             {
-                executeTask = Execute();
+                executeTask = ExecuteOrCancelAsync();
                     
                 return ExecuteResult.RunningState;
             }
@@ -47,13 +48,13 @@ namespace Module.InteractiveEditor.Configs
 
         protected override ExecuteResult CancelTask()
         {
-            if (tasks == null) return ExecuteResult.SuccessState;
+            if (tasks == null || !tasks.Any()) return ExecuteResult.SuccessState;
             
             executeTokenHandler?.CancelOperation();
 
             if (cancelTask == null || cancelTask.HasValue && cancelTask.Value.Status != UniTaskStatus.Pending)
             {
-                cancelTask = Execute(true);
+                cancelTask = ExecuteOrCancelAsync(true);
                     
                 return ExecuteResult.RunningState;
             }
@@ -65,7 +66,7 @@ namespace Module.InteractiveEditor.Configs
             return ExecuteResult.SuccessState;
         }
 
-        private async UniTask Execute(bool isCancel = false)
+        private async UniTask ExecuteOrCancelAsync(bool isCancel = false)
         {
             collection ??= tasks.ToUniTaskAsyncEnumerable();
             

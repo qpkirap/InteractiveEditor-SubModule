@@ -1,8 +1,10 @@
 using System;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
+using Module.Utils;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +14,7 @@ namespace Module.InteractiveEditor.Editor
     {
         private InteractiveGraphView graphView;
         private InspectorView inspectorView;
+        private ToolbarMenu toolbarMenu;
         
         [MenuItem("InteractiveEditor/Editor")]
         public static void OpenWindow()
@@ -36,6 +39,7 @@ namespace Module.InteractiveEditor.Editor
 
             graphView = root.Q<InteractiveGraphView>();
             inspectorView = root.Q<InspectorView>();
+            toolbarMenu = root.Q<ToolbarMenu>();
             
             graphView.OnSelectNode += OnSelectNode;
             
@@ -80,6 +84,12 @@ namespace Module.InteractiveEditor.Editor
         private void OnSelectNode(NodeView nodeView)
         {
             inspectorView.UpdateSelection(nodeView);
+            toolbarMenu.menu.ClearItems();
+            
+            foreach (var kv in nodeView.ToolbarItems)
+            {
+                toolbarMenu.menu.AppendAction(kv.Key, _ => kv.Value?.Invoke());
+            }
         }
 
         [OnOpenAsset]
