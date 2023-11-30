@@ -5,7 +5,7 @@ namespace Module.InteractiveEditor.Editor
     public class ComponentEditorAttribute : Attribute
     {
         public readonly Type ActionType;
-        public Type[] ContainerFilter;
+        public readonly Type[] ContainerFilter;
         
         public ComponentEditorAttribute(Type actionType, params Type[] containerFilter)
         {

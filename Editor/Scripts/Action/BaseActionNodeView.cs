@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
+using Module.Utils.Configs;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -26,8 +28,49 @@ namespace Module.InteractiveEditor.Editor
         {
             toolbarItems.Add("test", () => Debug.Log("test"));
 
-            var actions = TypeCache.GetTypesDerivedFrom<ActionTask>();
+            var actionsTypes = TypeCache.GetTypesDerivedFrom<ActionTask>();
+            
+            foreach (var actionType in actionsTypes)
+            {
+                var attributes = actionType.GetCustomAttributes(typeof(ComponentEditorAttribute), false);
+                
+                if (attributes.Length == 0)
+                {
+                    continue;
+                }
+                
+                foreach (ComponentEditorAttribute attribute in attributes)
+                {
+                    if (attribute.ContainerFilter.Contains(typeof(ActionTask)))
+                    {
+                        toolbarItems.Add(attribute.ActionType.Name, () => CreateNode(attribute.ActionType));
+                    }
+                }
+            }
         }
+        
+        private ActionTask CreateNode(Type type)
+        {
+            var instance = ScriptableEntity.Create<ActionTask>(type);
+            
+            Undo.RecordObject(Node, "Create Action");
+            
+            Node.AddToList(BaseActionNode.TasksKey, instance);
+
+            if (!Application.isPlaying)
+            {
+                AssetDatabase.AddObjectToAsset(instance, Node);
+            }
+            
+            Undo.RegisterCreatedObjectUndo(instance, "Create Action");
+            
+            EditorUtility.SetDirty(Node);
+            
+            AssetDatabase.SaveAssets();
+            
+            return instance;
+        }
+        
         public override void AddChildNode(BaseNode node)
         {
             Undo.RecordObject(Node, "Add Child Node");
