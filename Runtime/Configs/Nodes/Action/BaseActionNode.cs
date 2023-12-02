@@ -4,21 +4,22 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Module.InteractiveEditor.Runtime;
+using Module.Utils;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
     public class BaseActionNode : BaseNode
     {
-        [SerializeField][HideInInspector] private List<ActionTaskComponent> tasks;
+        [SerializeField] [HideInInspector] private List<ActionTaskComponent> tasks;
 
         private IUniTaskAsyncEnumerable<ActionTaskComponent> collection;
-        
+
         private readonly CancellationTokenHandler executeTokenHandler = new();
         private readonly CancellationTokenHandler cancelTokenHandler = new();
         private UniTask? executeTask;
         private UniTask? cancelTask;
-        
+
         public override NodeType NodeType => NodeType.Action;
 
         #region Editor
@@ -26,16 +27,17 @@ namespace Module.InteractiveEditor.Configs
         public const string TasksKey = nameof(tasks);
 
         #endregion
+
         protected override ExecuteResult ExecuteTask()
         {
             if (tasks == null || !tasks.Any()) return ExecuteResult.SuccessState;
-            
+
             cancelTokenHandler.CancelOperation();
-            
+
             if (executeTask == null || executeTask.HasValue && executeTask.Value.Status != UniTaskStatus.Pending)
             {
                 executeTask = ExecuteOrCancelAsync();
-                    
+
                 return ExecuteResult.RunningState;
             }
             else if (executeTask is { Status: UniTaskStatus.Pending })
@@ -49,27 +51,27 @@ namespace Module.InteractiveEditor.Configs
         protected override ExecuteResult CancelTask()
         {
             if (tasks == null || !tasks.Any()) return ExecuteResult.SuccessState;
-            
+
             executeTokenHandler?.CancelOperation();
 
             if (cancelTask == null || cancelTask.HasValue && cancelTask.Value.Status != UniTaskStatus.Pending)
             {
                 cancelTask = ExecuteOrCancelAsync(true);
-                    
+
                 return ExecuteResult.RunningState;
             }
             else if (cancelTask is { Status: UniTaskStatus.Pending })
             {
                 return ExecuteResult.RunningState;
             }
-            
+
             return ExecuteResult.SuccessState;
         }
 
         private async UniTask ExecuteOrCancelAsync(bool isCancel = false)
         {
             collection ??= tasks.ToUniTaskAsyncEnumerable();
-            
+
             try
             {
                 await collection.ForEachAwaitAsync(async item =>
@@ -78,13 +80,31 @@ namespace Module.InteractiveEditor.Configs
                     else await item.Undo(executeTokenHandler.Token);
 
                     executeTokenHandler.Token.ThrowIfCancellationRequested();
-                    
+
                 }, executeTokenHandler.Token);
             }
             catch (OperationCanceledException)
             {
                 Debug.LogWarning("Operation canceled.");
             }
+        }
+
+        public override object Clone()
+        {
+            var item = base.Clone();
+
+            var taskClone = new List<ActionTaskComponent>();
+            
+            foreach (var task in this.tasks)
+            {
+                if (task == null) continue;
+                
+                taskClone.Add(task.Clone() as ActionTaskComponent);
+            }
+
+            item.SetFieldValue(TasksKey, taskClone);
+
+            return item;
         }
     }
 }

@@ -26,8 +26,6 @@ namespace Module.InteractiveEditor.Editor
         
         private void InitToolbar()
         {
-            toolbarItems.Add("test", () => Debug.Log("test"));
-
             var actionsTypes = TypeCache.GetTypesDerivedFrom<ActionTaskComponent>();
             
             foreach (var actionType in actionsTypes)
@@ -43,7 +41,7 @@ namespace Module.InteractiveEditor.Editor
                 {
                     if (attribute.ContainerFilter.Contains(typeof(ActionTaskComponent)))
                     {
-                        toolbarItems.Add(attribute.ActionType.Name, () => CreateTask(attribute.ActionType));
+                        toolbarItems.Add(attribute.Name, () => CreateTask(attribute.ActionType));
                     }
                 }
             }
