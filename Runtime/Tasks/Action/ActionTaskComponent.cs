@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public abstract class ActionTask<TAction> : ActionTask
+    public abstract class ActionTaskComponent<TAction> : ActionTaskComponent
         where TAction : IActionTask
     {
         private TAction actionCache;
@@ -32,7 +32,7 @@ namespace Module.InteractiveEditor.Runtime
         }
     }
     
-    public abstract class ActionTask : Component
+    public abstract class ActionTaskComponent : Component
     {
         public abstract UniTask Execute(CancellationToken token);
         public abstract UniTask Undo(CancellationToken token);

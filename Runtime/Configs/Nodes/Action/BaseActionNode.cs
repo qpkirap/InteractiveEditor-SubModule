@@ -10,9 +10,9 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseActionNode : BaseNode
     {
-        [SerializeField] private List<ActionTask> tasks;
+        [SerializeField][HideInInspector] private List<ActionTaskComponent> tasks;
 
-        private IUniTaskAsyncEnumerable<ActionTask> collection;
+        private IUniTaskAsyncEnumerable<ActionTaskComponent> collection;
         
         private readonly CancellationTokenHandler executeTokenHandler = new();
         private readonly CancellationTokenHandler cancelTokenHandler = new();

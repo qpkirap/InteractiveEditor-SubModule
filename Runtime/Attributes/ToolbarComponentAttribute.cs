@@ -2,12 +2,12 @@
 
 namespace Module.InteractiveEditor.Editor
 {
-    public class ComponentEditorAttribute : Attribute
+    public class ToolbarComponentAttribute : Attribute
     {
         public readonly Type ActionType;
         public readonly Type[] ContainerFilter;
         
-        public ComponentEditorAttribute(Type actionType, params Type[] containerFilter)
+        public ToolbarComponentAttribute(Type actionType, params Type[] containerFilter)
         {
             ActionType = actionType;
             ContainerFilter = containerFilter;

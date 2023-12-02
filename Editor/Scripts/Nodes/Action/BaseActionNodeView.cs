@@ -28,30 +28,30 @@ namespace Module.InteractiveEditor.Editor
         {
             toolbarItems.Add("test", () => Debug.Log("test"));
 
-            var actionsTypes = TypeCache.GetTypesDerivedFrom<ActionTask>();
+            var actionsTypes = TypeCache.GetTypesDerivedFrom<ActionTaskComponent>();
             
             foreach (var actionType in actionsTypes)
             {
-                var attributes = actionType.GetCustomAttributes(typeof(ComponentEditorAttribute), false);
+                var attributes = actionType.GetCustomAttributes(typeof(ToolbarComponentAttribute), false);
                 
                 if (attributes.Length == 0)
                 {
                     continue;
                 }
                 
-                foreach (ComponentEditorAttribute attribute in attributes)
+                foreach (ToolbarComponentAttribute attribute in attributes)
                 {
-                    if (attribute.ContainerFilter.Contains(typeof(ActionTask)))
+                    if (attribute.ContainerFilter.Contains(typeof(ActionTaskComponent)))
                     {
-                        toolbarItems.Add(attribute.ActionType.Name, () => CreateNode(attribute.ActionType));
+                        toolbarItems.Add(attribute.ActionType.Name, () => CreateTask(attribute.ActionType));
                     }
                 }
             }
         }
         
-        private ActionTask CreateNode(Type type)
+        private ActionTaskComponent CreateTask(Type type)
         {
-            var instance = ScriptableEntity.Create<ActionTask>(type);
+            var instance = ScriptableEntity.Create<ActionTaskComponent>(type);
             
             Undo.RecordObject(Node, "Create Action");
             
