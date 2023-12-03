@@ -11,12 +11,15 @@ namespace Module.InteractiveEditor.Configs
     public class StoryObject : BaseConfig
     {
         [SerializeField] private List<BaseNode> nodes;
+        [SerializeField] private List<Actor> actors;
         [SerializeField] private string idStartNode;
 
         public const string NodesKey = nameof(nodes);
+        public const string ActorsKey = nameof(actors);
         public const string IdStartNodeKey = nameof(idStartNode);
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
+        public IReadOnlyList<Actor> Actors => actors;
         public string IdStartNode => idStartNode;
 
         public BaseNode Traverse(BaseNode firstNode, Action<BaseNode> visitor)
