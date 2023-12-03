@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Module.Utils;
 using Module.Utils.Configs;
 using UnityEngine;
 
@@ -10,10 +11,13 @@ namespace Module.InteractiveEditor.Configs
     public class StoryObject : BaseConfig
     {
         [SerializeField] private List<BaseNode> nodes;
+        [SerializeField] private string idStartNode;
 
         public const string NodesKey = nameof(nodes);
+        public const string IdStartNodeKey = nameof(idStartNode);
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
+        public string IdStartNode => idStartNode;
 
         public BaseNode Traverse(BaseNode firstNode, Action<BaseNode> visitor)
         {
@@ -34,26 +38,34 @@ namespace Module.InteractiveEditor.Configs
 
         public StoryObject Clone()
         {
-            var story = CreateInstance<StoryObject>();
+            var storyClone = CreateInstance<StoryObject>();
 
-            story.nodes ??= new();
+            storyClone.nodes ??= new();
 
-            if (nodes != null)
+            if (this.nodes != null)
             {
-                var first = nodes.FirstOrDefault(x=> x.ChildrenNodes is { Count: > 0 });
+                var first = nodes.FirstOrDefault(x=> x.Id.Equals(IdStartNode));
 
                 if (first != null)
                 {
                     var clone = (BaseNode)first.Clone();
+                    
+                    clone.RemoveCloneSuffix();
+                    clone.SetId(first.Id);
 
                     Traverse(clone, (cloneNode) =>
                     {
-                        story.nodes.Add(cloneNode);
+                        storyClone.nodes.Add(cloneNode);
                     });
                 }
             }
+            
+            if (string.IsNullOrEmpty(Id)) GenerateId();
+            
+            storyClone.SetId(Id);
+            storyClone.SetFieldValue(StoryObject.IdStartNodeKey, IdStartNode);
 
-            return story;
+            return storyClone;
         }
     }
 }

@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class ImageController : MonoBehaviour, IBaseController
+    public class ImageController : MonoBehaviour
     {
         [SerializeField] private Image image;
 
         private readonly CancellationTokenHandler tokenHandler = new();
         
-        public void Init()
+
+        public async UniTask Init(object[] args = null)
         {
         }
 

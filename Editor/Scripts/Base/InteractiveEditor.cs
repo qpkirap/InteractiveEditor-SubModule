@@ -112,9 +112,9 @@ namespace Module.InteractiveEditor.Editor
             {
                 if (Selection.activeGameObject)
                 {
-                    var controller = Selection.activeGameObject.GetComponent<StoryObjectController>();
+                    var controller = Selection.activeGameObject.GetComponent<IStoryController>();
 
-                    if (controller)
+                    if (controller != default && controller.StoryObject)
                     {
                         story = controller.StoryObject;
                     }

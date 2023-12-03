@@ -48,21 +48,27 @@ namespace Module.InteractiveEditor.Configs
 
         public override object Clone()
         {
-            var item = (BaseNode)base.Clone();
-
-            item.childrenNodes = new();
+            var clone = (BaseNode)base.Clone();
+            
+            clone.RemoveCloneSuffix();
+            
+            clone.childrenNodes = new();
 
             if (childrenNodes != null)
             {
                 foreach (var children in childrenNodes)
                 {
                     if (children == null) continue;
+
+                    var childrenClone = (BaseNode)children.Clone();
                     
-                    item.childrenNodes.Add((BaseNode)children.Clone());
+                    childrenClone.SetId(children.Id);
+                    
+                    clone.childrenNodes.Add(childrenClone);
                 }
             }
 
-            return item;
+            return clone;
         }
     }
     

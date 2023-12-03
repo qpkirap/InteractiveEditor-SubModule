@@ -17,8 +17,6 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (obj == null) return null;
             
-            defaultTask.Init(obj);
-            
             return defaultTask;
         }
     }
@@ -27,8 +25,6 @@ namespace Module.InteractiveEditor.Runtime
     {
         StoryObject StoryObject { get; }
         void Init(StoryObject storyObject);
-        
-        BaseNode ExecuteNode(BaseNode node);
-        BaseNode GetStartNode();
+        void Execute();
     }
 }

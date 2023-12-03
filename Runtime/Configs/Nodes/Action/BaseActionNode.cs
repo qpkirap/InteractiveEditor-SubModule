@@ -91,18 +91,25 @@ namespace Module.InteractiveEditor.Configs
 
         public override object Clone()
         {
-            var item = base.Clone();
+            var item = (BaseNode)base.Clone();
+            
+            item.RemoveCloneSuffix();
 
-            var taskClone = new List<ActionTaskComponent>();
+            var taskCloneList = new List<ActionTaskComponent>();
             
             foreach (var task in this.tasks)
             {
                 if (task == null) continue;
                 
-                taskClone.Add(task.Clone() as ActionTaskComponent);
+                var taskClone = task.Clone() as ActionTaskComponent;
+                
+                taskClone.RemoveCloneSuffix();
+                taskClone.SetId(task.Id);
+                
+                taskCloneList.Add(taskClone);
             }
 
-            item.SetFieldValue(TasksKey, taskClone);
+            item.SetFieldValue(TasksKey, taskCloneList);
 
             return item;
         }

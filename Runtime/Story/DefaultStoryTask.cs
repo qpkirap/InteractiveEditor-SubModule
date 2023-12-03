@@ -17,11 +17,16 @@ namespace Module.InteractiveEditor.Runtime
         {
             history.Clear();
             
-            if (storyObjectCache != null) Object.DestroyImmediate(storyObjectCache);
+            if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
             
             storyObjectCache = storyObject.Clone();
             
             currentNodeCache ??= GetStartNode();
+        }
+
+        public void Execute()
+        {
+            currentNodeCache = ExecuteNode(currentNodeCache);
         }
 
         public BaseNode ExecuteNode(BaseNode node)
@@ -103,10 +108,24 @@ namespace Module.InteractiveEditor.Runtime
         public BaseNode GetStartNode()
         {
             if (StoryObject == null || StoryObject.Nodes == null) return null;
-            
-            var item = StoryObject.Nodes.FirstOrDefault(x=> x != null && x.ExecuteResult != ExecuteResult.SuccessState);
 
-            return item;
+            if (string.IsNullOrEmpty(StoryObject.IdStartNode))
+            {
+                Debug.LogError($"Start node id is empty");
+                
+                var item = StoryObject.Nodes
+                    .FirstOrDefault(x=> x != null 
+                                        && x.ExecuteResult != ExecuteResult.SuccessState
+                                        && x.ChildrenNodes.Count > 0);
+
+                return item;
+            }
+            
+            var startNode = StoryObject.Nodes
+                .FirstOrDefault(x=> x != null
+                                    && x.Id.Equals(StoryObject.IdStartNode));
+            
+            return startNode;
         }
 
         public void Dispose()
