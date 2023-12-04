@@ -4,8 +4,10 @@ namespace Module.InteractiveEditor.Configs
 {
     public class ActorDialogueNode : BaseDialogueNode
     {
-        [SerializeField] private Actor actor;
+        [HideInInspector][SerializeField] private Actor actor;
         
         public Actor Actor => actor;
+
+        public const string ActorKey = nameof(actor);
     }
 }

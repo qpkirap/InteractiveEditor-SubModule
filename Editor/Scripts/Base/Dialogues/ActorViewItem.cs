@@ -7,8 +7,6 @@ namespace Module.InteractiveEditor.Editor
     {
         public Actor Actor { get; private set; }
 
-        public override string text => Actor != null ? Actor.name : "";
-
         public ActorViewItem()
         {
             AddToClassList("actor-item");
@@ -17,6 +15,8 @@ namespace Module.InteractiveEditor.Editor
         public void InjectData(Actor actor)
         {
             this.Actor = actor;
+
+            text = actor.Title;
         }
     }
 }
