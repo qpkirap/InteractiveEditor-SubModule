@@ -121,14 +121,6 @@ GridBackground {
     background-color: rgb(102, 255, 0);
 }
 
-.BackState #node-state {
-    background-color: rgb(255, 3, 3);
-}
-
-.ResetState #node-state {
-    background-color: rgb(255, 173, 0);
-}
-
 #ImagePreview {
 }
 

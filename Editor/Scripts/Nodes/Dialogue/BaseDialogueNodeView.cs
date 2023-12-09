@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView(typeof(BaseDialogueNode))]
+    [NodeView("Dialogue/Base", typeof(BaseDialogueNode))]
     public class BaseDialogueNodeView : NodeView
     {
         private readonly ImageListVisualElement imagePreview;

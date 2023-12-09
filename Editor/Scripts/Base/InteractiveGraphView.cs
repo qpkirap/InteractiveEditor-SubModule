@@ -92,11 +92,28 @@ namespace Module.InteractiveEditor.Editor
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            var types = TypeCache.GetTypesDerivedFrom<BaseNode>();
+            var types = TypeCache.GetTypesDerivedFrom<NodeView>();
 
             foreach (var type in types)
             {
-                evt.menu.AppendAction($"[{type.BaseType?.Name}] {type.Name}", a => CreateNode(type));
+                var attributes = type.GetCustomAttributes(typeof(NodeViewAttribute), false);
+                
+                if (attributes.Length == 0)
+                {
+                    continue;
+                }
+                
+                foreach (NodeViewAttribute attribute in attributes)
+                {
+                    if (attribute.BaseNodeType != null && attribute.MenuPath != null)
+                    {
+                        evt.menu.AppendAction($"{attribute.MenuPath}", a => CreateNode(attribute.BaseNodeType));
+                    }
+                    else
+                    {
+                        Debug.LogError($"No BaseNodeType found on {type.Name}");
+                    }
+                }
             }
         }
 

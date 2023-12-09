@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using Module.InteractiveEditor.Runtime;
 using Module.Utils.Configs;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
+    public abstract class BaseNode<T> : BaseNode
+        where T : INodeExecute
+    {
+        public override Type GetExecutorType()
+        {
+            return typeof(T);
+        }
+    }
+    
     public abstract class BaseNode : ScriptableEntity
     {
         [HideInInspector][SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
-
-        public ExecuteResult ExecuteResult { get; protected set; } = ExecuteResult.NoneState;
-        public ExecuteResult CancelResult { get; protected set; } = ExecuteResult.NoneState;
-        public abstract NodeType NodeType { get; }
 
         #region Editor
 
@@ -22,28 +28,32 @@ namespace Module.InteractiveEditor.Configs
         public const string ChildNodeKey = nameof(childrenNodes);
         public const string DescriptionKey = nameof(description);
 
+        public ExecuteResult ExecuteResult { get; protected set; }
+        public ExecuteResult CancelResult { get; protected set; }
+
         #endregion
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
 
-        protected abstract ExecuteResult ExecuteTask();
-        protected abstract ExecuteResult CancelTask();
+        public abstract Type GetExecutorType();
 
-        public ExecuteResult Execute()
+        public ExecuteResult ExecuteTask(INodeExecute execute)
         {
-            ExecuteResult = ExecuteTask();
-
+            ExecuteResult = execute.Execute(this);
+            
             return ExecuteResult;
         }
 
-        public ExecuteResult Cancel()
+        public ExecuteResult CancelTask(INodeExecute execute)
         {
-            ExecuteResult = ExecuteResult.NoneState;
-            CancelResult = ExecuteResult.NoneState;
+            CancelResult = execute.Cancel(this);
             
-            CancelResult = CancelTask();
-
             return CancelResult;
+        }
+
+        public BaseNode GetNextNode(INodeExecute execute)
+        {
+            return execute.GetNext(this);
         }
 
         public override object Clone()
@@ -71,12 +81,6 @@ namespace Module.InteractiveEditor.Configs
             return clone;
         }
     }
-    
-    public enum NodeType
-    {
-        Dialogue,
-        Action
-    }
 
     [Flags]
     public enum ExecuteResult
@@ -84,7 +88,5 @@ namespace Module.InteractiveEditor.Configs
         NoneState = 1,
         RunningState = 2,
         SuccessState = 4,
-        BackState = 8,
-        ResetState = 16
     }
 }

@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class DefaultStoryTask : IStoryTask
     {
+        private readonly Dictionary<Type, INodeExecute> executes = new();
+        
         private readonly LinkedList<BaseNode> history = new();
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
@@ -20,8 +24,28 @@ namespace Module.InteractiveEditor.Runtime
             if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
             
             storyObjectCache = storyObject.Clone();
+
+            InitExecutors(storyObjectCache);
             
             currentNodeCache ??= GetStartNode();
+        }
+
+        private void InitExecutors(StoryObject storyObject)
+        {
+            if (storyObject == null) return;
+            
+            foreach (var node in storyObject.Nodes)
+            {
+                if (node == null) continue;
+                
+                var executorType = node.GetExecutorType();
+            
+                if (executorType == null || executes.ContainsKey(executorType)) continue;
+                
+                var executor = (INodeExecute)Activator.CreateInstance(executorType);
+            
+                executes.Add(executorType, executor);
+            }
         }
 
         public void Execute()
@@ -37,72 +61,33 @@ namespace Module.InteractiveEditor.Runtime
             
             if (calcNode != null) Debug.Log($"Execute: {calcNode.Id}");
 
-            switch (node.Execute())
+            var executor = executes[calcNode.GetExecutorType()];
+            
+            if (executor == null) return null;
+
+            switch (executor.Execute(calcNode))
             {
-                case ExecuteResult.NoneState:
-                    break;
                 case ExecuteResult.RunningState:
                 {
-                    break;
+                    return calcNode;
                 }
                 case ExecuteResult.SuccessState:
                 {
-                    if (node.ChildrenNodes is { Count: > 0 })
-                    {
-                        var filter = node.ChildrenNodes
-                            .Where(x => x.ExecuteResult == ExecuteResult.NoneState)
-                            .ToArray();
-                        
-                        if (filter.Length > 0)
-                        {
-                            calcNode = filter[Random.Range(0, filter.Count())];
-                        }
-                        else
-                        {
-                            filter = node.ChildrenNodes
-                                .Where(x => x.ExecuteResult != ExecuteResult.SuccessState)
-                                .ToArray();
-                            
-                            if (filter.Length > 0) calcNode = filter[Random.Range(0, filter.Count())];
-                        }
-                    }
+                    var next = executor.GetNext(calcNode);
                     
-                    break;
-                }
-                case ExecuteResult.BackState:
-                {
-                    if (history.Count > 0)
-                    {
-                        calcNode = history.Last.Value;
-
-                        calcNode.Cancel();
-                        
-                        history.RemoveLast();
-                    }
+                    executor.ResetExecutor(calcNode);
                     
-                    break;
-                } 
-                case ExecuteResult.ResetState:
-                {
-                    node.Cancel();
-
-                    calcNode = node;
-
-                    break;
+                    return next;
                 }
-                default:
-                    break;
+                case ExecuteResult.NoneState:
+                {
+                    Debug.LogError($"None state {calcNode.Id}");
+                    
+                    return calcNode;
+                }
             }
 
-            if (calcNode != null && history.Count > 0 && !calcNode.Id.Equals(history.Last.Value.Id)
-                || 
-                calcNode != null && history.Count == 0)
-            {
-                history.AddLast(calcNode);
-            }
-            
-            return calcNode != null ? calcNode.ExecuteResult != ExecuteResult.SuccessState ? calcNode : null : null;
-        
+            return default;
         }
 
         public BaseNode GetStartNode()

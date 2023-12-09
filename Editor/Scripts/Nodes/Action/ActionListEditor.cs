@@ -1,11 +1,9 @@
-﻿using System;
-using Module.InteractiveEditor.Configs;
+﻿using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using Component = Module.InteractiveEditor.Runtime.Component;
 
 namespace Module.InteractiveEditor.Editor
 {
@@ -16,6 +14,8 @@ namespace Module.InteractiveEditor.Editor
 
         private void OnEnable()
         {
+            if (EditorApplication.isPlaying || EditorApplication.isUpdating) return;
+            
             list = new ReorderableList(serializedObject, serializedObject.FindProperty(BaseActionNode.TasksKey), true,
                 true, false, true)
             {

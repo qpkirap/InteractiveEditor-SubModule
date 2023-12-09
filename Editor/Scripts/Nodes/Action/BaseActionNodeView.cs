@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView(typeof(BaseActionNode))]
+    [NodeView("Action/Base", typeof(BaseActionNode))]
     public class BaseActionNodeView : NodeView
     {
         public BaseActionNodeView(BaseNode node) : base(node)
