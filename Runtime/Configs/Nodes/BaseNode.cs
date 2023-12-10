@@ -28,33 +28,14 @@ namespace Module.InteractiveEditor.Configs
         public const string ChildNodeKey = nameof(childrenNodes);
         public const string DescriptionKey = nameof(description);
 
-        public ExecuteResult ExecuteResult { get; protected set; }
-        public ExecuteResult CancelResult { get; protected set; }
+        public ExecuteResult ExecuteResult { get; set; }
+        public ExecuteResult CancelResult { get; set; }
 
         #endregion
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
 
         public abstract Type GetExecutorType();
-
-        public ExecuteResult ExecuteTask(INodeExecute execute)
-        {
-            ExecuteResult = execute.Execute(this);
-            
-            return ExecuteResult;
-        }
-
-        public ExecuteResult CancelTask(INodeExecute execute)
-        {
-            CancelResult = execute.Cancel(this);
-            
-            return CancelResult;
-        }
-
-        public BaseNode GetNextNode(INodeExecute execute)
-        {
-            return execute.GetNext(this);
-        }
 
         public override object Clone()
         {

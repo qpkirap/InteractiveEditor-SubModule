@@ -19,6 +19,8 @@ namespace Module.InteractiveEditor.Configs
 
         #endregion
         
+        public AddressableSprite RandomImage => new(images.RandomItem());
+        
 
         public override object Clone()
         {
@@ -29,5 +31,10 @@ namespace Module.InteractiveEditor.Configs
 
             return item;
         }
+    }
+    
+    public class BaseDialogueNode<T> : BaseDialogueNode
+        where T : INodeExecute
+    {
     }
 }

@@ -1,9 +1,12 @@
-﻿using Module.InteractiveEditor.Configs;
+﻿using Managers.Router.Config;
+using Module.InteractiveEditor.Configs;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public interface INodeExecute
     {
+        public static RoutArgKey NodeExecutorKey = new("NodeExecutorKey");
+        
         ExecuteResult Execute(BaseNode baseNode);
         ExecuteResult Cancel(BaseNode baseNode);
         
@@ -23,11 +26,26 @@ namespace Module.InteractiveEditor.Runtime
 
         ExecuteResult INodeExecute.Execute(BaseNode baseNode)
         {
+#if UNITY_EDITOR
+            var result = Execute((T) baseNode);
+            
+            baseNode.ExecuteResult = result;
+            
+            return result;
+#endif
+            
             return Execute((T) baseNode);
         }
         
         ExecuteResult INodeExecute.Cancel(BaseNode baseNode)
         {
+#if UNITY_EDITOR
+            var result = Cancel((T) baseNode);
+            
+            baseNode.CancelResult = result;
+            
+            return result;
+#endif
             return Cancel((T) baseNode);
         }
         
