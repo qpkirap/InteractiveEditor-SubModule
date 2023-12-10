@@ -5,6 +5,8 @@ namespace Module.InteractiveEditor.Runtime
     public interface IViewNodeExecute
     {
         void Inject(INodeExecute execute, UICanvas uiCanvas);
+        
+        void Reset();
     }
     
     public interface IViewNodeExecute<in TNodeExecute, in TUICanvas> : IViewNodeExecute
@@ -17,7 +19,5 @@ namespace Module.InteractiveEditor.Runtime
         }
 
         void Inject(TNodeExecute execute, TUICanvas uiCanvas);
-
-        void Reset();
     }
 }

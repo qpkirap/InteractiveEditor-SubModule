@@ -23,7 +23,7 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask SetImage(AddressableSprite sprite)
         {
-            if (sprite == null) return;
+            if (sprite is not { RuntimeKeyIsValid: true }) return;
 
             var load = await sprite.LoadAsync(token: tokenHandler.Token);
             

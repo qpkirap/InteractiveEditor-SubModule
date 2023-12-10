@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using UnityEngine;
@@ -18,8 +19,16 @@ namespace Module.InteractiveEditor.Configs
         public const string ImagesKey = nameof(images);
 
         #endregion
+
+        private IReadOnlyList<AddressableSprite> sprites;
         
-        public AddressableSprite RandomImage => new(images.RandomItem());
+        public IReadOnlyList<AddressableSprite> AddressableSprites =>
+            sprites == null || sprites.Any(x => string.IsNullOrEmpty(x.AssetGUID))
+                ? sprites = images.Select(asset => new AddressableSprite(asset)).ToList()
+                : sprites;
+        
+        public AddressableSprite RandomImage => AddressableSprites.RandomItem();
+        public LocalizedString Dialogue => dialogue;
         
 
         public override object Clone()

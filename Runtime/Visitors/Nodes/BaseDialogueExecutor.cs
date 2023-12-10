@@ -5,6 +5,7 @@ using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -56,6 +57,11 @@ namespace Module.InteractiveEditor.Runtime
             background ??= node.RandomImage;
             
             return background;
+        }
+        
+        public LocalizedString GetText()
+        {
+            return node.Dialogue;
         }
 
         public void Complete()

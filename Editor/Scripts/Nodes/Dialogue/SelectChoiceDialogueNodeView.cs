@@ -4,7 +4,7 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView("Dialogue/SelectChoiceDialogue",typeof(SelectChoiceDialogueNode))]
+    [NodeView("Dialogue/Choices/SelectChoiceDialogue",typeof(SelectChoiceDialogueNode))]
     public class SelectChoiceDialogueNodeView : BaseDialogueNodeView
     {
         public SelectChoiceDialogueNodeView(BaseNode node) : base(node)

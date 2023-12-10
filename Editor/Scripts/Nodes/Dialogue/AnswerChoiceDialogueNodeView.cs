@@ -6,7 +6,7 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView("Dialogue/AnswerChoice", typeof(AnswerChoiceDialogueNode))]
+    [NodeView("Dialogue/Choices/AnswerChoice", typeof(AnswerChoiceDialogueNode))]
     public class AnswerChoiceDialogueNodeView : NodeView
     {
         public AnswerChoiceDialogueNodeView(BaseNode node) : base(node)

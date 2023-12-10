@@ -14,6 +14,8 @@ namespace Module.InteractiveEditor.Runtime
 
             viewModel ??= Activator.CreateInstance<TViewNode>();
 
+            viewModel.Reset();
+
             var model = router.GetRoutArgData<INodeExecute>(INodeExecute.NodeExecutorKey);
             
             viewModel.Inject(model, this);
