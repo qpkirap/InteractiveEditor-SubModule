@@ -107,7 +107,7 @@ namespace Module.InteractiveEditor.Editor
                 {
                     if (attribute.BaseNodeType != null && attribute.MenuPath != null)
                     {
-                        evt.menu.AppendAction($"{attribute.MenuPath}", a => CreateNode(attribute.BaseNodeType));
+                        evt.menu.AppendAction($"{attribute.MenuPath}", a => CreateNode(attribute.BaseNodeType, a.eventInfo.mousePosition));
                     }
                     else
                     {
@@ -182,9 +182,11 @@ namespace Module.InteractiveEditor.Editor
             return GetNodeByGuid(node.Id) as NodeView;
         }
 
-        private BaseNode CreateNode(Type type)
+        private BaseNode CreateNode(Type type, Vector2 mousePosition)
         {
             var instance = ScriptableEntity.Create<BaseNode>(type);
+            
+            instance.SetFieldValue(BaseNode.PositionEditorKey, mousePosition);
             
             Undo.RecordObject(currentStory, "Create Node");
             
