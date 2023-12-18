@@ -14,6 +14,7 @@ namespace Module.InteractiveEditor.Editor
     public class InteractiveGraphView : GraphView
     {
         private StoryObject currentStory;
+        private Vector2 mousePositionDown;
         
         public new class UxmlFactory : UxmlFactory<InteractiveGraphView, GraphView.UxmlTraits> { }
         
@@ -28,6 +29,9 @@ namespace Module.InteractiveEditor.Editor
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             
+            UnregisterCallback<MouseDownEvent>(OnUpdateMousePosition);
+            RegisterCallback<MouseDownEvent>(OnUpdateMousePosition);
+            
             var styles = AssetDatabase.LoadAssetAtPath<StyleSheet>(Paths.Uss);
             
             styleSheets.Add(styles);
@@ -36,6 +40,14 @@ namespace Module.InteractiveEditor.Editor
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
         }
 
+        public void Disable()
+        {
+            UnregisterCallback<MouseDownEvent>(OnUpdateMousePosition);
+        }
+        
+        private void OnUpdateMousePosition(MouseDownEvent evt) =>
+            mousePositionDown = this.contentViewContainer.WorldToLocal(evt.mousePosition);
+        
         public void OnOpen(StoryObject story)
         {
             this.currentStory = story;
@@ -107,7 +119,7 @@ namespace Module.InteractiveEditor.Editor
                 {
                     if (attribute.BaseNodeType != null && attribute.MenuPath != null)
                     {
-                        evt.menu.AppendAction($"{attribute.MenuPath}", a => CreateNode(attribute.BaseNodeType, a.eventInfo.mousePosition));
+                        evt.menu.AppendAction($"{attribute.MenuPath}", a => CreateNode(attribute.BaseNodeType));
                     }
                     else
                     {
@@ -182,11 +194,11 @@ namespace Module.InteractiveEditor.Editor
             return GetNodeByGuid(node.Id) as NodeView;
         }
 
-        private BaseNode CreateNode(Type type, Vector2 mousePosition)
+        private BaseNode CreateNode(Type type)
         {
             var instance = ScriptableEntity.Create<BaseNode>(type);
             
-            instance.SetFieldValue(BaseNode.PositionEditorKey, mousePosition);
+            instance.SetFieldValue(BaseNode.PositionEditorKey, mousePositionDown);
             
             Undo.RecordObject(currentStory, "Create Node");
             

@@ -58,7 +58,11 @@ namespace Module.InteractiveEditor.Editor
 
         private void OnDestroy()
         {
-            if (graphView != null) graphView.OnSelectNode -= OnSelectNode;
+            if (graphView != null)
+            {
+                graphView.OnSelectNode -= OnSelectNode;
+                graphView.Disable();
+            }
         }
         
         private void OnPlayModeStateChanged(PlayModeStateChange obj)
