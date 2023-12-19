@@ -53,6 +53,7 @@ namespace Module.InteractiveEditor.Editor
             this.currentStory = story;
             
             graphViewChanged -= OnGraphViewChanged;
+            viewTransformChanged -= OnViewTransformChanged;
 
             foreach (var graphElement in graphElements)
             {
@@ -65,6 +66,7 @@ namespace Module.InteractiveEditor.Editor
             DeleteElements(graphElements);
             
             graphViewChanged += OnGraphViewChanged;
+            viewTransformChanged += OnViewTransformChanged;
             
             if (currentStory.Nodes == null) return;
             
@@ -89,6 +91,9 @@ namespace Module.InteractiveEditor.Editor
                     AddElement(edge);
                 }
             }
+
+            viewTransform.position = currentStory.GetFieldValue<Vector3>(StoryObject.ViewPositionKey);
+            viewTransform.scale = currentStory.GetFieldValue<Vector3>(StoryObject.ViewScaleKey);
         }
 
         public void UpdateState()
@@ -137,6 +142,14 @@ namespace Module.InteractiveEditor.Editor
                                   && endPort.node != startPort.node
                                   && endPort.portType == startPort.portType)
                 .ToList();
+        }
+        
+        private void OnViewTransformChanged(GraphView graphview)
+        {
+            var transformData = graphview.viewTransform;
+            
+            currentStory.SetFieldValue(StoryObject.ViewPositionKey,transformData.position);
+            currentStory.SetFieldValue(StoryObject.ViewScaleKey,transformData.scale);
         }
 
         private GraphViewChange OnGraphViewChanged(GraphViewChange graphviewchange)

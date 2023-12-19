@@ -14,9 +14,18 @@ namespace Module.InteractiveEditor.Configs
         [SerializeField] private List<Actor> actors;
         [SerializeField] private string idStartNode;
 
+        #region Editor
+
+        [HideInInspector][SerializeField] private Vector3 viewPositionEditor;
+        [HideInInspector][SerializeField] private Vector3 viewScaleEditor;
+
+        #endregion
+
         public const string NodesKey = nameof(nodes);
         public const string ActorsKey = nameof(actors);
         public const string IdStartNodeKey = nameof(idStartNode);
+        public const string ViewPositionKey = nameof(viewPositionEditor);
+        public const string ViewScaleKey = nameof(viewScaleEditor);
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
         public IReadOnlyList<Actor> Actors => actors;
