@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 using Managers.Router;
 using Module.InteractiveEditor.Runtime;
 using UniRx;
@@ -11,7 +13,7 @@ namespace Game.UI.Story
 {
     public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
     {
-        [SerializeField] private ImageController bgImage;
+        [SerializeField] private List<ImageController> bgImages;
         [SerializeField] private TextController textController;
         [SerializeField] private Button nextButton;
 
@@ -21,8 +23,11 @@ namespace Game.UI.Story
         public override async UniTask Init()
         {
             await base.Init();
-            
-            await bgImage.Init();
+
+            await bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
+            {
+                await item.Init();
+            });
             
             if (disp.Count > 0) disp.Clear();
 
@@ -33,12 +38,12 @@ namespace Game.UI.Story
         {
             base.OnHide();
             
-            bgImage.Disable();
+            bgImages.ForEach(item => item.Disable());
         }
 
         public void SetImage(AddressableSprite sprite)
         {
-            bgImage.SetImage(sprite);
+            bgImages.ForEach(item => item.SetImage(sprite));
         }
         
         public void SetText(LocalizedString localizedString)

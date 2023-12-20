@@ -43,6 +43,8 @@ namespace Module.InteractiveEditor.Editor
         public void Disable()
         {
             UnregisterCallback<MouseDownEvent>(OnUpdateMousePosition);
+            
+            OnViewTransformChanged(this);
         }
         
         private void OnUpdateMousePosition(MouseDownEvent evt) =>
@@ -150,6 +152,8 @@ namespace Module.InteractiveEditor.Editor
             
             currentStory.SetFieldValue(StoryObject.ViewPositionKey,transformData.position);
             currentStory.SetFieldValue(StoryObject.ViewScaleKey,transformData.scale);
+            
+            EditorUtility.SetDirty(currentStory);
         }
 
         private GraphViewChange OnGraphViewChanged(GraphViewChange graphviewchange)
