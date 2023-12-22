@@ -24,6 +24,8 @@ namespace Module.InteractiveEditor.Runtime
         public async UniTask SetImage(AddressableSprite sprite)
         {
             if (sprite is not { RuntimeKeyIsValid: true }) return;
+            
+            tokenHandler.CancelOperation();
 
             var load = await sprite.LoadAsync(token: tokenHandler.Token);
             
