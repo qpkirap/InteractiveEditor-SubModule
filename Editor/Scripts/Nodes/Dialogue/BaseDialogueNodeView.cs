@@ -12,13 +12,15 @@ namespace Module.InteractiveEditor.Editor
     [NodeView("Dialogue/Base", typeof(BaseDialogueNode))]
     public class BaseDialogueNodeView : NodeView
     {
-        private readonly ImageListVisualElement imagePreview;
-        
+        private readonly ImageListVisualController imagePreview;
+        private BaseDialogueEditor dialogueEditor;
+
         public BaseDialogueNodeView(BaseNode node) : base(node)
         {
             var imageElement = this.Q<VisualElement>(VisualElementKeys.ImagePreview);
-            var listImages = node.GetFieldValue<List<AssetReference>>(BaseDialogueNode.ImagesKey);
-            this.imagePreview = new ImageListVisualElement(imageElement, listImages);
+            this.imagePreview = new ImageListVisualController(imageElement);
+            
+            UpdateImages();
         }
 
         public override Type InputPortType => typeof(bool);
@@ -26,6 +28,21 @@ namespace Module.InteractiveEditor.Editor
         public override Port.Capacity InputPortCapacity => Port.Capacity.Single;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Single;
         public override string GetClassTag => "dialogue";
+
+        public void InjectEditor(BaseDialogueEditor dialogueEditor)
+        {
+            this.dialogueEditor = dialogueEditor;
+
+            dialogueEditor.OnUpdate = null;
+            dialogueEditor.OnUpdate += UpdateImages;
+        }
+
+        public override void OnSelected()
+        {
+            base.OnSelected();
+            
+            UpdateImages();
+        }
 
         public override void AddChildNode(BaseNode node)
         {
@@ -43,6 +60,18 @@ namespace Module.InteractiveEditor.Editor
             Node.RemoveFromList(BaseNode.ChildNodeKey, node);
             
             EditorUtility.SetDirty(Node);
+        }
+
+        public override void Visit(INodeVisitor visitor)
+        {
+            visitor.BaseDialogueNodeView(this);
+        }
+        
+        private void UpdateImages()
+        {
+            var listImages = Node.GetFieldValue<List<AssetReference>>(BaseDialogueNode.ImagesKey);
+            
+            imagePreview.Init(listImages);
         }
     }
 }

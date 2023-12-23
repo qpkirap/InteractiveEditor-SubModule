@@ -10,7 +10,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseDialogueNode : BaseNode<BaseDialogueExecutor>
     {
-        [SerializeField] private List<AssetReference> images = new();
+        [HideInInspector][SerializeField] private List<AssetReference> images = new();
         [SerializeField] private LocalizedString dialogue;
 
         #region Editor

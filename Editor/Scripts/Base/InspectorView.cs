@@ -6,17 +6,26 @@ namespace Module.InteractiveEditor.Editor
 {
     public class InspectorView : VisualElement
     {
-        private UnityEditor.Editor editor;
+        private UnityEditor.Editor currentEditor;
         private SerializedObject container;
         private SerializedProperty titleProperty;
+
+        private INodeVisitor visitor;
         
         public new class UxmlFactory : UxmlFactory<InspectorView, VisualElement.UxmlTraits> { }
 
+        public UnityEditor.Editor GetCurrentEditor => currentEditor;
+
         public void UpdateSelection(NodeView nodeView)
         {
+            visitor ??= new InspectorNodeVisitor(this);
+            
             Clear();
             
-            Object.DestroyImmediate(editor);
+            Object.DestroyImmediate(currentEditor);
+            
+            var scrollView = new ScrollView();
+            Add(scrollView);
             
             if (nodeView == null) return;
 
@@ -24,16 +33,16 @@ namespace Module.InteractiveEditor.Editor
             var id = container.FindProperty("id").stringValue;
             titleProperty = container.FindProperty("title");
 
-            editor = UnityEditor.Editor.CreateEditor(nodeView.Node);
+            currentEditor = UnityEditor.Editor.CreateEditor(nodeView.Node);
 
             var imgContainer = new IMGUIContainer(() =>
             {
-                if (editor.target != null)
+                if (currentEditor.target != null)
                 {
                     EditorGUILayout.TextField(id);
                     EditorGUILayout.PropertyField(titleProperty);
                     
-                    editor.OnInspectorGUI();
+                    currentEditor.OnInspectorGUI();
                     
                     if (EditorGUI.EndChangeCheck())
                     {
@@ -42,7 +51,9 @@ namespace Module.InteractiveEditor.Editor
                 }
             });
             
-            Add(imgContainer);
+            scrollView.Add(imgContainer);
+            
+            visitor.OnSelectNode(nodeView);
         }
     }
 }

@@ -86,5 +86,9 @@ namespace Module.InteractiveEditor.Editor
             
             EditorUtility.SetDirty(Node);
         }
+
+        public override void Visit(INodeVisitor visitor)
+        {
+        }
     }
 }

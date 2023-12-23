@@ -58,6 +58,7 @@ namespace Module.InteractiveEditor.Editor
         
         public abstract void AddChildNode(BaseNode node);
         public abstract void RemoveChildNode(BaseNode node);
+        public abstract void Visit(INodeVisitor visitor);
 
         public override void SetPosition(Rect newPos)
         {
