@@ -13,7 +13,7 @@ namespace Module.InteractiveEditor.Editor
         
         public Action OnUpdate { get; internal set; }
         
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if (EditorApplication.isPlaying || EditorApplication.isUpdating) return;
             

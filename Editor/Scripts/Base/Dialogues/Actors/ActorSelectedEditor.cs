@@ -8,16 +8,18 @@ using UnityEngine;
 namespace Module.InteractiveEditor.Editor
 {
     [CustomEditor(typeof(ActorDialogueNode))]
-    public class ActorSelectedEditor : UnityEditor.Editor
+    public class ActorSelectedEditor : BaseDialogueEditor
     {
         private StoryObject storyObject;
         private List<Actor> actors;
         private string[] actorTitles;
         private int selectIndex;
         
-        private void OnEnable()
+        protected override void OnEnable()
         {
-            storyObject ??= Selection.activeObject as StoryObject;
+            base.OnEnable();
+            
+            storyObject = EditorsCache.CurrentStoryObject;
 
             actors = storyObject != null ? storyObject.GetFieldValue<List<Actor>>(StoryObject.ActorsKey) : new(1);
             

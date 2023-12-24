@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public class ActorDialogueNode : BaseDialogueNode<BaseDialogueExecutor>
+    public class ActorDialogueNode : BaseDialogueNode<ActorDialogueExecutor>
     {
         [HideInInspector][SerializeField] private Actor actor;
         

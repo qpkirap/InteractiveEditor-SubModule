@@ -6,7 +6,7 @@
         public const string Uxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/InteractiveEditor.uxml";
         public const string NodeViewUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/NodeView.uxml";
         
-        public const string ActorsWindowUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/ActorsWindowEditor.uxml";
-        public const string ActorsWindowUss = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/ActorsWindowEditor.uss";
+        public const string ActorsWindowUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/Actors/ActorsWindowEditor.uxml";
+        public const string ActorsWindowUss = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/Actors/ActorsWindowEditor.uss";
     }
 }

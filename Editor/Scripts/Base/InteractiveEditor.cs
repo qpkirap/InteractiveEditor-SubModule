@@ -134,6 +134,9 @@ namespace Module.InteractiveEditor.Editor
             }
             else if(story && AssetDatabase.CanOpenAssetInEditor(story.GetInstanceID()))
             {
+                EditorsCache.Init();
+                EditorsCache.SetCurrentStoryObject(story);
+                
                 graphView?.OnOpen(story);
             }
         }

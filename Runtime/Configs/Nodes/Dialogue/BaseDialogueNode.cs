@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
@@ -45,5 +46,9 @@ namespace Module.InteractiveEditor.Configs
     public class BaseDialogueNode<T> : BaseDialogueNode
         where T : INodeExecute
     {
+        public override Type GetExecutorType()
+        {
+            return typeof(T);
+        }
     }
 }
