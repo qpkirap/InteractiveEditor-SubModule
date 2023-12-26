@@ -1,6 +1,8 @@
-﻿using Module.InteractiveEditor.Runtime;
+﻿using System.Collections.Generic;
+using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Configs
@@ -16,6 +18,11 @@ namespace Module.InteractiveEditor.Configs
         #endregion
         
         public LocalizedString AnswerText => this.answerText;
+
+        public override IReadOnlyCollection<IAddressableAsset> GetAssets()
+        {
+            return new List<IAddressableAsset>(0);
+        }
 
         public override object Clone()
         {

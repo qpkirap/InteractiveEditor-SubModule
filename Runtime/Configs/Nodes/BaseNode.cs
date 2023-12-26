@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils.Configs;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Module.InteractiveEditor.Configs
 {
@@ -35,6 +36,7 @@ namespace Module.InteractiveEditor.Configs
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
 
+        public abstract IReadOnlyCollection<IAddressableAsset> GetAssets();
         public abstract Type GetExecutorType();
 
         public override object Clone()

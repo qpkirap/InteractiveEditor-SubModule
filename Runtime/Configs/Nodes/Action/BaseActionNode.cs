@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Module.InteractiveEditor.Configs
 {
@@ -19,7 +20,12 @@ namespace Module.InteractiveEditor.Configs
         public const string TasksKey = nameof(tasks);
 
         #endregion
-        
+
+
+        public override IReadOnlyCollection<IAddressableAsset> GetAssets()
+        {
+            return new List<IAddressableAsset>(0);
+        }
 
         public override object Clone()
         {

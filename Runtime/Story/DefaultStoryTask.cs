@@ -9,25 +9,25 @@ namespace Module.InteractiveEditor.Runtime
 {
     public class DefaultStoryTask : IStoryTask
     {
-        private readonly Dictionary<Type, INodeExecute> executes = new();
-        
-        private readonly LinkedList<BaseNode> history = new();
+        private readonly PreloadManager preloadManager = new();
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
+        
+        private readonly Dictionary<Type, INodeExecute> executes = new();
         
         public StoryObject StoryObject => storyObjectCache;
         
         public void Init(StoryObject storyObject)
         {
-            history.Clear();
-            
-            if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
+           if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
             
             storyObjectCache = storyObject.Clone();
 
             InitExecutors(storyObjectCache);
             
             currentNodeCache ??= GetStartNode();
+            
+            preloadManager.PrepareNode(currentNodeCache);
         }
 
         private void InitExecutors(StoryObject storyObject)
@@ -51,6 +51,8 @@ namespace Module.InteractiveEditor.Runtime
         public void Execute()
         {
             currentNodeCache = ExecuteNode(currentNodeCache);
+            
+            preloadManager.PrepareNode(currentNodeCache);
         }
 
         public BaseNode ExecuteNode(BaseNode node)

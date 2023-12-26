@@ -19,6 +19,8 @@ namespace Module.InteractiveEditor.Runtime
         public void Disable()
         {
             tokenHandler.CancelOperation();
+
+            image.sprite = null;
         }
 
         public async UniTask SetImage(AddressableSprite sprite)

@@ -30,7 +30,12 @@ namespace Module.InteractiveEditor.Configs
         
         public AddressableSprite RandomImage => AddressableSprites.RandomItem();
         public LocalizedString Dialogue => dialogue;
-        
+
+
+        public override IReadOnlyCollection<IAddressableAsset> GetAssets()
+        {
+            return AddressableSprites;
+        }
 
         public override object Clone()
         {
