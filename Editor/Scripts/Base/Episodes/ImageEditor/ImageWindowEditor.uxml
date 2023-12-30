@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/6%20-%20Submodules/InteractiveEditor/Editor/Scripts/Base/Episodes/ImageEditor/ImageWindowEditor.uss?fileID=7433441132597879392&amp;guid=d7dde234d41005b4189ed4a2fc364e15&amp;type=3#ImageWindowEditor" />
+    <ui:VisualElement picking-mode="Ignore" name="Image" style="flex-grow: 1; width: 100%; height: 100%; background-image: none;" />
+</ui:UXML>

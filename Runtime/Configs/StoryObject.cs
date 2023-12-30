@@ -12,6 +12,7 @@ namespace Module.InteractiveEditor.Configs
     {
         [SerializeField] private List<BaseNode> nodes;
         [SerializeField] private List<Actor> actors;
+        [SerializeField] private List<EpisodeData> episodeDatas;
         [SerializeField] private string idStartNode;
 
         #region Editor
@@ -26,6 +27,7 @@ namespace Module.InteractiveEditor.Configs
         public const string IdStartNodeKey = nameof(idStartNode);
         public const string ViewPositionKey = nameof(viewPositionEditor);
         public const string ViewScaleKey = nameof(viewScaleEditor);
+        public const string EpisodeDatasKey = nameof(episodeDatas);
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
         public IReadOnlyList<Actor> Actors => actors;

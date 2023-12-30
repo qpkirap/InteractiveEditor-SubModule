@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/6%20-%20Submodules/InteractiveEditor/Editor/Scripts/Base/Episodes/EpisodesWindowEditor.uss?fileID=7433441132597879392&amp;guid=b5c8da82bcd3ba7458dc8c2ecbdc476a&amp;type=3#EpisodesWindowEditor" />
+    <ui:ListView focusable="true" show-add-remove-footer="true" header-title="EpisodesData" show-foldout-header="true" show-bound-collection-size="false" />
+</ui:UXML>

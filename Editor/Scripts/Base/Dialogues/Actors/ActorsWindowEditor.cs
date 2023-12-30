@@ -13,7 +13,7 @@ public class ActorsWindowEditor : EditorWindow
     private ListView listView;
 
     [MenuItem("InteractiveEditor/Actors")]
-    public static void ShowExample()
+    public static void ShowWindow()
     {
         ActorsWindowEditor wnd = GetWindow<ActorsWindowEditor>();
         wnd.titleContent = new GUIContent("ActorsWindowEditor");

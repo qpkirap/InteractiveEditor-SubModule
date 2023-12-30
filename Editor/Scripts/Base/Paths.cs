@@ -8,5 +8,10 @@
         
         public const string ActorsWindowUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/Actors/ActorsWindowEditor.uxml";
         public const string ActorsWindowUss = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Dialogues/Actors/ActorsWindowEditor.uss";
+        
+        public const string EpisodesWindowUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Episodes/EpisodesWindowEditor.uxml";
+        public const string EpisodesWindowUss = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Episodes/EpisodesWindowEditor.uss";
+        public const string ImagesWindowUxml = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Images/ImagesWindowEditor.uxml";
+        public const string ImagesWindowUss = "Assets/6 - Submodules/InteractiveEditor/Editor/Scripts/Base/Images/ImagesWindowEditor.uss";
     }
 }
