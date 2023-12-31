@@ -15,6 +15,8 @@ public class ActorsWindowEditor : EditorWindow
     [MenuItem("InteractiveEditor/Actors")]
     public static void ShowWindow()
     {
+        EditorsCache.Init();
+        
         ActorsWindowEditor wnd = GetWindow<ActorsWindowEditor>();
         wnd.titleContent = new GUIContent("ActorsWindowEditor");
     }

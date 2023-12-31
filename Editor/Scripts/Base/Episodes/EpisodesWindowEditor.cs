@@ -13,8 +13,10 @@ public class EpisodesWindowEditor : EditorWindow
     private ListView listView;
     
     [MenuItem("InteractiveEditor/Episodes")]
-    public static void ShowExample()
+    public static void ShowEditor()
     {
+        EditorsCache.Init();
+        
         EpisodesWindowEditor wnd = GetWindow<EpisodesWindowEditor>();
         wnd.titleContent = new GUIContent("EpisodesWindowEditor");
     }
@@ -30,12 +32,36 @@ public class EpisodesWindowEditor : EditorWindow
         root.styleSheets.Add(styles);
 
         listView = root.Q<ListView>();
+        
+        OnSelectionChange();
+    }
+    
+    private void OnDisable()
+    {
+        EditorUtility.SetDirty(storyObject);
+        
+        listView.makeItem = null;
+        listView.unbindItem = null;
+        listView.bindItem = null;
+        listView.itemsSource = null;
+        listView.itemsRemoved -= OnRemoved;
+
+        AssetDatabase.SaveAssets();
     }
     
     private void OnSelectionChange()
     {
-        storyObject = Selection.activeObject as StoryObject;
+        var storyObject = Selection.activeObject as StoryObject;
 
+        SelectChange(storyObject);
+    }
+
+    private void SelectChange(StoryObject storyObject)
+    {
+        if (storyObject == null) return;
+
+        this.storyObject = storyObject;
+        
         listView.makeItem = null;
         listView.unbindItem = null;
         listView.bindItem = null;
@@ -85,7 +111,7 @@ public class EpisodesWindowEditor : EditorWindow
     {
         if (evt.clickCount == 2)
         {
-            //TryCreateEditorWindow((ActorViewItem)evt.target);
+            TryCreateEditorWindow((EpisodeViewItem)evt.target);
         }
     }
     
@@ -122,7 +148,7 @@ public class EpisodesWindowEditor : EditorWindow
         
         foreach (var index in indexes)
         {
-            var item = (Actor)list[index];
+            var item = (EpisodeData)list[index];
             
             Undo.RecordObject(storyObject, "Delete");
 
@@ -132,5 +158,19 @@ public class EpisodesWindowEditor : EditorWindow
 
             EditorUtility.SetDirty(storyObject);
         }
+    }
+    
+    private void TryCreateEditorWindow(EpisodeViewItem viewItem)
+    {
+        if (viewItem == null || viewItem.EpisodeData == null)
+        {
+            return;
+        }
+
+        var window = GetWindow<EpisodeWindowEditor>();
+        
+        window.InjectActivation(viewItem.EpisodeData);
+        
+        window.Show();
     }
 }

@@ -8,7 +8,7 @@ namespace Module.InteractiveEditor.Configs
     [Serializable]
     public class EpisodeData : Component
     {
-        [SerializeField] private List<ImageData> imageDatas;
+        [SerializeField] private List<ImageData> imageDatas = new();
 
         #region Editor
 
