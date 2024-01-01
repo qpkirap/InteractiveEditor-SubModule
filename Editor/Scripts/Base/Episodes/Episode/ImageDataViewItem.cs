@@ -7,13 +7,21 @@ namespace Module.InteractiveEditor.Editor
 {
     public class ImageDataViewItem : Button
     {
-        private VisualElement imageElement;
+        private VisualElement image;
         
         public ImageData ImageData { get; private set; }
         
         public ImageDataViewItem()
         {
             AddToClassList("image-data-item");
+            
+            image = new VisualElement();
+            
+            image.AddToClassList("episode-image");
+            image.style.width = 0;
+            image.style.height = 0;
+            
+            Add(image);
         }
 
         public void InjectData(ImageData imageData)
@@ -29,12 +37,6 @@ namespace Module.InteractiveEditor.Editor
         {
             if (imageData == null) return;
             
-            imageElement = new VisualElement();
-            
-            imageElement.AddToClassList("episode-image");
-            
-            Add(imageElement);
-            
             if (imageData.Image is not { RuntimeKeyIsValid: true }) return;
 
             try
@@ -43,7 +45,12 @@ namespace Module.InteractiveEditor.Editor
                 
                 if (sprite == null) return;
             
-                imageElement.style.backgroundImage = new StyleBackground(sprite);
+                image.style.backgroundImage = new StyleBackground(sprite);
+                image.style.maxHeight = 80;
+                image.style.maxWidth = 100;
+                image.style.minHeight = 80;
+                image.style.minWidth = 80;
+                image.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
             }
             catch (Exception e)
             {

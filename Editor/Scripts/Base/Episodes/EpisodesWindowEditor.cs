@@ -35,9 +35,16 @@ public class EpisodesWindowEditor : EditorWindow
         
         OnSelectionChange();
     }
-    
+
+    private void OnFocus()
+    {
+        OnSelectionChange();
+    }
+
     private void OnDisable()
     {
+        if (storyObject == null) return;
+        
         EditorUtility.SetDirty(storyObject);
         
         listView.makeItem = null;
@@ -48,7 +55,7 @@ public class EpisodesWindowEditor : EditorWindow
 
         AssetDatabase.SaveAssets();
     }
-    
+
     private void OnSelectionChange()
     {
         var storyObject = Selection.activeObject as StoryObject;
@@ -58,9 +65,12 @@ public class EpisodesWindowEditor : EditorWindow
 
     private void SelectChange(StoryObject storyObject)
     {
-        if (storyObject == null) return;
-
-        this.storyObject = storyObject;
+        if (storyObject != null)
+        {
+            this.storyObject = storyObject;
+        }
+        
+        if (this.storyObject == null || listView == null) return;
         
         listView.makeItem = null;
         listView.unbindItem = null;

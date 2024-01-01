@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/6%20-%20Submodules/InteractiveEditor/Editor/Scripts/Base/Episodes/Episode/EpisodeWindowEditor.uss?fileID=7433441132597879392&amp;guid=cb167dfb31be00e468db7a8a6cae2be7&amp;type=3#EpisodeWindowEditor" />
-    <ui:ListView focusable="true" show-add-remove-footer="true" show-bound-collection-size="false" header-title="ImagesData" show-foldout-header="true" name="Images" />
+    <ui:TextField picking-mode="Ignore" label="Title" name="TitleField" />
+    <ui:ListView focusable="true" show-add-remove-footer="true" show-bound-collection-size="false" header-title="ImagesData" show-foldout-header="true" name="Images" fixed-item-height="80" />
 </ui:UXML>

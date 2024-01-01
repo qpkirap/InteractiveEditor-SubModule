@@ -13,8 +13,11 @@ public class ImageWindowEditor : EditorWindow
 {
     private ObjectField imageField;
     private ScrollView scrollView;
+    private TextField titleField;
     private VisualElement image;
     private ImageData imageData;
+    
+    private SerializedObject container;
 
     private CensureViewItem currentDraw;
     private bool isDrawing = false;
@@ -31,6 +34,7 @@ public class ImageWindowEditor : EditorWindow
         uxml.CloneTree(root);
         root.styleSheets.Add(styles);
 
+        titleField = root.Q<TextField>("title-field");
         imageField = root.Q<ObjectField>("image-field");
         scrollView = root.Q<ScrollView>();
         
@@ -42,6 +46,10 @@ public class ImageWindowEditor : EditorWindow
     public void InjectActivation(ImageData imageData)
     {
         this.imageData = imageData;
+        
+        container = new(this.imageData);
+
+        titleField.BindProperty(container.FindProperty("title"));
         
         imageField.objectType = typeof(Sprite);
         imageField.RegisterCallback<ChangeEvent<Object>>(UpdateImageField);
@@ -236,6 +244,7 @@ public class ImageWindowEditor : EditorWindow
                 width = width,
                 height = height,
                 backgroundColor = new StyleColor(Color.red),
+                color = new StyleColor(Color.black),
                 alignItems = Align.FlexStart,
                 unityTextAlign = TextAnchor.MiddleCenter
             }

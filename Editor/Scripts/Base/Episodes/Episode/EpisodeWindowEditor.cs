@@ -1,20 +1,29 @@
+using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Editor;
 using Module.Utils;
 using Module.Utils.Configs;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class EpisodeWindowEditor : EditorWindow
 {
+    private TextField titleTextField;
     private ListView imageListView;
     private EpisodeData episodeData;
+
+    private SerializedObject container;
     
     public void InjectActivation(EpisodeData episodeData)
     {
         this.episodeData = episodeData;
+        
+        container = new(this.episodeData);
+        
+        titleTextField.BindProperty(container.FindProperty("title"));
         
         InitImageList();
     }
@@ -43,6 +52,12 @@ public class EpisodeWindowEditor : EditorWindow
         root.styleSheets.Add(styles);
 
         imageListView = root.Q<ListView>();
+        titleTextField = root.Q<TextField>();
+    }
+
+    private void OnFocus()
+    {
+        InitImageList();
     }
 
     #region ImageList

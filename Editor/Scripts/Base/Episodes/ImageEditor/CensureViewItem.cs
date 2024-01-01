@@ -17,6 +17,8 @@ namespace Module.InteractiveEditor.Editor
         public void InjectData(CensureData censureData)
         {
             this.CensureData = censureData;
+            
+            text = "censure";
         }
 
         public void UpdateData()
