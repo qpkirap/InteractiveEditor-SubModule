@@ -9,13 +9,6 @@ namespace Module.InteractiveEditor.Editor
     {
         public CensureData CensureData { get; private set; }
         
-        private bool IsInverseX { get; set; }
-        private bool IsInverseY { get; set; }
-        
-        private float Width { get; set; }
-        private float Height { get; set; }
-        private Vector2 Center { get; set; }
-        
         public CensureViewItem()
         {
             AddToClassList("censure-item");
@@ -33,8 +26,8 @@ namespace Module.InteractiveEditor.Editor
             var width = style.width.value.value;
             var height = style.height.value.value;
             
-            CensureData.SetFieldValue(Configs.CensureData.PositionKey, new Vector2(left, top));
-            CensureData.SetFieldValue(Configs.CensureData.SizeKey, new Vector2(width, height));
+            CensureData.SetFieldValue(CensureData.PositionKey, new Vector2(left, top));
+            CensureData.SetFieldValue(CensureData.SizeKey, new Vector2(width, height));
         }
     }
 }

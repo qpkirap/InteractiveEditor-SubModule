@@ -16,18 +16,14 @@ public class ImageWindowEditor : EditorWindow
     private VisualElement image;
     private ImageData imageData;
 
-    private VisualElement currentDraw;
+    private CensureViewItem currentDraw;
     private bool isDrawing = false;
-    private bool isInverseX;
-    private bool isInverseY;
     
     private Vector2 center;
-    private float width;
-    private float height;
     
     public void CreateGUI()
     {
-        VisualElement root = rootVisualElement;
+        var root = rootVisualElement;
 
         var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(Paths.ImagesWindowUxml);
         var styles = AssetDatabase.LoadAssetAtPath<StyleSheet>(Paths.ImagesWindowUss);
@@ -51,6 +47,18 @@ public class ImageWindowEditor : EditorWindow
         imageField.RegisterCallback<ChangeEvent<Object>>(UpdateImageField);
         
         UpdateImageField();
+
+        if (this.imageData.Censures != null)
+        {
+            foreach (var imageDataCensure in this.imageData.Censures)
+            {
+                if (imageDataCensure == null) continue;
+                
+                var viewItem = CreateCensureBox(imageDataCensure.Position, imageDataCensure.Size.x, imageDataCensure.Size.y);
+                
+                viewItem.InjectData(imageDataCensure);
+            }
+        }
         
         image.RegisterCallback<MouseDownEvent>(OnMouseDown);
         image.RegisterCallback<MouseMoveEvent>(OnMouseMove);
@@ -152,31 +160,57 @@ public class ImageWindowEditor : EditorWindow
     {
         if (isDrawing)
         {
+            var width = 0f;
+            var height = 0f;
+            var left = 0f;
+            var top = 0f;
+
+            if (currentDraw == null)
+            {
+                currentDraw ??= CreateCensureBox(center, width, height);
+
+                var censureData = new CensureData();
+                
+                imageData.AddToList(ImageData.CensuresKey, censureData);
+                
+                currentDraw.InjectData(censureData);
+            }
+            
             var localMousePosition = image.WorldToLocal(evt.mousePosition);
             
             if (localMousePosition.x < center.x)
             {
-                isInverseX = true;
                 width = center.x - localMousePosition.x;
+
+                left = localMousePosition.x;
             }
             else
             {
-                isInverseX = false;
                 width = localMousePosition.x - center.x;
+
+                left = center.x;
             }
         
             if (localMousePosition.y < center.y)
             {
-                isInverseY = true;
                 height = center.y - localMousePosition.y;
+
+                top = localMousePosition.y;
             }
             else
             {
-                isInverseY = false;
                 height = localMousePosition.y - center.y;
-            }
 
-            OnDrawCensureBox();
+                top = center.y;
+            }
+            
+            currentDraw.style.left = left;
+            currentDraw.style.top = top;
+
+            currentDraw.style.width = width;
+            currentDraw.style.height = height;
+            
+            currentDraw.UpdateData();
         }
     }
     
@@ -187,35 +221,6 @@ public class ImageWindowEditor : EditorWindow
             isDrawing = false;
             
             currentDraw = null;
-        }
-    }
-    
-    private void OnDrawCensureBox()
-    {
-        if (isDrawing)
-        {
-            currentDraw ??= CreateCensureBox(center, 1, 1);
-
-            if (isInverseX)
-            {
-                currentDraw.style.left = center.x - width;
-            }
-            else
-            {
-                currentDraw.style.left = center.x;
-            }
-            
-            if (isInverseY)
-            {
-                currentDraw.style.top = center.y - height;
-            }
-            else
-            {
-                currentDraw.style.top = center.y;
-            }
-
-            currentDraw.style.width = width;
-            currentDraw.style.height = height;
         }
     }
     
@@ -231,8 +236,20 @@ public class ImageWindowEditor : EditorWindow
                 width = width,
                 height = height,
                 backgroundColor = new StyleColor(Color.red),
+                alignItems = Align.FlexStart,
+                unityTextAlign = TextAnchor.MiddleCenter
             }
         };
+        
+        item.RegisterCallback<MouseDownEvent>(downEvent =>
+        {
+            if (downEvent.button == 1 && downEvent.target is CensureViewItem target)
+            {
+                image.Remove(target);
+                    
+                if (target.CensureData != null) imageData.RemoveFromList(ImageData.CensuresKey, target.CensureData);
+            }
+        });
         
         image.Add(item);
 

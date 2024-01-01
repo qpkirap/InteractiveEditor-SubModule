@@ -26,6 +26,6 @@ namespace Module.InteractiveEditor.Configs
             imageCache = image != null ? new AddressableSprite(image) : default
             : imageCache;
         
-        public List<CensureData> Censures => censures;
+        public IReadOnlyList<CensureData> Censures => censures;
     }
 }
