@@ -18,8 +18,10 @@ public class ImageWindowEditor : EditorWindow
 
     private VisualElement currentDraw;
     private bool isDrawing = false;
+    private bool isInverseX;
+    private bool isInverseY;
+    
     private Vector2 center;
-    private float radius;
     private float width;
     private float height;
     
@@ -143,7 +145,6 @@ public class ImageWindowEditor : EditorWindow
         {
             isDrawing = true;
             center = image.WorldToLocal(evt.mousePosition);
-            radius = 0f;
         }
     }
     
@@ -153,23 +154,25 @@ public class ImageWindowEditor : EditorWindow
         {
             var localMousePosition = image.WorldToLocal(evt.mousePosition);
             
-            radius = Vector2.Distance(center, localMousePosition);
-            
             if (localMousePosition.x < center.x)
             {
+                isInverseX = true;
                 width = center.x - localMousePosition.x;
             }
             else
             {
+                isInverseX = false;
                 width = localMousePosition.x - center.x;
             }
         
             if (localMousePosition.y < center.y)
             {
+                isInverseY = true;
                 height = center.y - localMousePosition.y;
             }
             else
             {
+                isInverseY = false;
                 height = localMousePosition.y - center.y;
             }
 
@@ -192,18 +195,33 @@ public class ImageWindowEditor : EditorWindow
         if (isDrawing)
         {
             currentDraw ??= CreateCensureBox(center, 1, 1);
+
+            if (isInverseX)
+            {
+                currentDraw.style.left = center.x - width;
+            }
+            else
+            {
+                currentDraw.style.left = center.x;
+            }
             
-            currentDraw.style.left = center.x;
-            currentDraw.style.top = center.y;
+            if (isInverseY)
+            {
+                currentDraw.style.top = center.y - height;
+            }
+            else
+            {
+                currentDraw.style.top = center.y;
+            }
 
             currentDraw.style.width = width;
             currentDraw.style.height = height;
         }
     }
     
-    private VisualElement CreateCensureBox(Vector2 position, float width, float height)
+    private CensureViewItem CreateCensureBox(Vector2 position, float width, float height)
     {
-        var item = new VisualElement
+        var item = new CensureViewItem
         {
             style =
             {

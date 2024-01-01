@@ -10,7 +10,7 @@ namespace Module.InteractiveEditor.Configs
     public class ImageData : Component
     {
         [SerializeField] private AssetReference image;
-        [SerializeField] private List<Vector2> censures;
+        [SerializeField] private List<CensureData> censures;
 
         #region Editor
 
@@ -26,6 +26,6 @@ namespace Module.InteractiveEditor.Configs
             imageCache = image != null ? new AddressableSprite(image) : default
             : imageCache;
         
-        public List<Vector2> Censures => censures;
+        public List<CensureData> Censures => censures;
     }
 }
