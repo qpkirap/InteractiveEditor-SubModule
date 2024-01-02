@@ -18,5 +18,10 @@ namespace Module.InteractiveEditor.Configs
         
         public Vector2 Position => position;
         public Vector2 Size => size;
+
+        public CensureData Clone()
+        {
+            return (CensureData)MemberwiseClone();
+        }
     }
 }

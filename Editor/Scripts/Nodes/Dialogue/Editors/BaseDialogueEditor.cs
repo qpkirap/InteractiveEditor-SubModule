@@ -1,5 +1,6 @@
 ﻿using System;
 using Module.InteractiveEditor.Configs;
+using Module.Utils;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -17,13 +18,13 @@ namespace Module.InteractiveEditor.Editor
         {
             if (EditorApplication.isPlaying || EditorApplication.isUpdating) return;
             
-            list = new ReorderableList(serializedObject, serializedObject.FindProperty(BaseDialogueNode.ImagesKey), 
+            list = new ReorderableList(serializedObject, serializedObject.FindProperty(BaseDialogueNode.ImagesDataKey), 
                 true,
                 true,
                 true,
                 true)
             {
-                drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "Images"); },
+                drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "ImagesData"); },
                 
                 onAddCallback = (_) => OnAdd(),
                 onRemoveCallback = (_) => OnRemove(),
@@ -39,10 +40,39 @@ namespace Module.InteractiveEditor.Editor
         private void DrawElement(Rect rect, int index, bool isactive, bool isfocused)
         {
             var element = list.serializedProperty.GetArrayElementAtIndex(index);
+
+            if (element.objectReferenceValue == null)
+            {
+                if (GUI.Button(rect, "Select Image"))
+                {
+                    var wnd = EpisodesWindowEditor.ShowEditor();
+
+                    wnd.OnOpenEpisodeWindow += (episodeWindow) =>
+                    {
+                        if (episodeWindow != null)
+                        {
+                            episodeWindow.OnSelectImage += (imageData) =>
+                            {
+                                element.objectReferenceValue = imageData;
+                                
+                                EditorUtility.SetDirty(element.serializedObject.targetObject);
+                                element.serializedObject.ApplyModifiedProperties();
+                                
+                                episodeWindow.Close();
+                                wnd.Close();
+                                
+                                OnUpdate?.Invoke();
+                            };
+                        }
+                    };
+                }
+            }
+            else
+            {
+                EditorGUI.LabelField(rect, element.objectReferenceValue.GetFieldValue<string>("title"));
             
-            EditorGUI.PropertyField(rect, element, new GUIContent());
-            
-            rect.y += EditorGUIUtility.singleLineHeight;
+                rect.y += EditorGUIUtility.singleLineHeight;
+            }
         }
 
         private void OnAdd()
@@ -51,8 +81,11 @@ namespace Module.InteractiveEditor.Editor
             list.serializedProperty.arraySize++;
             list.index = index;
             
-            EditorUtility.SetDirty(list.serializedProperty.serializedObject.targetObject);
-            list.serializedProperty.serializedObject.ApplyModifiedProperties();
+            var element = list.serializedProperty.GetArrayElementAtIndex(index);
+            element.objectReferenceValue = null;
+            
+            EditorUtility.SetDirty(element.serializedObject.targetObject);
+            element.serializedObject.ApplyModifiedProperties();
             
             OnUpdate?.Invoke();
         }

@@ -69,7 +69,7 @@ namespace Module.InteractiveEditor.Editor
         
         private void UpdateImages()
         {
-            var listImages = Node.GetFieldValue<List<AssetReference>>(BaseDialogueNode.ImagesKey);
+            var listImages = Node.GetFieldValue<List<ImageData>>(BaseDialogueNode.ImagesDataKey);
             
             imagePreview.Init(listImages);
         }

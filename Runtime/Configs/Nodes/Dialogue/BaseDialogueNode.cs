@@ -11,30 +11,35 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseDialogueNode : BaseNode<BaseDialogueExecutor>
     {
-        [HideInInspector][SerializeField] private List<AssetReference> images = new();
+        [SerializeField] private List<AssetReference> images = new();
+        [SerializeField] private List<ImageData> imageDatas = new();
         [SerializeField] private LocalizedString dialogue;
 
         #region Editor
 
         private const string DialogueKey = nameof(dialogue);
         public const string ImagesKey = nameof(images);
+        public const string ImagesDataKey = nameof(imageDatas);
 
         #endregion
 
-        private IReadOnlyList<AddressableSprite> sprites;
+        [NonSerialized] private IReadOnlyList<ImageData> spritesCache;
+        [NonSerialized] private IReadOnlyList<IAddressableAsset> addressableAssets;
         
-        public IReadOnlyList<AddressableSprite> AddressableSprites =>
-            sprites == null || sprites.Any(x => string.IsNullOrEmpty(x.AssetGUID))
-                ? sprites = images.Select(asset => new AddressableSprite(asset)).ToList()
-                : sprites;
+        public IReadOnlyList<ImageData> AddressableSprites =>
+            spritesCache == null || spritesCache.Any(x => string.IsNullOrEmpty(x.Image.AssetGUID))
+                ? spritesCache = imageDatas.ToList()
+                : spritesCache;
         
-        public AddressableSprite RandomImage => AddressableSprites.RandomItem();
+        public ImageData RandomImage => AddressableSprites.RandomItem();
         public LocalizedString Dialogue => dialogue;
 
 
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
-            return AddressableSprites;
+            addressableAssets ??= AddressableSprites.Select(x=> x.Image).ToList();
+            
+            return addressableAssets;
         }
 
         public override object Clone()
@@ -43,6 +48,20 @@ namespace Module.InteractiveEditor.Configs
             
             item.SetFieldValue(DialogueKey, dialogue);
             item.SetFieldValue(ImagesKey, images);
+
+            var imageDataClone = new List<ImageData>();
+            
+            if (imageDatas != null)
+            {
+                foreach (var image in imageDatas)
+                {
+                    if (image == null) continue;
+                    
+                    imageDataClone.Add((ImageData)image.Clone());
+                }
+            }
+
+            item.SetFieldValue(ImagesDataKey, imageDataClone);
 
             return item;
         }

@@ -16,6 +16,9 @@ public class EpisodeWindowEditor : EditorWindow
     private EpisodeData episodeData;
 
     private SerializedObject container;
+
+    public Action<ImageData> OnSelectImage;
+    public Action<EpisodeWindowEditor> OnClose;
     
     public void InjectActivation(EpisodeData episodeData)
     {
@@ -39,6 +42,8 @@ public class EpisodeWindowEditor : EditorWindow
         imageListView.itemsRemoved -= OnRemoved;
 
         AssetDatabase.SaveAssets();
+        
+        OnClose?.Invoke(this);
     }
 
     public void CreateGUI()
@@ -106,6 +111,14 @@ public class EpisodeWindowEditor : EditorWindow
     
     private void OnDoubleClickItem(MouseDownEvent evt)
     {
+        if (evt.clickCount == 1)
+        {
+            var item = (ImageDataViewItem)evt.target;
+            
+            if (item == null) return;
+            
+            OnSelectImage?.Invoke(item.ImageData);
+        }
         if (evt.clickCount == 2)
         {
             TryCreateEditorWindow((ImageDataViewItem)evt.target);

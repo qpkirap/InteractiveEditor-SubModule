@@ -13,6 +13,7 @@ namespace Module.InteractiveEditor.Runtime
     {
         private static LazyInject<IRouter> router = new();
 
+        private ImageData imageDataCache;
         private BaseDialogueNode node;
         private AddressableSprite background;
         
@@ -50,13 +51,23 @@ namespace Module.InteractiveEditor.Runtime
             background?.Release();
 
             background = null;
+            imageDataCache = null;
         }
         
         public AddressableSprite GetBackground()
         {
-            background ??= node.RandomImage;
+            var data = GetImageData();
+            
+            background ??= data.Image;
             
             return background;
+        }
+        
+        private ImageData GetImageData()
+        {
+            imageDataCache ??= node.RandomImage;
+
+            return imageDataCache;
         }
         
         public LocalizedString GetText()

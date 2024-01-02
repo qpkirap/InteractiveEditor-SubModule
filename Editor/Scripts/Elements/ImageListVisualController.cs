@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
-using Module.InteractiveEditor.Runtime;
+using Module.InteractiveEditor.Configs;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 
 namespace Module.InteractiveEditor.Editor
@@ -11,22 +10,21 @@ namespace Module.InteractiveEditor.Editor
     public class ImageListVisualController
     {
         private readonly VisualElement visualElement;
-        private readonly CancellationTokenHandler tokenHandler = new();
-        private IReadOnlyCollection<AssetReference> items;
+        private IReadOnlyCollection<ImageData> items;
         
         public ImageListVisualController(VisualElement visualElement)
         {
             this.visualElement = visualElement;
         }
 
-        public void Init(IReadOnlyCollection<AssetReference> items)
+        public void Init(IReadOnlyCollection<ImageData> items)
         {
             this.items = items;
             
             UpdateViewAsync();
         }
 
-        private async UniTask UpdateViewAsync()
+        private void UpdateViewAsync()
         {
             if (visualElement == null) return;
 
@@ -40,14 +38,13 @@ namespace Module.InteractiveEditor.Editor
                 var array = items.Where(x => x != null).ToArray();
                 
                 var random = array[Random.Range(0, array.Length)];
-            
-                var adrSprite = new AddressableSprite(random);
+
+                var adrSprite = random.Image;
 
                 if (adrSprite.RuntimeKeyIsValid)
                 {
-                    var sprite = await adrSprite.LoadAsync(token: tokenHandler.Token);
-                    
-                    if (tokenHandler.Token.IsCancellationRequested) return;
+                    var guid = adrSprite.AssetGUID;
+                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
 
                     if (sprite == null)
                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Module.Utils;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Component = Module.InteractiveEditor.Runtime.Component;
@@ -27,5 +28,28 @@ namespace Module.InteractiveEditor.Configs
             : imageCache;
         
         public IReadOnlyList<CensureData> Censures => censures;
+
+        public override object Clone()
+        {
+            var item = base.Clone();
+            
+            item.SetFieldValue(ImageKey, image);
+
+            var censureClone = new List<CensureData>();
+            
+            if (censures != null)
+            {
+                foreach (var censure in censures)
+                {
+                    if (censure == null) continue;
+                    
+                    censureClone.Add(censure.Clone());
+                }
+            }
+            
+            item.SetFieldValue(CensuresKey, censureClone);
+            
+            return item;
+        }
     }
 }

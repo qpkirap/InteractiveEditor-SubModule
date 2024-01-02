@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Editor;
@@ -11,14 +12,18 @@ public class EpisodesWindowEditor : EditorWindow
 {
     private StoryObject storyObject;
     private ListView listView;
+
+    public Action<EpisodeWindowEditor> OnOpenEpisodeWindow;
     
     [MenuItem("InteractiveEditor/Episodes")]
-    public static void ShowEditor()
+    public static EpisodesWindowEditor ShowEditor()
     {
         EditorsCache.Init();
         
         EpisodesWindowEditor wnd = GetWindow<EpisodesWindowEditor>();
         wnd.titleContent = new GUIContent("EpisodesWindowEditor");
+        
+        return wnd;
     }
 
     public void CreateGUI()
@@ -65,12 +70,14 @@ public class EpisodesWindowEditor : EditorWindow
 
     private void SelectChange(StoryObject storyObject)
     {
-        if (storyObject != null)
-        {
-            this.storyObject = storyObject;
-        }
+        if (listView == null) return;
         
-        if (this.storyObject == null || listView == null) return;
+        this.storyObject = storyObject != null ? storyObject : EditorsCache.CurrentStoryObject;
+
+        if (this.storyObject == null)
+        {
+            return;
+        }
         
         listView.makeItem = null;
         listView.unbindItem = null;
@@ -182,5 +189,7 @@ public class EpisodesWindowEditor : EditorWindow
         window.InjectActivation(viewItem.EpisodeData);
         
         window.Show();
+        
+        OnOpenEpisodeWindow?.Invoke(window);
     }
 }
