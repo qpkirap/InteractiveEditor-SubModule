@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
@@ -61,6 +62,11 @@ namespace Module.InteractiveEditor.Runtime
             background ??= data.Image;
             
             return background;
+        }
+        
+        public IReadOnlyList<CensureData> GetCensures()
+        {
+            return GetImageData().Censures;
         }
         
         private ImageData GetImageData()

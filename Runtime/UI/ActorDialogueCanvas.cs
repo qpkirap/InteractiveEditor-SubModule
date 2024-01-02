@@ -57,5 +57,10 @@ namespace Game.UI.Story
         {
             actorNameController.SetText(actor != null ? actor.Name : new LocalizedString());
         }
+
+        public void SetCensure(IReadOnlyList<CensureData> censures)
+        {
+            
+        }
     }
 }

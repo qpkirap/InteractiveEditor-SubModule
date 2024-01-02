@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Managers.Router;
+using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
 using UniRx;
 using UnityEngine;
@@ -49,6 +50,11 @@ namespace Game.UI.Story
         public void SetText(LocalizedString localizedString)
         {
             textController.SetText(localizedString);
+        }
+
+        public void SetCensure(IReadOnlyList<CensureData> censures)
+        {
+            
         }
     }
 }

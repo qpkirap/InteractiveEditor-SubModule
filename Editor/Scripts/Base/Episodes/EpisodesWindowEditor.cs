@@ -106,9 +106,6 @@ public class EpisodesWindowEditor : EditorWindow
     
     private void BindItem(VisualElement item, int index)
     {
-        item.UnregisterCallback<MouseDownEvent>(OnDoubleClickItem);
-        item.RegisterCallback<MouseDownEvent>(OnDoubleClickItem);
-        
         var viewItem = (EpisodeViewItem)item;
         
         var instance = listView.itemsSource[index] ?? CreateItem();
@@ -117,26 +114,27 @@ public class EpisodesWindowEditor : EditorWindow
         list[index] = instance;
 
         viewItem.InjectData((EpisodeData)instance);
+        
+        viewItem.clicked += () => OnClickItem(viewItem);
     }
     
     private void UnbindItem(VisualElement item, int index)
     {
-        item.UnregisterCallback<MouseDownEvent>(OnDoubleClickItem);
+        var viewItem = (EpisodeViewItem)item;
+        
+        if (viewItem == null) return;
     }
     
-    private void OnDoubleClickItem(MouseDownEvent evt)
+    private void OnClickItem(EpisodeViewItem evt)
     {
-        if (evt.clickCount == 2)
-        {
-            TryCreateEditorWindow((EpisodeViewItem)evt.target);
-        }
+        TryCreateEditorWindow(evt);
     }
     
     private VisualElement MakeItem()
     {
         var item = new EpisodeViewItem();
 
-        item.RegisterCallback<MouseDownEvent>(OnDoubleClickItem);
+        //item.RegisterCallback<MouseDownEvent>(OnClickItem);
 
         return item;
     }

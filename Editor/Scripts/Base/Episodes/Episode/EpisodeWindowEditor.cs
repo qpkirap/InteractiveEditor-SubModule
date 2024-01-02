@@ -96,8 +96,8 @@ public class EpisodeWindowEditor : EditorWindow
     
     private void BindItem(VisualElement item, int index)
     {
-        item.UnregisterCallback<MouseDownEvent>(OnDoubleClickItem);
-        item.RegisterCallback<MouseDownEvent>(OnDoubleClickItem);
+        item.UnregisterCallback<MouseDownEvent>(OnClickItem);
+        item.RegisterCallback<MouseDownEvent>(OnClickItem);
         
         var viewItem = (ImageDataViewItem)item;
         
@@ -109,9 +109,11 @@ public class EpisodeWindowEditor : EditorWindow
         viewItem.InjectData((ImageData)instance);
     }
     
-    private void OnDoubleClickItem(MouseDownEvent evt)
+    private void OnClickItem(MouseDownEvent evt)
     {
-        if (evt.clickCount == 1)
+        Debug.Log(evt.button);
+        
+        if (evt.clickCount == 2 && evt.button == 0)
         {
             var item = (ImageDataViewItem)evt.target;
             
@@ -119,7 +121,7 @@ public class EpisodeWindowEditor : EditorWindow
             
             OnSelectImage?.Invoke(item.ImageData);
         }
-        if (evt.clickCount == 2)
+        if (evt.clickCount == 2 && evt.button == 1)
         {
             TryCreateEditorWindow((ImageDataViewItem)evt.target);
         }
@@ -127,14 +129,14 @@ public class EpisodeWindowEditor : EditorWindow
     
     private void UnbindItem(VisualElement item, int index)
     {
-        item.UnregisterCallback<MouseDownEvent>(OnDoubleClickItem);
+        item.UnregisterCallback<MouseDownEvent>(OnClickItem);
     }
     
     private VisualElement MakeItem()
     {
         var item = new ImageDataViewItem();
 
-        item.RegisterCallback<MouseDownEvent>(OnDoubleClickItem);
+        item.RegisterCallback<MouseDownEvent>(OnClickItem);
 
         return item;
     }

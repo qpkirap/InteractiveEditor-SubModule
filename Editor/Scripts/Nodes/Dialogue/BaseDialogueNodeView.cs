@@ -4,7 +4,6 @@ using Module.InteractiveEditor.Configs;
 using Module.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 
 namespace Module.InteractiveEditor.Editor

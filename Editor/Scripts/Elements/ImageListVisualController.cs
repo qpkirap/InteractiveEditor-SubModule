@@ -21,10 +21,10 @@ namespace Module.InteractiveEditor.Editor
         {
             this.items = items;
             
-            UpdateViewAsync();
+            UpdateView();
         }
 
-        private void UpdateViewAsync()
+        private void UpdateView()
         {
             if (visualElement == null) return;
 

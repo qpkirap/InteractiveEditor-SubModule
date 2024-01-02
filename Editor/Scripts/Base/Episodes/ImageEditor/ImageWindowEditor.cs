@@ -124,11 +124,11 @@ public class ImageWindowEditor : EditorWindow
                 imageField.SetValueWithoutNotify(asset);
             }
 
-            LoadImageAsync(imageData);
+            LoadImage(imageData);
         }
     }
     
-    private async UniTask LoadImageAsync(ImageData imageData)
+    private void LoadImage(ImageData imageData)
     {
         if (imageData == null || imageData.Image is not { RuntimeKeyIsValid: true })
         {
@@ -140,7 +140,8 @@ public class ImageWindowEditor : EditorWindow
             return;
         }
 
-        var sprite = await imageData.Image.LoadAsync();
+        var guid = imageData.Image.AssetGUID;
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
 
         if (sprite != null)
         {

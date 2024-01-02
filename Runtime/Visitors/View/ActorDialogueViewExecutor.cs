@@ -19,6 +19,7 @@ namespace Module.InteractiveEditor.Runtime
             this.uiCanvas.SetImage(executor.GetBackground());
             this.uiCanvas.SetText(executor.GetText());
             this.uiCanvas.SetActor(executor.GetActor());
+            this.uiCanvas.SetCensure(executor.GetCensure());
             
             this.uiCanvas.OnNextButtonPressed.Subscribe(_ => executor.Complete()).AddTo(disp);
         }
