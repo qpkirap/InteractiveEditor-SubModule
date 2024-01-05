@@ -1,21 +1,73 @@
 ﻿using Module.InteractiveEditor.Configs;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class CensorItem : MonoBehaviour
     {
         [SerializeField] private RectTransform rect;
+        
+        [Header("Screen Mode")]
+        [SerializeField] private CanvasScaler.ScreenMatchMode screenMatchMode;
+        [SerializeField][Range(0, 1)] private float screenMatchWidthOrHeight;
 
         private CensureData data;
-        private const int screenResolutionWidth = 768;
-        private const int screenResolutionHeight = 512;
+        private const float screenResolutionWidth = 768;
+        private const float screenResolutionHeight = 512;
+        
+        private float calcHeight; // Match = width
+        private float calcWidth;
         
         public void InjectData(CensureData data)
         {
             this.data = data;
             
+            UpdateScreenSize();
+
             UpdateView();
+        }
+
+        private void UpdateScreenSize()
+        {
+            var scaleFactor = 1f;
+
+            switch (screenMatchMode)
+            {
+                case CanvasScaler.ScreenMatchMode.MatchWidthOrHeight:
+                {
+                    var logWidth = Mathf.Log(Screen.width / screenResolutionWidth, 2);
+                    var logHeight = Mathf.Log(Screen.height / screenResolutionHeight, 2);
+                    var logWeightedAverage = Mathf.Lerp(logWidth, logHeight, screenMatchWidthOrHeight);
+                    scaleFactor = Mathf.Pow(2, logWeightedAverage);
+                    
+                    break;
+                }
+                case CanvasScaler.ScreenMatchMode.Expand:
+                {
+                    scaleFactor = Mathf.Min(Screen.width / screenResolutionWidth,
+                        Screen.height / screenResolutionHeight);
+                    break;
+                }
+                case CanvasScaler.ScreenMatchMode.Shrink:
+                {
+                    scaleFactor = Mathf.Max(Screen.width / screenResolutionWidth,
+                        Screen.height / screenResolutionHeight);
+                    break;
+                }
+            }
+            
+            var testWidth = scaleFactor * screenResolutionWidth;
+            var testHeight = scaleFactor * screenResolutionHeight;
+                    
+            var offsetWidth = testWidth - Screen.width;
+            var offsetHeight = testHeight - Screen.height;
+
+            var ratioWidth = offsetWidth / testWidth;
+            var ratioHeight = offsetHeight / testHeight;
+                    
+            calcWidth = screenResolutionWidth - ratioWidth * screenResolutionWidth;
+            calcHeight = screenResolutionHeight - ratioHeight * screenResolutionHeight;
         }
 
         private void UpdateView()
@@ -36,22 +88,22 @@ namespace Module.InteractiveEditor.Runtime
             var offsetX = 0f;
             var offsetY = 0f;
 
-            if (imageSizeOnScreen.x > screenResolutionWidth)
+            if (imageSizeOnScreen.x > calcWidth)
             {
-                offsetX = (imageSizeOnScreen.x - screenResolutionWidth) / 2;
+                offsetX = (imageSizeOnScreen.x - calcWidth) / 2;
             }
             else
             {
-                offsetX = (screenResolutionWidth - imageSizeOnScreen.x) / 2;
+                offsetX = (calcWidth - imageSizeOnScreen.x) / 2;
             }
 
-            if (imageSizeOnScreen.y > screenResolutionHeight)
+            if (imageSizeOnScreen.y > calcHeight)
             {
-                offsetY = (imageSizeOnScreen.y - screenResolutionHeight) / 2;
+                offsetY = (imageSizeOnScreen.y - calcHeight) / 2;
             }
             else
             {
-                offsetY = (screenResolutionHeight - imageSizeOnScreen.y) / 2;
+                offsetY = (calcHeight - imageSizeOnScreen.y) / 2;
             }
 
             return new Vector2(offsetX, offsetY);
@@ -69,20 +121,20 @@ namespace Module.InteractiveEditor.Runtime
         
         private Vector2 CalculateImageResolution()
         {
-            var screenAspectRatio = (float)screenResolutionWidth / screenResolutionHeight;
+            var screenAspectRatio = calcWidth / calcHeight;
             var imageAspectRatio = data.ImageSize.x / data.ImageSize.y;
         
-            int finalWidth;
-            int finalHeight;
+            float finalWidth;
+            float finalHeight;
         
             if (screenAspectRatio > imageAspectRatio)
             {
-                finalWidth = screenResolutionHeight;
+                finalWidth = calcHeight;
                 finalHeight = Mathf.RoundToInt(finalWidth / imageAspectRatio);
             }
             else
             {
-                finalHeight = screenResolutionWidth;
+                finalHeight = calcWidth;
                 finalWidth = Mathf.RoundToInt(finalHeight * imageAspectRatio);
             }
         
