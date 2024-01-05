@@ -26,7 +26,7 @@ namespace Module.InteractiveEditor.Runtime
             var offset = GetOffsetPosition();
 
             rect.sizeDelta = data.Size * scaleFactor;
-            rect.anchoredPosition = data.Position * scaleFactor + offset;
+            rect.anchoredPosition = (data.Position * scaleFactor + offset) * new Vector2(1, -1);
         }
 
         private Vector2 GetOffsetPosition()
