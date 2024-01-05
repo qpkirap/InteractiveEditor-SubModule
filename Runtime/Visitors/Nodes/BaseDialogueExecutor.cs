@@ -58,6 +58,8 @@ namespace Module.InteractiveEditor.Runtime
         public AddressableSprite GetBackground()
         {
             var data = GetImageData();
+
+            if (data == null) return null;
             
             background ??= data.Image;
             
@@ -66,7 +68,7 @@ namespace Module.InteractiveEditor.Runtime
         
         public IReadOnlyList<CensureData> GetCensures()
         {
-            return GetImageData().Censures;
+            return GetImageData()?.Censures;
         }
         
         private ImageData GetImageData()

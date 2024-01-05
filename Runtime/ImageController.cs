@@ -25,7 +25,12 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask SetImage(AddressableSprite sprite)
         {
-            if (sprite is not { RuntimeKeyIsValid: true }) return;
+            if (sprite is not { RuntimeKeyIsValid: true })
+            {
+                image.sprite = null;
+                
+                return;
+            }
             
             tokenHandler.CancelOperation();
 

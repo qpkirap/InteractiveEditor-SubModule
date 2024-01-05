@@ -15,6 +15,7 @@ namespace Game.UI.Story
     public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
     {
         [SerializeField] private List<ImageController> bgImages;
+        [SerializeField] private CensorContainerController censorController;
         [SerializeField] private TextController textController;
         [SerializeField] private Button nextButton;
 
@@ -40,6 +41,9 @@ namespace Game.UI.Story
             base.OnHide();
             
             bgImages.ForEach(item => item.Disable());
+            
+            censorController.Disable();
+            textController.Disable();
         }
 
         public void SetImage(AddressableSprite sprite)
@@ -54,7 +58,7 @@ namespace Game.UI.Story
 
         public void SetCensure(IReadOnlyList<CensureData> censures)
         {
-            
+            censorController.InjectData(censures);
         }
     }
 }

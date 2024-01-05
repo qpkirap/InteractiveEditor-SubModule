@@ -25,6 +25,8 @@ namespace Module.InteractiveEditor.Runtime
         {
             var data = GetImageData();
             
+            if (data == null) return null;
+            
             background ??= data.Image;
             
             return background;
@@ -32,7 +34,7 @@ namespace Module.InteractiveEditor.Runtime
 
         public IReadOnlyList<CensureData> GetCensure()
         {
-            return GetImageData().Censures;
+            return GetImageData()?.Censures;
         }
 
         private ImageData GetImageData()

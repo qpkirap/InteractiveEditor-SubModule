@@ -104,14 +104,21 @@ public class ImageWindowEditor : EditorWindow
                 if (!string.IsNullOrEmpty(guid))
                 {
                     var assetReference = new AssetReference(guid);
+                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
                     
                     imageData.SetFieldValue(ImageData.ImageKey, assetReference);
                     imageData.SetFieldValue(ImageData.ImageCacheKey, new AddressableSprite(assetReference));
+                    imageData.SetFieldValue(ImageData.ImageSizeKey, sprite != null ? new Vector2(sprite.rect.width, sprite.rect.height) : default);
+
+                    UpdateCensureImageSize();
                 }
                 else
                 {
                     imageData.SetFieldValue<AssetReference>(ImageData.ImageKey, default);
                     imageData.SetFieldValue<AddressableSprite>(ImageData.ImageCacheKey, new());
+                    imageData.SetFieldValue<Vector2>(ImageData.ImageSizeKey, default);
+
+                    UpdateCensureImageSize();
                 }
             }
             
@@ -183,6 +190,8 @@ public class ImageWindowEditor : EditorWindow
                 imageData.AddToList(ImageData.CensuresKey, censureData);
                 
                 currentDraw.InjectData(censureData);
+
+                UpdateCensureImageSize();
             }
             
             var localMousePosition = image.WorldToLocal(evt.mousePosition);
@@ -220,6 +229,18 @@ public class ImageWindowEditor : EditorWindow
             currentDraw.style.height = height;
             
             currentDraw.UpdateData();
+        }
+    }
+
+    private void UpdateCensureImageSize()
+    {
+        if (imageData.Censures == null) return;
+        
+        var size = imageData.GetFieldValue<Vector2>(ImageData.ImageSizeKey);
+        
+        foreach (var imageDataCensure in imageData.Censures)
+        {
+            imageDataCensure.SetFieldValue(CensureData.ImageSizeKey, size);
         }
     }
     

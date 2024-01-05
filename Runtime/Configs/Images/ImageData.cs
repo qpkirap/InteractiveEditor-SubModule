@@ -12,10 +12,12 @@ namespace Module.InteractiveEditor.Configs
     {
         [SerializeField] private AssetReference image;
         [SerializeField] private List<CensureData> censures;
+        [SerializeField] private Vector2 imageSize;
 
         #region Editor
 
         public const string ImageKey = nameof(image);
+        public const string ImageSizeKey = nameof(imageSize);
         public const string ImageCacheKey = nameof(imageCache);
         public const string CensuresKey = nameof(censures);
 
