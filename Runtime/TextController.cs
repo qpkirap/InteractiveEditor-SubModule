@@ -27,11 +27,13 @@ namespace Module.InteractiveEditor.Runtime
                 Disable();
             }
             
-            hideButton.OnClickAsObservable().Subscribe(_ => HideText()).AddTo(disp);
+            if (hideButton != null) hideButton.OnClickAsObservable().Subscribe(_ => HideText()).AddTo(disp);
         }
 
         private void HideText()
         {
+            if (canvasGroup == null) return;
+            
             sequence?.Complete(true);
             
             sequence = DOTween.Sequence();
