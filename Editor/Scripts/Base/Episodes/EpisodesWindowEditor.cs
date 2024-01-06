@@ -87,7 +87,7 @@ public class EpisodesWindowEditor : EditorWindow
 
         listView.showAddRemoveFooter = false;
 
-        if (storyObject == null)
+        if (this.storyObject == null)
         {
             listView.Clear();
             return;
@@ -98,7 +98,7 @@ public class EpisodesWindowEditor : EditorWindow
         listView.makeItem = MakeItem;
         listView.bindItem = BindItem;
         listView.unbindItem = UnbindItem;
-        listView.itemsSource = storyObject.GetFieldValue<List<EpisodeData>>(StoryObject.EpisodeDatasKey);
+        listView.itemsSource = this.storyObject.GetFieldValue<List<EpisodeData>>(StoryObject.EpisodeDatasKey);
         listView.itemsRemoved += OnRemoved;
 
         listView.Rebuild();

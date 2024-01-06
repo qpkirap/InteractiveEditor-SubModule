@@ -23,7 +23,7 @@ namespace Module.InteractiveEditor.Configs
 
         #endregion
 
-        private AddressableSprite imageCache;
+        [NonSerialized] private AddressableSprite imageCache;
 
         public AddressableSprite Image => imageCache == null || string.IsNullOrEmpty(imageCache.AssetGUID) ?
             imageCache = image != null ? new AddressableSprite(image) : default

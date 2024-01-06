@@ -115,7 +115,7 @@ public class ImageWindowEditor : EditorWindow
                 else
                 {
                     imageData.SetFieldValue<AssetReference>(ImageData.ImageKey, default);
-                    imageData.SetFieldValue<AddressableSprite>(ImageData.ImageCacheKey, new());
+                    imageData.SetFieldValue<AddressableSprite>(ImageData.ImageCacheKey, new(default));
                     imageData.SetFieldValue<Vector2>(ImageData.ImageSizeKey, default);
 
                     UpdateCensureImageSize();
