@@ -37,6 +37,13 @@ namespace Game.UI.Story
             nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
         }
 
+        public override async UniTask PostInit()
+        {
+            await base.PostInit();
+            
+            await textController.Init();
+        }
+
         protected override void OnHide()
         {
             base.OnHide();

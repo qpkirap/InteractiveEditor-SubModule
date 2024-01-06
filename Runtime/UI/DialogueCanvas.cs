@@ -25,7 +25,7 @@ namespace Game.UI.Story
         public override async UniTask Init()
         {
             await base.Init();
-
+            
             await bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
             {
                 await item.Init();
@@ -34,6 +34,13 @@ namespace Game.UI.Story
             if (disp.Count > 0) disp.Clear();
 
             nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
+        }
+        
+        public override async UniTask PostInit()
+        {
+            await base.PostInit();
+            
+            await textController.Init();
         }
 
         protected override void OnHide()
