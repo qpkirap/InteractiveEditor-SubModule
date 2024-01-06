@@ -11,7 +11,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseDialogueNode : BaseNode<BaseDialogueExecutor>
     {
-        [SerializeField] private List<ImageData> imageDatas = new();
+        [HideInInspector][SerializeField] private List<ImageData> imageDatas = new();
         [SerializeField] private LocalizedString dialogue;
 
         #region Editor
