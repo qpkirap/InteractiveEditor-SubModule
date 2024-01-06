@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -9,6 +10,8 @@ namespace Module.InteractiveEditor.Runtime
     {
         [SerializeField] private TMP_Text text;
 
+        private readonly CancellationTokenHandler token = new();
+
         public async UniTask Init()
         {
         }
@@ -17,9 +20,11 @@ namespace Module.InteractiveEditor.Runtime
         {
         }
 
-        public void SetText(LocalizedString localizedString)
+        public async UniTask SetText(LocalizedString localizedString)
         {
-            if(text == null) return;
+            if (text == null) return;
+            
+            token.CancelOperation();
 
             if (localizedString.IsEmpty)
             {
@@ -28,7 +33,21 @@ namespace Module.InteractiveEditor.Runtime
             else
             {
                 gameObject.SetActive(true);
-                text.text = localizedString.GetLocalizedString();
+
+                try
+                {
+                    text.text = await localizedString.GetLocalizedStringAsync(token.Token);
+
+                    if (token.Token.IsCancellationRequested)
+                    {
+                        text.text = string.Empty;
+                    }
+                }
+                catch (Exception e)
+                {
+                    //ignore
+                }
+
             }
         }
     }
