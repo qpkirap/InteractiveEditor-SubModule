@@ -11,14 +11,12 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseDialogueNode : BaseNode<BaseDialogueExecutor>
     {
-        [SerializeField] private List<AssetReference> images = new();
         [SerializeField] private List<ImageData> imageDatas = new();
         [SerializeField] private LocalizedString dialogue;
 
         #region Editor
 
         private const string DialogueKey = nameof(dialogue);
-        public const string ImagesKey = nameof(images);
         public const string ImagesDataKey = nameof(imageDatas);
 
         #endregion
@@ -47,7 +45,6 @@ namespace Module.InteractiveEditor.Configs
             var item =  base.Clone();
             
             item.SetFieldValue(DialogueKey, dialogue);
-            item.SetFieldValue(ImagesKey, images);
 
             var imageDataClone = new List<ImageData>();
             
