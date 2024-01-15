@@ -1,4 +1,6 @@
-﻿using Module.InteractiveEditor.Configs;
+﻿using System.Linq;
+using Module.InteractiveEditor.Configs;
+using UnityEngine;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -6,22 +8,23 @@ namespace Module.InteractiveEditor.Runtime
     {
         public BaseNode GetNext(AnswerChoiceDialogueNode baseNode)
         {
-            throw new System.NotImplementedException();
+            if (baseNode.ChildrenNodes == null || !baseNode.ChildrenNodes.Any()) return null;
+            
+            return baseNode.ChildrenNodes[Random.Range(0, baseNode.ChildrenNodes.Count())];
         }
 
         public ExecuteResult Execute(AnswerChoiceDialogueNode baseNode)
         {
-            throw new System.NotImplementedException();
+            return ExecuteResult.SuccessState;
         }
 
         public ExecuteResult Cancel(AnswerChoiceDialogueNode baseNode)
         {
-            throw new System.NotImplementedException();
+            return ExecuteResult.SuccessState;
         }
 
         public void ResetExecutor(AnswerChoiceDialogueNode baseNode)
         {
-            throw new System.NotImplementedException();
         }
     }
 }
