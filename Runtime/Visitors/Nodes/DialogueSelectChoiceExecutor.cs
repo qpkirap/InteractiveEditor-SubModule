@@ -5,6 +5,7 @@ using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
@@ -13,8 +14,11 @@ namespace Module.InteractiveEditor.Runtime
     {
         private static LazyInject<IRouter> router;
         
-        private List<LocalizedString> answersCache;
+        private AddressableSprite background;
+        private ImageData imageDataCache;
         private SelectChoiceDialogueNode node;
+        
+        private List<LocalizedString> answersCache;
         
         private int selectedIndex = -1;
         private bool isOpenCanvas;
@@ -32,6 +36,34 @@ namespace Module.InteractiveEditor.Runtime
             return answersCache;
         }
         
+        public AddressableSprite GetBackground()
+        {
+            var data = GetImageData();
+
+            if (data == null) return null;
+            
+            background ??= data.Image;
+            
+            return background;
+        }
+        
+        private ImageData GetImageData()
+        {
+            imageDataCache ??= node.RandomImage;
+
+            return imageDataCache;
+        }
+        
+        public IReadOnlyList<CensureData> GetCensures()
+        {
+            return GetImageData()?.Censures;
+        }
+
+        public LocalizedString GetText()
+        {
+            return node.Dialogue;
+        }
+
         public BaseNode GetNext(SelectChoiceDialogueNode baseNode)
         {
             if (baseNode.ChildrenNodes == null || baseNode.ChildrenNodes.Count == 0) return null;

@@ -12,6 +12,11 @@ using UnityEngine.UI;
 
 namespace Game.UI.Story
 {
+    public class DialogueCanvas<TViewNodeExecute> : DialogueCanvas
+        where TViewNodeExecute : IViewNodeExecute
+    {
+    }
+    
     public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
     {
         [SerializeField] private List<ImageController> bgImages;
@@ -33,7 +38,8 @@ namespace Game.UI.Story
             
             if (disp.Count > 0) disp.Clear();
 
-            nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
+            if (nextButton != null)
+                nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
         }
         
         public override async UniTask PostInit()
