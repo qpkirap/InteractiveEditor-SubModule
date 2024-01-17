@@ -22,6 +22,11 @@ namespace Module.InteractiveEditor.Runtime
         
         private int selectedIndex = -1;
         private bool isOpenCanvas;
+        
+        public void SetSelectedIndex(int index)
+        {
+            selectedIndex = index;
+        }
 
         public IReadOnlyList<LocalizedString> GetAnswers()
         {

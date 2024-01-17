@@ -19,7 +19,14 @@ namespace Module.InteractiveEditor.Runtime
             this.uiCanvas.SetImage(executor.GetBackground());
             this.uiCanvas.SetText(executor.GetText());
             this.uiCanvas.SetCensure(executor.GetCensures());
-            this.uiCanvas.SetChoices(executor.GetAnswers());
+            this.uiCanvas.SetChoices(executor.GetAnswers(), out var select);
+            
+            select?.Subscribe(OnSelectChoice).AddTo(disp);
+        }
+        
+        private void OnSelectChoice(int index)
+        {
+            executor.SetSelectedIndex(index);
         }
         
         public void Reset()

@@ -9,21 +9,17 @@ namespace Game.UI.Story
     public class DialogueSelectChoiceCanvas : DialogueCanvas<DialogueSelectChoiceViewExecutor>
     {
         [SerializeField] private ChoiceContainer choiceContainer;
-        
-        public IObservable<LocalizedString> OnChoice
-        {
-            get
-            {
-                return choiceContainer.OnChoice;
-            }
-        }
 
-        public void SetChoices(IReadOnlyList<LocalizedString> choices)
+        public void SetChoices(IReadOnlyList<LocalizedString> choices, out IObservable<int> selected)
         {
             if (choiceContainer != null)
             {
                 choiceContainer.SetChoices(choices);
+
+                selected = choiceContainer.OnChoicePressed;
             }
+            
+            selected = null;
         }
 
         protected override void OnHide()

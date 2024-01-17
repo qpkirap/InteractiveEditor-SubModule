@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Pool;
@@ -13,6 +15,8 @@ namespace Module.InteractiveEditor.Runtime
 
         private IObjectPool<ChoiceItem> pool;
         private readonly List<ChoiceItem> activeItems = new();
+        
+        public Subject<int> OnChoicePressed { get; } = new();
 
         public async UniTask Init()
         {
@@ -25,13 +29,18 @@ namespace Module.InteractiveEditor.Runtime
                 },
                 item =>
                 {
-                    item.Disable();
+                    item.Dispose();
                     item.gameObject.SetActive(false);
                     activeItems.Remove(item);
                 });
         }
 
         public void Disable()
+        {
+            ClearItems();
+        }
+
+        private void ClearItems()
         {
             foreach (var item in activeItems)
             {
@@ -43,13 +52,18 @@ namespace Module.InteractiveEditor.Runtime
 
         public void SetChoices(IReadOnlyList<LocalizedString> choices)
         {
+            ClearItems();
+            
             if (choices is { Count: 0 }) return;
 
-            foreach (var text in choices)
+            for (var i = 0; i < choices.Count; i++)
             {
+                var text = choices[i];
                 var item = pool.Get();
+
+                item.InjectData(i, text);
                 
-                item.SetText(text);
+                item.OnClickAsObservable.Subscribe(index => OnChoicePressed.OnNext(index)).AddTo(item);
             }
         }
     }
