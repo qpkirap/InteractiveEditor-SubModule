@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -12,14 +11,17 @@ namespace Module.InteractiveEditor.Runtime
     {
         [SerializeField] private Transform container;
         [SerializeField] private ChoiceItem prefab;
-
+        
         private IObjectPool<ChoiceItem> pool;
+        private readonly CompositeDisposable disp = new();
         private readonly List<ChoiceItem> activeItems = new();
         
         public Subject<int> OnChoicePressed { get; } = new();
 
         public async UniTask Init()
         {
+            ClearItems();
+            
             pool ??= new ObjectPool<ChoiceItem>(
                 () => Instantiate(prefab, container), 
                 item =>
@@ -29,7 +31,8 @@ namespace Module.InteractiveEditor.Runtime
                 },
                 item =>
                 {
-                    item.Dispose();
+                    item.Disable();
+                    
                     item.gameObject.SetActive(false);
                     activeItems.Remove(item);
                 });
@@ -42,7 +45,9 @@ namespace Module.InteractiveEditor.Runtime
 
         private void ClearItems()
         {
-            foreach (var item in activeItems)
+            disp.Clear();
+            
+            foreach (var item in activeItems.ToArray())
             {
                 pool.Release(item);
             }
@@ -63,7 +68,7 @@ namespace Module.InteractiveEditor.Runtime
 
                 item.InjectData(i, text);
                 
-                item.OnClickAsObservable.Subscribe(index => OnChoicePressed.OnNext(index)).AddTo(item);
+                item.OnClickAsObservable.Subscribe(index => OnChoicePressed.OnNext(index)).AddTo(disp);
             }
         }
     }

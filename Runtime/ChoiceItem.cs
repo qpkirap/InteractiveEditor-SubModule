@@ -8,23 +8,15 @@ using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class ChoiceItem : MonoBehaviour, IDisposable
+    public class ChoiceItem : MonoBehaviour
     {
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text text;
-
-        private readonly CompositeDisposable disp = new();
+        
         private readonly CancellationTokenHandler token = new();
         private int index = -1;
         
         public IObservable<int> OnClickAsObservable => button.OnClickAsObservable().Select(_ => index);
-        
-        public void Dispose()
-        {
-            disp.Clear();
-            
-            Disable();
-        }
 
         public void InjectData(int index, LocalizedString localizedString)
         {
@@ -34,8 +26,6 @@ namespace Module.InteractiveEditor.Runtime
         
         public void Disable()
         {
-            disp.Clear();
-            
             token.CancelOperation();
             
             index = -1;

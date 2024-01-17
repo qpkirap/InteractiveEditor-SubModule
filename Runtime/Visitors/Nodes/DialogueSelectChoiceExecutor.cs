@@ -12,7 +12,7 @@ namespace Module.InteractiveEditor.Runtime
 {
     public class DialogueSelectChoiceExecutor : INodeExecute<SelectChoiceDialogueNode>
     {
-        private static LazyInject<IRouter> router;
+        private static LazyInject<IRouter> router = new();
         
         private AddressableSprite background;
         private ImageData imageDataCache;
@@ -89,7 +89,10 @@ namespace Module.InteractiveEditor.Runtime
             
             if (!isOpenCanvas)
             {
-                router.Value.GoTo(RoutKeys.baseDialogue);
+                router.Value.GoTo(RoutKeys.dialogueSelectChoice, routArgs: new (string, object)[]
+                {
+                    (INodeExecute.NodeExecutorKey, this)
+                });
                 
                 isOpenCanvas = true;
             }

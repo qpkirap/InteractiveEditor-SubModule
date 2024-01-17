@@ -14,7 +14,7 @@ namespace Module.InteractiveEditor.Editor
         }
 
         public override Type InputPortType => typeof(AnswerChoiceDialogueNodeView);
-        public override Type OutputPortType { get; }
+        public override Type OutputPortType => typeof(bool);
         public override Port.Capacity InputPortCapacity => Port.Capacity.Single;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Single;
         public override string GetClassTag => "dialogue";

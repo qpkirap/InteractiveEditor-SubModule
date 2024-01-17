@@ -16,7 +16,7 @@ namespace Module.InteractiveEditor.Runtime
 
             viewModel.Reset();
 
-            var model = router.GetRoutArgData<INodeExecute>(INodeExecute.NodeExecutorKey);
+            var model = router.Value.GetRoutArgData<INodeExecute>(INodeExecute.NodeExecutorKey);
             
             viewModel.Inject(model, this);
         }

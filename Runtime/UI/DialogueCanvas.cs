@@ -12,11 +12,6 @@ using UnityEngine.UI;
 
 namespace Game.UI.Story
 {
-    public class DialogueCanvas<TViewNodeExecute> : DialogueCanvas
-        where TViewNodeExecute : IViewNodeExecute
-    {
-    }
-    
     public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
     {
         [SerializeField] private List<ImageController> bgImages;
