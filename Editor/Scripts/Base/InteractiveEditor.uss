@@ -127,3 +127,7 @@ GridBackground {
 .action #input {
     background-color: rgb(226, 71, 39);
 }
+
+.random #input {
+    background-color: rgb(254, 255, 0);
+}
