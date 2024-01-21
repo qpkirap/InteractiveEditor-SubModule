@@ -60,8 +60,6 @@ namespace Module.InteractiveEditor.Runtime
             if (node == null) return null;
 
             var calcNode = node;
-            
-            if (calcNode != null) Debug.Log($"Execute: {calcNode.Id}");
 
             var executor = executes[calcNode.GetExecutorType()];
             
@@ -83,8 +81,6 @@ namespace Module.InteractiveEditor.Runtime
                 }
                 case ExecuteResult.NoneState:
                 {
-                    Debug.LogError($"None state {calcNode.Id}");
-                    
                     return calcNode;
                 }
             }
