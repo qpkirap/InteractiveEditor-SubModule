@@ -1,12 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
+using Module.InteractiveEditor.Saves;
 using Module.Utils.Configs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Module.InteractiveEditor.Configs
 {
+    public abstract class BaseNode<TNodeExecutor, TSaveNodeItem> : BaseNode
+        where TNodeExecutor : INodeExecute
+        where TSaveNodeItem : SaveNodeItem
+    {
+        public override Type GetSaveItemType()
+        {
+            return typeof(TSaveNodeItem);
+        }
+        
+        public override Type GetExecutorType()
+        {
+            return typeof(TNodeExecutor);
+        }
+    }
+    
     public abstract class BaseNode<T> : BaseNode
         where T : INodeExecute
     {
@@ -38,6 +54,11 @@ namespace Module.InteractiveEditor.Configs
 
         public abstract IReadOnlyCollection<IAddressableAsset> GetAssets();
         public abstract Type GetExecutorType();
+
+        public virtual Type GetSaveItemType()
+        {
+            return default;
+        }
 
         public override object Clone()
         {
