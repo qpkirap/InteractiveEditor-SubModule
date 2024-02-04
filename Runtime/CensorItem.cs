@@ -16,19 +16,25 @@ namespace Module.InteractiveEditor.Runtime
         private const float screenResolutionWidth = 768;
         private const float screenResolutionHeight = 512;
         
-        private float calcHeight; // Match = width
-        private float calcWidth;
-        
         public void InjectData(CensureData data)
         {
             this.data = data;
             
-            UpdateScreenSize();
-
             UpdateView();
         }
+        
+        private void UpdateView()
+        {
+            if (data == null) return;
 
-        private void UpdateScreenSize()
+            var scaleFactor = GetImageScaleFactorSize();
+            var offset = GetOffsetPosition();
+
+            rect.sizeDelta = data.Size * scaleFactor;
+            rect.anchoredPosition = (data.Position * scaleFactor + offset) * new Vector2(1, -1);
+        }
+
+        private Vector2 GetScreenSize()
         {
             var scaleFactor = 1f;
 
@@ -65,53 +71,45 @@ namespace Module.InteractiveEditor.Runtime
 
             var ratioWidth = offsetWidth / testWidth;
             var ratioHeight = offsetHeight / testHeight;
-                    
-            calcWidth = screenResolutionWidth - ratioWidth * screenResolutionWidth;
-            calcHeight = screenResolutionHeight - ratioHeight * screenResolutionHeight;
-        }
+            
+            var calcWidth = screenResolutionWidth - ratioWidth * screenResolutionWidth;
+            var calcHeight = screenResolutionHeight - ratioHeight * screenResolutionHeight;
 
-        private void UpdateView()
-        {
-            if (data == null) return;
-
-            var scaleFactor = GetScaleFactorSize();
-            var offset = GetOffsetPosition();
-
-            rect.sizeDelta = data.Size * scaleFactor;
-            rect.anchoredPosition = (data.Position * scaleFactor + offset) * new Vector2(1, -1);
+            return new Vector2(calcWidth, calcHeight);
         }
 
         private Vector2 GetOffsetPosition()
         {
-            var imageSizeOnScreen = CalculateImageResolution();
+            var screenSize = GetScreenSize();
+            var imageSizeOnScreen = GetImageResolution();
 
             var offsetX = 0f;
             var offsetY = 0f;
 
-            if (imageSizeOnScreen.x > calcWidth)
+            if (imageSizeOnScreen.x > screenSize.x)
             {
-                offsetX = (imageSizeOnScreen.x - calcWidth) / 2;
+                offsetX = (imageSizeOnScreen.x - screenSize.x) / 2;
             }
             else
             {
-                offsetX = (calcWidth - imageSizeOnScreen.x) / 2;
+                offsetX = (screenSize.x - imageSizeOnScreen.x) / 2;
             }
 
-            if (imageSizeOnScreen.y > calcHeight)
+            if (imageSizeOnScreen.y > screenSize.y)
             {
-                offsetY = (imageSizeOnScreen.y - calcHeight) / 2;
+                offsetY = (imageSizeOnScreen.y - screenSize.y) / 2;
             }
             else
             {
-                offsetY = (calcHeight - imageSizeOnScreen.y) / 2;
+                offsetY = (screenSize.y - imageSizeOnScreen.y) / 2;
             }
 
             return new Vector2(offsetX, offsetY);
         }
 
-        private Vector2 GetScaleFactorSize()
+        private Vector2 GetImageScaleFactorSize()
         {
-            var imageSizeOnScreen = CalculateImageResolution();
+            var imageSizeOnScreen = GetImageResolution();
             
             var scaleX = imageSizeOnScreen.x / data.ImageSize.x;
             var scaleY = imageSizeOnScreen.y / data.ImageSize.y;
@@ -119,9 +117,11 @@ namespace Module.InteractiveEditor.Runtime
             return new Vector2(scaleX, scaleY);
         }
         
-        private Vector2 CalculateImageResolution()
+        private Vector2 GetImageResolution()
         {
-            var screenAspectRatio = calcWidth / calcHeight;
+            var screenSize = GetScreenSize();
+
+            var screenAspectRatio = screenResolutionWidth / screenResolutionHeight;
             var imageAspectRatio = data.ImageSize.x / data.ImageSize.y;
         
             float finalWidth;
@@ -129,12 +129,12 @@ namespace Module.InteractiveEditor.Runtime
         
             if (screenAspectRatio > imageAspectRatio)
             {
-                finalWidth = calcHeight;
+                finalWidth = screenSize.x;
                 finalHeight = Mathf.RoundToInt(finalWidth / imageAspectRatio);
             }
             else
             {
-                finalHeight = calcWidth;
+                finalHeight = screenSize.y;
                 finalWidth = Mathf.RoundToInt(finalHeight * imageAspectRatio);
             }
         
