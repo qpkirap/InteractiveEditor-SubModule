@@ -10,6 +10,11 @@ namespace Module.InteractiveEditor.Runtime
     public class StoryConfigs : BaseConfig
     {
         [SerializeField] private List<StoryConfig> storyObjects = new();
+        [SerializeField] private List<string> gameScenesStory = new();
+        [SerializeField] private List<string> danceScenesStory = new();
+        
+        public IReadOnlyList<string> GameScenesStory => gameScenesStory;
+        public IReadOnlyList<string> DanceScenesStory => danceScenesStory;
         
         public IReadOnlyList<StoryConfig> StoryObjects => storyObjects;
     }

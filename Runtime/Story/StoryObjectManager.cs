@@ -38,6 +38,15 @@ namespace Module.InteractiveEditor.Runtime
             currentStoryObject.Value = storyConfigs.StoryObjects?.FirstOrDefault(x => x.StoryObject != null)?.StoryObject;
         }
         
+        public void SetCurrentSelectedStoryObject(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return;
+            
+            var storyObject = storyConfigs.StoryObjects.FirstOrDefault(x => x.StoryObject.Id.Equals(id));
+            
+            currentStoryObject.Value = storyObject?.StoryObject;
+        }
+        
         public IStoryTask GetTask(StoryObject obj)
         {
             if (obj == null) return null;
