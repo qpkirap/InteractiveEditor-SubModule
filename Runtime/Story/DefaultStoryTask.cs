@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,15 +18,21 @@ namespace Module.InteractiveEditor.Runtime
         
         public StoryObject StoryObject => storyObjectCache;
         
-        public void Init(StoryObject storyObject)
+        public async UniTask Init(StoryObject storyObject)
         {
-           if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
+            if (currentNodeCache != null)
+            {
+                await UniTask.WaitUntil(() => currentNodeCache == default 
+                                              || currentNodeCache.ExecuteResult != ExecuteResult.RunningState);
+            }
+            
+            if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
             
             storyObjectCache = storyObject.Clone();
-
+            
             InitExecutors(storyObjectCache);
             
-            currentNodeCache ??= GetStartNode();
+            currentNodeCache = GetStartNode();
             
             preloadManager.PrepareNode(currentNodeCache);
         }
@@ -115,7 +122,7 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (StoryObject != null)
             {
-                Object.DestroyImmediate(StoryObject);
+                Object.DestroyImmediate(StoryObject, true);
             }
         }
     }

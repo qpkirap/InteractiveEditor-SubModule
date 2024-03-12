@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
 using Provider.Runtime;
@@ -58,7 +59,7 @@ namespace Module.InteractiveEditor.Runtime
     public interface IStoryTask : IDisposable
     {
         StoryObject StoryObject { get; }
-        void Init(StoryObject storyObject);
+        UniTask Init(StoryObject storyObject);
         void Execute();
     }
 }

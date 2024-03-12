@@ -30,7 +30,7 @@ namespace Module.InteractiveEditor.Editor
         {
         }
 
-        private void OnGUI()
+        protected virtual void OnGUI()
         {
             EditorGUILayout.PropertyField(titleProperty);
             

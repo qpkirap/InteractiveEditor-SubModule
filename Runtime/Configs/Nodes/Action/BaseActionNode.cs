@@ -9,7 +9,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseActionNode : BaseNode<ActionExecutor>
     {
-        [SerializeField] [HideInInspector] private List<ActionTaskComponent> tasks;
+        [SerializeField] [HideInInspector] private List<ActionTaskComponent> tasks = new();
 
         private IUniTaskAsyncEnumerable<ActionTaskComponent> collection;
 
