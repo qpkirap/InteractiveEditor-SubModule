@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
@@ -17,23 +16,17 @@ namespace Game.UI.Story
         [SerializeField] private TextController textController;
         [SerializeField] private ChoiceContainer choiceContainer;
 
-        public override async UniTask Init()
+        protected override void OnShow()
         {
-            await bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
+            base.OnShow();
+            
+            bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
             {
                 await item.Init();
             });
-
-            await choiceContainer.Init();
             
-            await base.Init();
-        }
-        
-        public override async UniTask PostInit()
-        {
-            await base.PostInit();
-            
-            await textController.Init();
+            choiceContainer.Init();
+            textController.Init();
         }
         
         public void SetImage(AddressableSprite sprite)

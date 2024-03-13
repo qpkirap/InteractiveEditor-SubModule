@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Managers.Router;
 using Module.InteractiveEditor.Configs;
@@ -22,28 +21,22 @@ namespace Game.UI.Story
 
         public Subject<UICanvas> OnNextButtonPressed { get; } = new Subject<UICanvas>();
 
-
-        public override async UniTask Init()
+        protected override void OnShow()
         {
-            await base.Init();
-
-            await bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
+            base.OnShow();
+            
+            bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
             {
                 await item.Init();
             });
+            
+            textController.Init();
             
             if (disp.Count > 0) disp.Clear();
 
             nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
         }
-
-        public override async UniTask PostInit()
-        {
-            await base.PostInit();
-            
-            await textController.Init();
-        }
-
+        
         protected override void OnHide()
         {
             base.OnHide();
