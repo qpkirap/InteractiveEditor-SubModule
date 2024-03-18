@@ -19,16 +19,22 @@ namespace Module.InteractiveEditor.Runtime
         public ExecuteResult Execute(BaseActionNode baseNode)
         {
             if (baseNode.Tasks == null || !baseNode.Tasks.Any()) return ExecuteResult.SuccessState;
-
+            
             cancelTokenHandler?.CancelOperation();
+            
+            Debug.Log($"{nameof(ActionExecutor)} TryExecute {baseNode.Id}");
             
             if (executeTask is { Status: UniTaskStatus.Succeeded })
             {
+                Debug.Log($"{nameof(ActionExecutor)} status {executeTask.Value.Status}");
+                
                 return ExecuteResult.SuccessState;
             }
 
             if (executeTask == null || executeTask.HasValue && executeTask.Value.Status != UniTaskStatus.Pending)
             {
+                Debug.Log($"{nameof(ActionExecutor)} ");
+                
                 executeTask = ExecuteOrCancelAsync(baseNode);
 
                 return ExecuteResult.RunningState;
@@ -86,8 +92,18 @@ namespace Module.InteractiveEditor.Runtime
             {
                 await collection.ForEachAwaitAsync(async item =>
                 {
-                    if (!isCancel) await item.Execute(executeTokenHandler.Token);
-                    else await item.Undo(executeTokenHandler.Token);
+                    if (!isCancel)
+                    {
+                        Debug.Log($"Execute action {item.Id}");
+                        
+                        await item.Execute(executeTokenHandler.Token);
+                    }
+                    else
+                    {
+                        Debug.Log($"Cancel action {item.Id}");
+                        
+                        await item.Undo(executeTokenHandler.Token);
+                    }
 
                     executeTokenHandler.Token.ThrowIfCancellationRequested();
 

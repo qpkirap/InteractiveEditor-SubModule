@@ -25,6 +25,8 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask SetImage(AddressableSprite sprite)
         {
+            Debug.Log($"Try set image {sprite}");
+            
             if (sprite is not { RuntimeKeyIsValid: true })
             {
                 image.sprite = null;
@@ -38,7 +40,12 @@ namespace Module.InteractiveEditor.Runtime
             
             if (tokenHandler.Token.IsCancellationRequested || load == null) return;
 
-            if (image != null) image.sprite = load;
+            if (image != null)
+            {
+                Debug.Log($"Set image {load.name}");
+                
+                image.sprite = load;
+            }
         }
     }
 }

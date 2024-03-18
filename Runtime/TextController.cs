@@ -69,6 +69,8 @@ namespace Module.InteractiveEditor.Runtime
                 try
                 {
                     text.text = await localizedString.GetLocalizedStringAsync(token.Token);
+                    
+                    Debug.Log($"SetText: {text.text}");
 
                     if (token.Token.IsCancellationRequested)
                     {
@@ -77,7 +79,7 @@ namespace Module.InteractiveEditor.Runtime
                 }
                 catch (Exception e)
                 {
-                    //ignore
+                    Debug.LogError(e);
                 }
             }
         }

@@ -59,6 +59,8 @@ namespace Module.InteractiveEditor.Runtime
         {
             currentNodeCache = ExecuteNode(currentNodeCache);
             
+            Debug.Log($"Execute Node {currentNodeCache?.Id}");
+            
             preloadManager.PrepareNode(currentNodeCache);
         }
 
