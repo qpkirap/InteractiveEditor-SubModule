@@ -46,8 +46,14 @@ namespace Module.InteractiveEditor.Runtime
                 if (node == null) continue;
                 
                 var executorType = node.GetExecutorType();
-            
-                if (executorType == null || executes.ContainsKey(executorType)) continue;
+           
+                if (executorType == null) continue;
+
+                if (executes.TryGetValue(executorType, out var execute))
+                {
+                    execute.ResetExecutor(node);
+                    continue;
+                }
                 
                 var executor = (INodeExecute)Activator.CreateInstance(executorType);
             
