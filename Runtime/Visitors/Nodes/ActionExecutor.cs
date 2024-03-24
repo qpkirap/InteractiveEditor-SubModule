@@ -22,19 +22,13 @@ namespace Module.InteractiveEditor.Runtime
             
             cancelTokenHandler?.CancelOperation();
             
-            Debug.Log($"{nameof(ActionExecutor)} TryExecute {baseNode.Id}");
-            
             if (executeTask is { Status: UniTaskStatus.Succeeded })
             {
-                Debug.Log($"{nameof(ActionExecutor)} status {executeTask.Value.Status}");
-                
                 return ExecuteResult.SuccessState;
             }
 
             if (executeTask == null || executeTask.HasValue && executeTask.Value.Status != UniTaskStatus.Pending)
             {
-                Debug.Log($"{nameof(ActionExecutor)} ");
-                
                 executeTask = ExecuteOrCancelAsync(baseNode);
 
                 return ExecuteResult.RunningState;
@@ -94,14 +88,10 @@ namespace Module.InteractiveEditor.Runtime
                 {
                     if (!isCancel)
                     {
-                        Debug.Log($"Execute action {item.Id}");
-                        
                         await item.Execute(executeTokenHandler.Token);
                     }
                     else
                     {
-                        Debug.Log($"Cancel action {item.Id}");
-                        
                         await item.Undo(executeTokenHandler.Token);
                     }
 

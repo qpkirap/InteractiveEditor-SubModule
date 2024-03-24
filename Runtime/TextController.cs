@@ -70,8 +70,6 @@ namespace Module.InteractiveEditor.Runtime
                 {
                     text.text = await localizedString.GetLocalizedStringAsync(token.Token);
                     
-                    Debug.Log($"SetText: {text.text}");
-
                     if (token.Token.IsCancellationRequested)
                     {
                         text.text = string.Empty;
