@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Linq;
+using DepedencyInjection;
 using Managers.Router;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Runtime;
@@ -8,6 +9,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 using UnityEngine.UI;
+using YG.MenuNav;
 
 namespace Game.UI.Story
 {
@@ -17,6 +19,8 @@ namespace Game.UI.Story
         [SerializeField] private CensorContainerController censorController;
         [SerializeField] private TextController textController;
         [SerializeField] private Button nextButton;
+
+        private readonly LazyInject<MenuNavigation> menuNavigation = new();
 
         public Subject<UICanvas> OnNextButtonPressed { get; } = new Subject<UICanvas>();
 
@@ -35,6 +39,8 @@ namespace Game.UI.Story
                 nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
             
             textController.Init();
+            
+            menuNavigation.Value.SelectButton(nextButton);
         }
         
         protected override void OnHide()
