@@ -4,10 +4,10 @@ using UniRx;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class UICanvas<TViewNode> : Managers.Router.UICanvas
-        where TViewNode : IViewNodeExecute
+    public class UICanvas<TIViewNodeExecutor> : Managers.Router.UICanvas
+        where TIViewNodeExecutor : IViewNodeExecute
     {
-        protected TViewNode viewModel;
+        protected TIViewNodeExecutor viewModel;
         
         protected readonly CompositeDisposable disp = new();
         
@@ -15,7 +15,7 @@ namespace Module.InteractiveEditor.Runtime
         {
             await base.Init();
 
-            viewModel ??= Activator.CreateInstance<TViewNode>();
+            viewModel ??= Activator.CreateInstance<TIViewNodeExecutor>();
 
             viewModel.Reset();
 

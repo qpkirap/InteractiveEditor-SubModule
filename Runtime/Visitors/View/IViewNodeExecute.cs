@@ -9,15 +9,15 @@ namespace Module.InteractiveEditor.Runtime
         void Reset();
     }
     
-    public interface IViewNodeExecute<in TNodeExecute, in TUICanvas> : IViewNodeExecute
-        where TNodeExecute : INodeExecute
+    public interface IViewNodeExecute<in TINodeExecute, in TUICanvas> : IViewNodeExecute
+        where TINodeExecute : INodeExecute
         where TUICanvas : UICanvas
     {
         void IViewNodeExecute.Inject(INodeExecute execute, UICanvas uiCanvas)
         {
-            Inject((TNodeExecute) execute, (TUICanvas) uiCanvas);
+            Inject((TINodeExecute) execute, (TUICanvas) uiCanvas);
         }
 
-        void Inject(TNodeExecute execute, TUICanvas uiCanvas);
+        void Inject(TINodeExecute execute, TUICanvas uiCanvas);
     }
 }

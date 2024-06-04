@@ -131,3 +131,7 @@ GridBackground {
 .random #input {
     background-color: rgb(254, 255, 0);
 }
+
+.game #input {
+    background-color: rgb(0, 253, 139);
+}

@@ -23,12 +23,12 @@ namespace Module.InteractiveEditor.Configs
         }
     }
     
-    public abstract class BaseNode<T> : BaseNode
-        where T : INodeExecute
+    public abstract class BaseNode<TINodeExecutor> : BaseNode
+        where TINodeExecutor : INodeExecute
     {
         public override Type GetExecutorType()
         {
-            return typeof(T);
+            return typeof(TINodeExecutor);
         }
     }
     
