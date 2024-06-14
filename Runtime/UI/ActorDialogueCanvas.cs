@@ -9,7 +9,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 using UnityEngine.UI;
 
-namespace Game.UI.Story
+namespace Module.InteractiveEditor.Saves.UI.Story
 {
     public class ActorDialogueCanvas : UICanvas<ActorDialogueViewExecutor>
     {

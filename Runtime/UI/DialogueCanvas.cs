@@ -11,7 +11,7 @@ using UnityEngine.Localization;
 using UnityEngine.UI;
 using YG.MenuNav;
 
-namespace Game.UI.Story
+namespace Module.InteractiveEditor.Saves.UI.Story
 {
     public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
     {

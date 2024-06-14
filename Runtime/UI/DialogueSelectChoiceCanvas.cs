@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
-namespace Game.UI.Story
+namespace Module.InteractiveEditor.Saves.UI.Story
 {
     public class DialogueSelectChoiceCanvas : UICanvas<DialogueSelectChoiceViewExecutor>
     {
