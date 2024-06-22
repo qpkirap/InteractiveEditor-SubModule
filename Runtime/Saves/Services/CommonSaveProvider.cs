@@ -5,6 +5,7 @@ using SimpleJSON;
 
 namespace Module.InteractiveEditor.Saves
 {
+    //TODO Доработать - не работает нормально
     public class CommonSaveProvider : SaveProvider
     {
         private readonly List<ISavable> saves = new();
@@ -37,7 +38,7 @@ namespace Module.InteractiveEditor.Saves
             var save = array.ToString();
         }
 
-        internal override async UniTask Load()
+        internal override async UniTask LoadAsync()
         {
             foreach (var savable in saves)
             {

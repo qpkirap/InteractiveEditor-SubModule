@@ -8,16 +8,16 @@ namespace Module.InteractiveEditor.Saves
     {
         private readonly SaveProvider saveProvider;
 
-        private readonly Dictionary<string, SaveNodeItem> saves = new();
+        private readonly Dictionary<string, SaveNodeItem> saveNodes = new();
 
-        public NodeSaveServices()
+        public NodeSaveServices(SaveProvider saveProvider)
         {
-            saveProvider = SaveProviderFactory.Create();
+            this.saveProvider = saveProvider;
         }
         
         public SaveNodeItem GetSaveItem(string id)
         {
-            return saves.TryGetValue(id, out var saveItem) ? saveItem : default;
+            return saveNodes.TryGetValue(id, out var saveItem) ? saveItem : default;
         }
         
         public void Init(IEnumerable<StoryObject> storyObject)
@@ -30,7 +30,7 @@ namespace Module.InteractiveEditor.Saves
 
                 foreach (var storyNode in story.Nodes)
                 {
-                    if (storyNode == null || saves.ContainsKey(storyNode.Id)) continue;
+                    if (storyNode == null || saveNodes.ContainsKey(storyNode.Id)) continue;
 
                     var saveItemType = storyNode.GetSaveItemType();
                     
@@ -38,7 +38,7 @@ namespace Module.InteractiveEditor.Saves
                     
                     var saveItem = (SaveNodeItem)Activator.CreateInstance(saveItemType);
                     
-                    saves.Add(storyNode.Id, saveItem);
+                    saveNodes.Add(storyNode.Id, saveItem);
                     
                     Add(saveItem);
                 }
@@ -50,16 +50,6 @@ namespace Module.InteractiveEditor.Saves
             if (saveItem is not SaveNodeItem) return;
             
             saveProvider.Add(saveItem);
-        }
-
-        public void Load()
-        {
-            saveProvider.Load();
-        }
-
-        public void Save()
-        {
-            saveProvider.Save();
         }
     }
 }

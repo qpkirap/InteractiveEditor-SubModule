@@ -9,18 +9,12 @@ namespace Module.InteractiveEditor.Saves
     public class YandexGameSaveProvider : SaveProvider
     {
         private readonly List<ISavable> saves = new();
-        private readonly Dictionary<string, string> saveCache = new();
         
-        private readonly JsonSerializerSettings serializerSettings;
-
-        public YandexGameSaveProvider()
+        private readonly JsonSerializerSettings serializerSettings = new()
         {
-            serializerSettings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects
-            };
-        }
-        
+            TypeNameHandling = TypeNameHandling.Objects
+        };
+
         internal override void Add(ISavable savable)
         {
             if (savable == null || saves.Contains(savable)) return;
@@ -48,23 +42,50 @@ namespace Module.InteractiveEditor.Saves
 
             var save = array.ToString();
 
-            YandexGame.savesData.SaveNodes = save;
+            YandexGame.savesData.Saves = save;
             
             YandexGame.SaveProgress();
         }
 
-        internal override async UniTask Load()
+        internal override async UniTask LoadAsync()
         {
             if (!YandexGame.SDKEnabled)
             {
                 await UniTask.WaitUntil(() => YandexGame.SDKEnabled);
             }
             
-            var save = YandexGame.savesData.SaveNodes;
+            var save = YandexGame.savesData.Saves;
 
             if (string.IsNullOrEmpty(save)) return;
+
+            var jsonArray = JSONArray.Parse(save) as JSONArray;
             
-            JsonConvert.PopulateObject(save, saves); //не будет работать скорее всего
+            if (jsonArray == null) return;
+            
+            foreach (var savable in saves)
+            {
+                if (savable == default) continue;
+
+                JSONNode saveNode = null;
+                
+                foreach (var kvArrayItem in jsonArray)
+                {
+                    if (!kvArrayItem.Value.HasKey(savable.SaveKey)) continue;
+                    
+                    saveNode = kvArrayItem.Value;
+                    
+                    break;
+                }
+                    
+                Deserialize(savable, saveNode.ToString());
+            }
+            
+            foreach (var savable in saves)
+            {
+                if (savable == null) continue;
+                
+                savable.PostLoad();
+            }
         }
         
         private string Serialize(ISavable state)

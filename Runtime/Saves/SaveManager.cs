@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
 
@@ -6,43 +7,55 @@ namespace Module.InteractiveEditor.Saves
 {
     public class SaveManager
     {
-        private readonly NodeSaveServices nodeSaveServices = new();
+        private readonly SaveProvider saveProvider;
+        private readonly NodeSaveServices nodeSaveServices;
+        private readonly StateSaveServices stateSaveServices;
         
         public INodeSaveServices NodeSaveServices => nodeSaveServices;
         
         public SaveManager()
         {
+            saveProvider = SaveProviderFactory.Create();
+            nodeSaveServices = new NodeSaveServices(saveProvider);
+            stateSaveServices = new StateSaveServices(saveProvider);
+            
             DI.Add(this);
         }
         
-        public void Init(IEnumerable<StoryObject> storyObject)
+        public async UniTask InitAsync(IEnumerable<StoryObject> storyObject, params ISavable[] saveItems)
         {
             nodeSaveServices.Init(storyObject);
+            stateSaveServices.Init(saveItems);
             
-            Load();
+           await ForceLoadAsync();
         }
 
-        public void Add(ISavable saveItem)
+        public void AddSaveNode(ISavable saveItem)
         {
             nodeSaveServices.Add(saveItem);
         }
 
-        public void Load()
+        public async UniTask ForceLoadAsync()
         {
-            nodeSaveServices.Load();
+            await saveProvider.LoadAsync();
+        }
+
+        public void ForceSave()
+        {
+            saveProvider.Save();
         }
         
         public void OnApplicationPause(bool pauseStatus)
         {
             if (pauseStatus)
             {
-                nodeSaveServices.Save();
+                saveProvider.Save();
             }
         }
 
         public void OnApplicationQuit()
         {
-            nodeSaveServices.Save();
+            saveProvider.Save();
         }
     }
 }

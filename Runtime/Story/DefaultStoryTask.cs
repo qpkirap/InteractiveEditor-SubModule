@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Configs;
+using Module.InteractiveEditor.Saves;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -11,6 +12,8 @@ namespace Module.InteractiveEditor.Runtime
     public class DefaultStoryTask : IStoryTask
     {
         private readonly PreloadManager preloadManager = new();
+        private readonly SaveManager saveManager = new();
+        
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
         
@@ -89,6 +92,8 @@ namespace Module.InteractiveEditor.Runtime
                     var next = executor.GetNext(calcNode);
                     
                     executor.ResetExecutor(calcNode);
+                    
+                    saveManager.ForceSave();
                     
                     return next;
                 }
