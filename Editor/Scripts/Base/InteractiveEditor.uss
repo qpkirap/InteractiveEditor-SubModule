@@ -135,3 +135,7 @@ GridBackground {
 .game #input {
     background-color: rgb(0, 253, 139);
 }
+
+.save #input {
+    background-color: rgb(0, 255, 226);
+}

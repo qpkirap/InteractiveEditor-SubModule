@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Module.InteractiveEditor.Runtime
@@ -12,7 +12,7 @@ namespace Module.InteractiveEditor.Runtime
     public class DefaultStoryTask : IStoryTask
     {
         private readonly PreloadManager preloadManager = new();
-        private readonly SaveManager saveManager = new();
+        private readonly LazyInject<SaveManager> saveManager = new();
         
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
@@ -93,7 +93,7 @@ namespace Module.InteractiveEditor.Runtime
                     
                     executor.ResetExecutor(calcNode);
                     
-                    saveManager.ForceSave();
+                    saveManager.Value.ForceSave();
                     
                     return next;
                 }
@@ -110,21 +110,11 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (StoryObject == null || StoryObject.Nodes == null) return null;
 
-            if (string.IsNullOrEmpty(StoryObject.IdStartNode))
-            {
-                Debug.LogError($"Start node id is empty");
-                
-                var item = StoryObject.Nodes
-                    .FirstOrDefault(x=> x != null 
-                                        && x.ExecuteResult != ExecuteResult.SuccessState
-                                        && x.ChildrenNodes.Count > 0);
-
-                return item;
-            }
+            var lastId = saveManager.Value.NodeSaveServices.GetIdLastNode(StoryObject.Id);
             
             var startNode = StoryObject.Nodes
                 .FirstOrDefault(x=> x != null
-                                    && x.Id.Equals(StoryObject.IdStartNode));
+                                    && x.Id.Equals(lastId));
             
             return startNode;
         }

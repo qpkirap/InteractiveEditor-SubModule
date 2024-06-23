@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
+using Module.InteractiveEditor.Saves;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
@@ -13,6 +15,7 @@ namespace Module.InteractiveEditor.Runtime
     public class DialogueSelectChoiceSaveExecutor : INodeExecute<SelectChoiceDialogueSaveNode>
     {
         private static LazyInject<IRouter> router = new();
+        private static LazyInject<SaveManager> saveManager = new();
         
         private AddressableSprite background;
         private ImageData imageDataCache;
@@ -98,7 +101,20 @@ namespace Module.InteractiveEditor.Runtime
                 isOpenCanvas = true;
             }
 
-            return SelectedIndex < 0 ? ExecuteResult.RunningState : ExecuteResult.SuccessState;
+            var state = SelectedIndex < 0 ? ExecuteResult.RunningState : ExecuteResult.SuccessState;
+
+            if (state == ExecuteResult.SuccessState)
+            {
+                var save = saveManager.Value.NodeSaveServices.GetSaveItem(baseNode.Id);
+
+                if (save != default)
+                {
+                    var typeSave = node.GetSaveItemType();
+                    //TODO нужно как то доработать
+                }
+            }
+            
+            return state;
         }
 
         public ExecuteResult Cancel(SelectChoiceDialogueSaveNode baseNode)

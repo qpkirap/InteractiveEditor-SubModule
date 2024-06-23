@@ -40,10 +40,7 @@ namespace Module.InteractiveEditor.Saves
                 array.Add(jsonObject);
             }
 
-            var save = array.ToString();
-
-            YandexGame.savesData.Saves = save;
-            
+            YandexGame.savesData.Saves = array.ToString();
             YandexGame.SaveProgress();
         }
 
@@ -58,28 +55,21 @@ namespace Module.InteractiveEditor.Saves
 
             if (string.IsNullOrEmpty(save)) return;
 
-            var jsonArray = JSONArray.Parse(save) as JSONArray;
+            var jsonArray = JSONNode.Parse(save).AsArray;
             
             if (jsonArray == null) return;
-            
-            foreach (var savable in saves)
-            {
-                if (savable == default) continue;
 
-                JSONNode saveNode = null;
-                
-                foreach (var kvArrayItem in jsonArray)
+            foreach (var kv in jsonArray)
+            {
+                foreach (var (key, node) in kv.Value)
                 {
-                    if (!kvArrayItem.Value.HasKey(savable.SaveKey)) continue;
-                    
-                    saveNode = kvArrayItem.Value;
-                    
-                    break;
+                    var saveItem = saves.Find(s => s.SaveKey == key);
+                    if (saveItem == null) continue;
+
+                    Deserialize(saveItem, node.ToString());
                 }
-                    
-                Deserialize(savable, saveNode.ToString());
             }
-            
+
             foreach (var savable in saves)
             {
                 if (savable == null) continue;
