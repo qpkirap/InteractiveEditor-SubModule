@@ -13,7 +13,7 @@ namespace Module.InteractiveEditor.Editor
         
         public override Type InputPortType => typeof(bool);
         public override Type OutputPortType => typeof(AnswerChoiceDialogueNodeView);
-        public override Port.Capacity InputPortCapacity => Port.Capacity.Single;
+        public override Port.Capacity InputPortCapacity => Port.Capacity.Multi;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Multi;
     }
 }
