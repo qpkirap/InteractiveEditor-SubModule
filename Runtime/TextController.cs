@@ -22,6 +22,10 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask Init()
         {
+        }
+
+        public void OnShow()
+        {
             if (disp.Count > 0)
             {
                 Disable();

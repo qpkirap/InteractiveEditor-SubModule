@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Managers.Router;
 using Module.InteractiveEditor.Configs;
@@ -21,6 +22,14 @@ namespace Module.InteractiveEditor.Saves.UI.Story
 
         public Subject<UICanvas> OnNextButtonPressed { get; } = new Subject<UICanvas>();
 
+        public override async UniTask Init()
+        {
+            await base.Init();
+            
+            await textController.Init();
+            await actorNameController.Init();
+        }
+
         protected override void OnShow()
         {
             base.OnShow();
@@ -30,7 +39,7 @@ namespace Module.InteractiveEditor.Saves.UI.Story
                 await item.Init();
             });
             
-            textController.Init();
+            textController.OnShow();
             
             if (disp.Count > 0) disp.Clear();
 

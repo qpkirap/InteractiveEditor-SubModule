@@ -85,7 +85,7 @@ namespace Module.InteractiveEditor.Runtime
         {
             node ??= baseNode;
             
-            if (baseNode.ChildrenNodes == null || baseNode.ChildrenNodes.Count == 0) return ExecuteResult.SuccessState;
+            if (baseNode.ChildrenNodes == null) return ExecuteResult.SuccessState;
             
             if (!isOpenCanvas)
             {
@@ -108,7 +108,7 @@ namespace Module.InteractiveEditor.Runtime
         public void ResetExecutor(SelectChoiceDialogueNode baseNode)
         {
             node = null;
-            answersCache.Clear();
+            answersCache?.Clear();
             
             selectedIndex = -1;
             isOpenCanvas = false;

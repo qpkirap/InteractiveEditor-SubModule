@@ -20,8 +20,6 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask Init()
         {
-            ClearItems();
-            
             pool ??= new ObjectPool<ChoiceItem>(
                 () => Instantiate(prefab, container), 
                 item =>

@@ -16,14 +16,19 @@ namespace Module.InteractiveEditor.Runtime
             await base.Init();
 
             viewModel ??= Activator.CreateInstance<TIViewNodeExecutor>();
+        }
 
-            viewModel.Reset();
+        protected override void OnShow()
+        {
+            base.OnShow();
+            
+            viewModel?.Reset();
 
             var model = router.Value.GetRoutArgData<INodeExecute>(INodeExecute.NodeExecutorKey);
             
-            viewModel.Inject(model, this);
+            viewModel?.Inject(model, this);
         }
-        
+
         protected override void OnHide()
         {
             base.OnHide();

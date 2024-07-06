@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DepedencyInjection;
 using Managers.Router;
@@ -24,21 +25,28 @@ namespace Module.InteractiveEditor.Saves.UI.Story
 
         public Subject<UICanvas> OnNextButtonPressed { get; } = new Subject<UICanvas>();
 
-        protected override void OnShow()
-        {
-            base.OnShow();
+        public override async UniTask Init()
+        { 
+            await base.Init();
             
             bgImages.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
             {
                 await item.Init();
             });
             
+            await textController.Init();
+        }
+
+        protected override void OnShow()
+        {
+            base.OnShow();
+            
             if (disp.Count > 0) disp.Clear();
 
             if (nextButton != null)
                 nextButton.OnClickAsObservable().Subscribe(_ => OnNextButtonPressed.OnNext(this)).AddTo(disp);
             
-            textController.Init();
+            textController.OnShow();
             
             menuNavigation.Value.SelectButton(nextButton);
         }
