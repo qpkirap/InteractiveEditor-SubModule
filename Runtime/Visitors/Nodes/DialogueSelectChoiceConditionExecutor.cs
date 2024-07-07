@@ -12,7 +12,7 @@ using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class DialogueSelectChoiceSaveExecutor : INodeExecute<SelectChoiceDialogueSaveNode>
+    public class DialogueSelectChoiceConditionExecutor : INodeExecute<SelectChoiceDialogueConditionNode>
     {
         private static LazyInject<IRouter> router = new();
         private static LazyInject<SaveManager> saveManager = new();
@@ -73,7 +73,7 @@ namespace Module.InteractiveEditor.Runtime
             return node.Dialogue;
         }
 
-        public BaseNode GetNext(SelectChoiceDialogueSaveNode baseNode)
+        public BaseNode GetNext(SelectChoiceDialogueConditionNode baseNode)
         {
             if (baseNode.ChildrenNodes == null || baseNode.ChildrenNodes.Count == 0) return null;
             
@@ -85,7 +85,7 @@ namespace Module.InteractiveEditor.Runtime
             return null;
         }
 
-        public ExecuteResult Execute(SelectChoiceDialogueSaveNode baseNode)
+        public ExecuteResult Execute(SelectChoiceDialogueConditionNode baseNode)
         {
             node ??= baseNode;
             
@@ -117,12 +117,12 @@ namespace Module.InteractiveEditor.Runtime
             return state;
         }
 
-        public ExecuteResult Cancel(SelectChoiceDialogueSaveNode baseNode)
+        public ExecuteResult Cancel(SelectChoiceDialogueConditionNode baseNode)
         {
             return ExecuteResult.SuccessState;
         }
 
-        public void ResetExecutor(SelectChoiceDialogueSaveNode baseNode)
+        public void ResetExecutor(SelectChoiceDialogueConditionNode baseNode)
         {
             node = null;
             answersCache.Clear();

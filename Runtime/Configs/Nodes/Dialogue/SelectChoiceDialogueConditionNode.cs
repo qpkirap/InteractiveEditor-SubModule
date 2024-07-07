@@ -4,7 +4,7 @@ using Module.InteractiveEditor.Saves;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public class SelectChoiceDialogueSaveNode : SelectChoiceDialogueNode<DialogueSelectChoiceSaveExecutor>
+    public class SelectChoiceDialogueConditionNode : SelectChoiceDialogueNode<DialogueSelectChoiceConditionExecutor>
     {
         [NonSerialized] private Type typeCache;
         

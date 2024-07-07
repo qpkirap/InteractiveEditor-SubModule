@@ -8,11 +8,11 @@ using UnityEngine;
 namespace Module.InteractiveEditor.Saves
 {
     [Serializable]
-    public class DialogueSelectChoiceSave : SaveNodeItem<DialogueSelectChoiceSaveExecutor>
+    public class DialogueSelectChoiceSave : SaveNodeItem<DialogueSelectChoiceConditionExecutor>
     {
         [JsonProperty("selected")]private string selectedId;
 
-        public DialogueSelectChoiceSave(DialogueSelectChoiceSaveExecutor executor, BaseNode baseNode) : base(executor, baseNode)
+        public DialogueSelectChoiceSave(DialogueSelectChoiceConditionExecutor executor, BaseNode baseNode) : base(executor, baseNode)
         {
         }
 
