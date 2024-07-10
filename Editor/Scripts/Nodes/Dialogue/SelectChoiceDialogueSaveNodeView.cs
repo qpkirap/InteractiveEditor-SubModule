@@ -4,16 +4,16 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView("Dialogue/Choices/Save/SelectChoiceDialogue",typeof(SelectChoiceDialogueConditionNode))]
-    public class SelectChoiceDialogueConditionNodeView : SelectChoiceDialogueNodeView
+    [NodeView("Dialogue/Choices/Conditions/SelectChoiceDialogue",typeof(SelectChoiceDialogueConditionsNode))]
+    public class SelectChoiceDialogueConditionsNodeView : SelectChoiceDialogueNodeView
     {
-        public SelectChoiceDialogueConditionNodeView(BaseNode node) : base(node)
+        public SelectChoiceDialogueConditionsNodeView(BaseNode node) : base(node)
         {
         }
         
         public override Port.Capacity InputPortCapacity => Port.Capacity.Multi;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Multi;
 
-        public override Type OutputPortType => typeof(AnswerChoiceConditionDialogueNodeView);
+        public override Type OutputPortType => typeof(AnswerChoiceConditionsDialogueNodeView);
     }
 }

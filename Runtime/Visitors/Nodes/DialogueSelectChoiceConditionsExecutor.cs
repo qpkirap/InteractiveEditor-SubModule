@@ -4,21 +4,20 @@ using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
-using Module.InteractiveEditor.Saves;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class DialogueSelectChoiceConditionExecutor : INodeExecute<SelectChoiceDialogueConditionNode>
+    public class DialogueSelectChoiceConditionsExecutor : INodeExecute<SelectChoiceDialogueConditionsNode>
     {
         private static LazyInject<IRouter> router = new();
-        private static LazyInject<SaveManager> saveManager = new();
+        
+        private readonly Dictionary<int, (IEnumerable<ICondition> conditions, BaseNode node)> answersConditions = new();
         
         private AddressableSprite background;
         private ImageData imageDataCache;
-        private SelectChoiceDialogueNode node;
+        private SelectChoiceDialogueConditionsNode node;
         
         private List<LocalizedString> answersCache;
         
@@ -37,9 +36,34 @@ namespace Module.InteractiveEditor.Runtime
             
             if (node == null) return null;
 
-            var answerChoice = node.ChildrenNodes.Cast<AnswerChoiceDialogueNode>();
+            var answerChoice = node.ChildrenNodes.Cast<AnswerChoiceConditionsDialogueNode>().ToArray();
+            answersConditions.Clear();
             
-            answersCache = answerChoice.Select(x => x.AnswerText).ToList();
+            for (var i = 0; i < answerChoice.Length; i++)
+            {
+                var conditions = answerChoice[i].Conditions.Select(x => x.GetCondition());
+
+                answersConditions.Add(i, (conditions, answerChoice[i]));
+            }
+            
+            foreach (var (index, (conditions, node)) in answersConditions)
+            {
+                var test = true;
+                
+                foreach (var condition in conditions)
+                {
+                    if (!condition.IsTrue(node))
+                    {
+                        test = false;
+                        break;
+                    }
+                }
+                
+                if (!test) continue;
+                
+                var answer = answerChoice[index].AnswerText;
+                answersCache.Add(answer);
+            }
 
             return answersCache;
         }
@@ -72,19 +96,22 @@ namespace Module.InteractiveEditor.Runtime
             return node.Dialogue;
         }
 
-        public BaseNode GetNext(SelectChoiceDialogueConditionNode baseNode)
+        public BaseNode GetNext(SelectChoiceDialogueConditionsNode baseNode)
         {
             if (baseNode.ChildrenNodes == null || baseNode.ChildrenNodes.Count == 0) return null;
             
             if (SelectedIndex >= 0)
             {
-                return baseNode.ChildrenNodes[Mathf.Clamp(SelectedIndex, 0, baseNode.ChildrenNodes.Count - 1)];
+                if (answersConditions.TryGetValue(SelectedIndex, out var infos))
+                {
+                    return infos.node;
+                }
             }
 
             return null;
         }
 
-        public ExecuteResult Execute(SelectChoiceDialogueConditionNode baseNode)
+        public ExecuteResult Execute(SelectChoiceDialogueConditionsNode baseNode)
         {
             node ??= baseNode;
             
@@ -101,30 +128,20 @@ namespace Module.InteractiveEditor.Runtime
             }
 
             var state = SelectedIndex < 0 ? ExecuteResult.RunningState : ExecuteResult.SuccessState;
-
-            if (state == ExecuteResult.SuccessState)
-            {
-                var save = saveManager.Value.NodeSaveServices.GetSaveItem(baseNode.Id);
-
-                if (save != default)
-                {
-                    var typeSave = node.GetSaveItemType();
-                    //TODO нужно как то доработать
-                }
-            }
             
             return state;
         }
 
-        public ExecuteResult Cancel(SelectChoiceDialogueConditionNode baseNode)
+        public ExecuteResult Cancel(SelectChoiceDialogueConditionsNode baseNode)
         {
             return ExecuteResult.SuccessState;
         }
 
-        public void ResetExecutor(SelectChoiceDialogueConditionNode baseNode)
+        public void ResetExecutor(SelectChoiceDialogueConditionsNode baseNode)
         {
             node = null;
             answersCache.Clear();
+            answersConditions.Clear();
             
             SelectedIndex = -1;
             isOpenCanvas = false;

@@ -4,6 +4,6 @@ namespace Module.InteractiveEditor.Runtime
 {
     public interface ICondition
     {
-        public bool IsTrue(CheckConditionsNode baseNode);
+        public bool IsTrue(BaseNode baseNode);
     }
 }

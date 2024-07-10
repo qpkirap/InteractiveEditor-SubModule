@@ -6,14 +6,14 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Module.InteractiveEditor.Editor
 {
-    [NodeView("Dialogue/Choices/AnswerChoiceConditions", typeof(AnswerChoiceDialogueNode))]
-    public class AnswerChoiceConditionDialogueNodeView : NodeView
+    [NodeView("Dialogue/Choices/Conditions/AnswerChoiceConditions", typeof(AnswerChoiceConditionsDialogueNode))]
+    public class AnswerChoiceConditionsDialogueNodeView : NodeView
     {
-        public AnswerChoiceConditionDialogueNodeView(BaseNode node) : base(node)
+        public AnswerChoiceConditionsDialogueNodeView(BaseNode node) : base(node)
         {
         }
 
-        public override Type InputPortType => typeof(AnswerChoiceConditionDialogueNodeView);
+        public override Type InputPortType => typeof(AnswerChoiceConditionsDialogueNodeView);
         public override Type OutputPortType => typeof(bool);
         public override Port.Capacity InputPortCapacity => Port.Capacity.Multi;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Multi;

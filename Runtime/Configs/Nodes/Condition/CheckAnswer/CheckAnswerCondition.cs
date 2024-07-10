@@ -4,7 +4,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public class CheckAnswerCondition : ICondition
     {
-        public bool IsTrue(CheckConditionsNode baseNode)
+        public bool IsTrue(BaseNode baseNode)
         {
             return true;
         }
