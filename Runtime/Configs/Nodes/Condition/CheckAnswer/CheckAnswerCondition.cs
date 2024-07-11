@@ -6,7 +6,7 @@ namespace Module.InteractiveEditor.Configs
     {
         public bool IsTrue(BaseNode baseNode)
         {
-            return true;
+            return false;
         }
     }
 }

@@ -4,14 +4,14 @@ using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class DialogueSelectChoiceConditionsViewExecutor : IViewNodeExecute<DialogueSelectChoiceExecutor, DialogueSelectChoiceConditionsCanvas>
+    public class DialogueSelectChoiceConditionsViewExecutor : IViewNodeExecute<DialogueSelectChoiceConditionsExecutor, DialogueSelectChoiceConditionsCanvas>
     {
         private DialogueSelectChoiceConditionsCanvas uiCanvas;
-        private DialogueSelectChoiceExecutor executor;
+        private DialogueSelectChoiceConditionsExecutor executor;
         
         private readonly CompositeDisposable disp = new();
 
-        public void Inject(DialogueSelectChoiceExecutor execute, DialogueSelectChoiceConditionsCanvas uiCanvas)
+        public void Inject(DialogueSelectChoiceConditionsExecutor execute, DialogueSelectChoiceConditionsCanvas uiCanvas)
         {
             executor = execute;
             this.uiCanvas = uiCanvas;

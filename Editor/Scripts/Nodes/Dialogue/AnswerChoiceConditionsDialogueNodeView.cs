@@ -17,7 +17,7 @@ namespace Module.InteractiveEditor.Editor
         public override Type OutputPortType => typeof(bool);
         public override Port.Capacity InputPortCapacity => Port.Capacity.Multi;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Multi;
-        public override string GetClassTag => "dialogue";
+        public override string GetClassTag => "conditions";
         public override void AddChildNode(BaseNode node)
         {
             Undo.RecordObject(Node, "Add from Answer Node");

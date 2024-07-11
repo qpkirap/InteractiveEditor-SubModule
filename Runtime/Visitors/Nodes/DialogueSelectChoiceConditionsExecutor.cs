@@ -14,12 +14,11 @@ namespace Module.InteractiveEditor.Runtime
         private static LazyInject<IRouter> router = new();
         
         private readonly Dictionary<int, (IEnumerable<ICondition> conditions, BaseNode node)> answersConditions = new();
+        private readonly List<LocalizedString> answersCache = new();
         
         private AddressableSprite background;
         private ImageData imageDataCache;
         private SelectChoiceDialogueConditionsNode node;
-        
-        private List<LocalizedString> answersCache;
         
         private bool isOpenCanvas;
         
@@ -119,7 +118,7 @@ namespace Module.InteractiveEditor.Runtime
             
             if (!isOpenCanvas)
             {
-                router.Value.GoTo(RoutKeys.dialogueSelectChoice, routArgs: new (string, object)[]
+                router.Value.GoTo(RoutKeys.dialogueSelectChoiceConditions, routArgs: new (string, object)[]
                 {
                     (INodeExecute.NodeExecutorKey, this)
                 });
@@ -140,8 +139,8 @@ namespace Module.InteractiveEditor.Runtime
         public void ResetExecutor(SelectChoiceDialogueConditionsNode baseNode)
         {
             node = null;
-            answersCache.Clear();
-            answersConditions.Clear();
+            answersCache?.Clear();
+            answersConditions?.Clear();
             
             SelectedIndex = -1;
             isOpenCanvas = false;

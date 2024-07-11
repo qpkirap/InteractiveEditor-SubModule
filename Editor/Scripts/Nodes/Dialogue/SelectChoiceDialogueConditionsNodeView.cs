@@ -15,5 +15,7 @@ namespace Module.InteractiveEditor.Editor
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Multi;
 
         public override Type OutputPortType => typeof(AnswerChoiceConditionsDialogueNodeView);
+        
+        public override string GetClassTag => "checkConditions";
     }
 }
