@@ -10,7 +10,8 @@ using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Saves.UI.Story
 {
-    public class DialogueSelectChoiceCanvas : UICanvas<DialogueSelectChoiceViewExecutor>
+    public abstract class DialogueSelectChoiceCanvas<T> : UICanvas<T>
+        where T : IViewNodeExecute
     {
         [SerializeField] private List<ImageController> bgImages;
         [SerializeField] private CensorContainerController censorController;
@@ -75,5 +76,9 @@ namespace Module.InteractiveEditor.Saves.UI.Story
             
             choiceContainer.Disable();
         }
+    }
+    
+    public class DialogueSelectChoiceCanvas : DialogueSelectChoiceCanvas<DialogueSelectChoiceViewExecutor>
+    {
     }
 }
