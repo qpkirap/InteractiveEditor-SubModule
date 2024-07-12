@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
@@ -8,7 +7,7 @@ namespace Module.InteractiveEditor.Configs
     [Serializable]
     public abstract class BaseComponent : IBaseComponent
     {
-        [field: SerializeField, ReadOnly] public string Id { get; protected set; }
+        [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public string Id { get; protected set; }
         
         public void GenerateId(bool force = false)
         {
@@ -32,6 +31,8 @@ namespace Module.InteractiveEditor.Configs
     public interface IBaseComponent
     {
         public string Id { get; }
+        
+        void GenerateId(bool force = false);
     }
     
     public interface IReferenceComponent

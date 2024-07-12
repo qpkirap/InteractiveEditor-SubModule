@@ -8,7 +8,7 @@ namespace Module.InteractiveEditor.Configs
 {
     public class AnswerChoiceConditionsDialogueNode : AnswerChoiceDialogueNode
     {
-        [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true)] public List<IConditionComponent> Conditions = new();
+        [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true),  OnValueChanged(nameof(OnGenerateId))] public List<IConditionComponent> Conditions = new();
 
         private const string ConditionsKey = nameof(Conditions);
 
@@ -19,6 +19,11 @@ namespace Module.InteractiveEditor.Configs
             item.SetFieldValue(ConditionsKey, Conditions);
             
             return item;
+        }
+        
+        private void OnGenerateId()
+        {
+            Conditions.ForEach(item => item.GenerateId());
         }
     }
 }
