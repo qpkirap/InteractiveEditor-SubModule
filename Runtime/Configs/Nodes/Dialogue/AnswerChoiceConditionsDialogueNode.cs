@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using Sirenix.OdinInspector;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public class AnswerChoiceConditionsDialogueNode : AnswerChoiceDialogueNode
+    public class AnswerChoiceConditionsDialogueNode : AnswerChoiceDialogueNode<DialogueAnswerExecutor>
     {
         [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true),  OnValueChanged(nameof(OnGenerateId))] public List<IConditionComponent> Conditions = new();
 
@@ -24,6 +25,15 @@ namespace Module.InteractiveEditor.Configs
         private void OnGenerateId()
         {
             Conditions.ForEach(item => item.GenerateId());
+        }
+    }
+
+    public abstract class AnswerChoiceConditionsDialogueNode<TNodeExecute> : AnswerChoiceConditionsDialogueNode
+        where TNodeExecute : INodeExecute
+    {
+        public override Type GetExecutorType()
+        {
+            return typeof(TNodeExecute);
         }
     }
 }
