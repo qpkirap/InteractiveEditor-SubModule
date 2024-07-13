@@ -1,23 +1,20 @@
 ﻿using System;
 using Module.InteractiveEditor.Configs;
-using Module.InteractiveEditor.Runtime;
 using Newtonsoft.Json;
 
 namespace Module.InteractiveEditor.Saves
 {
     [Serializable]
-    public abstract class SaveNodeItem<TNodeExecutor> : SaveNodeItem
-        where TNodeExecutor : INodeExecute
+    public abstract class SaveNodeItem<TNode> : SaveNodeItem
+        where TNode : BaseNode
     {
-        [JsonIgnore] protected BaseNode baseNode;
-        [JsonIgnore] protected TNodeExecutor executor;
+        [JsonIgnore] protected TNode baseNode;
         
         public override string SaveKey { get; }
         
-        public SaveNodeItem(TNodeExecutor executor, BaseNode baseNode)
+        public SaveNodeItem(TNode baseNode)
         {
             this.baseNode = baseNode;
-            this.executor = executor;
             
             SaveKey = baseNode.Id;
         }

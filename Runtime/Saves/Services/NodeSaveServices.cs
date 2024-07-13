@@ -35,11 +35,12 @@ namespace Module.InteractiveEditor.Saves
                     
                     if (saveItemType == default) continue;
                     
-                    var saveItem = (SaveNodeItem)Activator.CreateInstance(saveItemType);
+                    var constructor = saveItemType.GetConstructor(new[] { storyNode.GetType() });
+                    var instance = constructor.Invoke(new object[] { storyNode }) as SaveNodeItem;
                     
-                    saveNodes.Add(storyNode.Id, saveItem);
+                    saveNodes.Add(storyNode.Id, instance);
                     
-                    Add(saveItem);
+                    Add(instance);
                 }
             }
             

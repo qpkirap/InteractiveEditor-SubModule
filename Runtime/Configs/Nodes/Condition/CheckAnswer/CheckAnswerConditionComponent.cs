@@ -7,10 +7,10 @@ namespace Module.InteractiveEditor.Configs
     [Serializable]
     public class CheckAnswerConditionComponent : ConditionComponent<CheckAnswerCondition>
     {
-        [SerializeField] private string test;
+        [field: SerializeField] public string IdNode { get; private set; }
         protected override CheckAnswerCondition GetCondition(params object[] args)
         {
-            return new CheckAnswerCondition();
+            return new CheckAnswerCondition(this);
         }
     }
 }

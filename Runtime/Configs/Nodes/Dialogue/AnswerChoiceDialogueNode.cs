@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
 using UnityEngine;
@@ -31,6 +32,15 @@ namespace Module.InteractiveEditor.Configs
             item.SetFieldValue(AnswerTextKey, answerText);
             
             return item;
+        }
+    }
+
+    public class AnswerChoiceDialogueNode<T> : AnswerChoiceDialogueNode
+        where T : INodeExecute
+    {
+        public override Type GetExecutorType()
+        {
+            return typeof(T);
         }
     }
 }
