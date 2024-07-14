@@ -7,7 +7,7 @@ namespace Module.InteractiveEditor.Configs
     {
         public override Type GetSaveItemType()
         {
-            return typeof(AnswerChoiceSave);
+            return typeof(AnswerChoiceConditionSave);
         }
     }
 }

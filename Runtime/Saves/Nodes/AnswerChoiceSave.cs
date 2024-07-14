@@ -5,13 +5,30 @@ using Newtonsoft.Json;
 namespace Module.InteractiveEditor.Saves
 {
     [Serializable]
-    public class AnswerChoiceSave : SaveNodeItem<AnswerChoiceSaveDialogueNode>
+    public class AnswerChoiceConditionSave : AnswerChoiceSave<AnswerChoiceConditionsDialogueNode>
     {
-        [JsonProperty("selected")] public bool IsSelected { get; private set; }
-
+        public AnswerChoiceConditionSave(AnswerChoiceConditionsDialogueNode baseNode) : base(baseNode)
+        {
+        }
+    }
+    
+    [Serializable]
+    public class AnswerChoiceSave : AnswerChoiceSave<AnswerChoiceSaveDialogueNode>
+    {
         public AnswerChoiceSave(AnswerChoiceSaveDialogueNode baseNode) : base(baseNode)
         {
         }
+    }
+
+    [Serializable]
+    public abstract class AnswerChoiceSave<T> : SaveNodeItem<T>
+        where T : BaseNode
+    {
+        protected AnswerChoiceSave(T baseNode) : base(baseNode)
+        {
+        }
+        
+        [JsonProperty("selected")] public bool IsSelected { get; private set; }
 
         public override void UpdateData()
         {
