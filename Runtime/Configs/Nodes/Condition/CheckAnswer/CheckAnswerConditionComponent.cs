@@ -8,6 +8,7 @@ namespace Module.InteractiveEditor.Configs
     public class CheckAnswerConditionComponent : ConditionComponent<CheckAnswerCondition>
     {
         [field: SerializeField] public string IdNode { get; private set; }
+        [field: SerializeField] public bool IsInverse { get; private set; }
         protected override CheckAnswerCondition GetCondition(params object[] args)
         {
             return new CheckAnswerCondition(this);
