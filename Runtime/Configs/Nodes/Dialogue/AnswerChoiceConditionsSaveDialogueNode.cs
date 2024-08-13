@@ -3,7 +3,7 @@ using Module.InteractiveEditor.Saves;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public class AnswerChoiceConditionsSaveDialogueNode : AnswerChoiceConditionsDialogueNode<AnswerChoiceSaveDialogueNodeExecutor>
+    public class AnswerChoiceConditionsSaveDialogueNode : AnswerChoiceConditionsDialogueNode<AnswerChoiceSaveDialogueNodeExecutor<AnswerChoiceConditionsSaveDialogueNode>>
     {
         public override Type GetSaveItemType()
         {

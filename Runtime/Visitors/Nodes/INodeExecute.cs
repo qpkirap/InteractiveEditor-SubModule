@@ -1,5 +1,7 @@
-﻿using Managers.Router.Config;
+﻿using System;
+using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
+using UnityEngine;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -56,7 +58,16 @@ namespace Module.InteractiveEditor.Runtime
         
         void INodeExecute.ResetExecutor(BaseNode baseNode)
         {
-            ResetExecutor((T) baseNode);
+            try
+            {
+                ResetExecutor((T) baseNode);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"FROM {baseNode.GetType().FullName}");
+                Debug.LogError($"TO {typeof(T).FullName}");
+                Debug.LogError(e);
+            }
         }
     }
 }
