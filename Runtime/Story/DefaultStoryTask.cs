@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
-using Object = UnityEngine.Object;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -29,9 +28,7 @@ namespace Module.InteractiveEditor.Runtime
                                               || currentNodeCache.ExecuteResult != ExecuteResult.RunningState);
             }
             
-            if (storyObjectCache != null ) Object.DestroyImmediate(storyObjectCache);
-            
-            storyObjectCache = storyObject.Clone();
+            storyObjectCache = storyObject;
             
             InitExecutors(storyObjectCache);
             
@@ -121,10 +118,6 @@ namespace Module.InteractiveEditor.Runtime
 
         public void Dispose()
         {
-            if (StoryObject != null)
-            {
-                Object.DestroyImmediate(StoryObject, true);
-            }
         }
     }
 }
