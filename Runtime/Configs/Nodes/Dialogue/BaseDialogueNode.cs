@@ -23,9 +23,9 @@ namespace Module.InteractiveEditor.Configs
 
         [NonSerialized] private IReadOnlyList<ImageData> spritesCache;
         [NonSerialized] private IReadOnlyList<IAddressableAsset> addressableAssets;
-        
+
         public IReadOnlyList<ImageData> AddressableSprites =>
-            spritesCache == null || spritesCache.Any(x => string.IsNullOrEmpty(x.Image.AssetGUID))
+            spritesCache == null || spritesCache.Any(x => string.IsNullOrEmpty(x?.Image?.AssetGUID))
                 ? spritesCache = imageDatas.ToList()
                 : spritesCache;
         
@@ -35,7 +35,15 @@ namespace Module.InteractiveEditor.Configs
 
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
-            addressableAssets ??= AddressableSprites.Select(x=> x.Image).ToList();
+            try
+            {
+                addressableAssets ??= AddressableSprites.Select(x=> x.Image).ToList();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw;
+            }
             
             return addressableAssets;
         }

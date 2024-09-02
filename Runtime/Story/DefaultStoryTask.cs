@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using DepedencyInjection;
+using Managers.Router;
+using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
 
@@ -12,6 +14,7 @@ namespace Module.InteractiveEditor.Runtime
     {
         private readonly PreloadManager preloadManager = new();
         private readonly LazyInject<SaveManager> saveManager = new();
+        private readonly LazyInject<IRouter> router = new();
         
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
@@ -22,6 +25,8 @@ namespace Module.InteractiveEditor.Runtime
         
         public async UniTask Init(StoryObject storyObject)
         {
+            router.Value.ShowLoadingScreen(LoadingScreenKeys.start);
+            
             if (currentNodeCache != null)
             {
                 await UniTask.WaitUntil(() => currentNodeCache == default 
@@ -34,7 +39,12 @@ namespace Module.InteractiveEditor.Runtime
             
             currentNodeCache = GetStartNode();
             
-            preloadManager.PrepareNode(currentNodeCache);
+            preloadManager.PrepareAssets(currentNodeCache);
+            
+            await UniTask.WaitUntil(() => preloadManager.IsCompletePreload).ContinueWith(() =>
+            {
+                router.Value.HideLoadingScreen();
+            });
         }
 
         private void InitExecutors(StoryObject storyObject)
@@ -63,26 +73,31 @@ namespace Module.InteractiveEditor.Runtime
 
         public void Execute()
         {
-            currentNodeCache = ExecuteNode(currentNodeCache);
-            
-            preloadManager.PrepareNode(currentNodeCache);
+            var (currentNode, result) = ExecuteNode(currentNodeCache);
+
+            currentNodeCache = currentNode;
+
+            if (result == ExecuteResult.SuccessState)
+            {
+                preloadManager.PrepareAssets(currentNodeCache);
+            }
         }
 
-        public BaseNode ExecuteNode(BaseNode node)
+        public (BaseNode nextNode, ExecuteResult result) ExecuteNode(BaseNode node)
         {
-            if (node == null) return null;
+            if (node == null) return default;
 
             var calcNode = node;
 
             var executor = executes[calcNode.GetExecutorType()];
             
-            if (executor == null) return null;
+            if (executor == null) return default;
 
             switch (executor.Execute(calcNode))
             {
                 case ExecuteResult.RunningState:
                 {
-                    return calcNode;
+                    return (calcNode, ExecuteResult.RunningState);
                 }
                 case ExecuteResult.SuccessState:
                 {
@@ -92,11 +107,11 @@ namespace Module.InteractiveEditor.Runtime
                     
                     saveManager.Value.ForceSave();
                     
-                    return next;
+                    return (next, ExecuteResult.SuccessState);
                 }
                 case ExecuteResult.NoneState:
                 {
-                    return calcNode;
+                    return (calcNode, ExecuteResult.NoneState);
                 }
             }
 
