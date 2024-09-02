@@ -11,7 +11,7 @@ namespace Module.InteractiveEditor.Runtime
 {
     public class PreloadManager
     {
-        private const int CacheSize = 6;
+        private const int CacheSize = 15;
         
         private readonly Dictionary<string, List<(string assetGuid, UniTaskCompletionSource<IAddressableAsset> task)>> nodeAssets = new();
 

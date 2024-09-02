@@ -25,9 +25,8 @@ namespace Module.InteractiveEditor.Configs
         [NonSerialized] private IReadOnlyList<IAddressableAsset> addressableAssets;
 
         public IReadOnlyList<ImageData> AddressableSprites =>
-            spritesCache == null || spritesCache.Any(x => string.IsNullOrEmpty(x?.Image?.AssetGUID))
-                ? spritesCache = imageDatas.ToList()
-                : spritesCache;
+            spritesCache ??= imageDatas != default 
+                ? imageDatas.Where(x=> x != default && !string.IsNullOrEmpty(x?.Image?.AssetGUID) ? x : null).Where(x=> x != default).ToList() : new List<ImageData>(0);
         
         public ImageData RandomImage => AddressableSprites.RandomItem();
         public LocalizedString Dialogue => dialogue;
