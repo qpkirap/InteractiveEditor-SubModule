@@ -12,10 +12,98 @@ namespace Module.InteractiveEditor.Runtime
     public class PreloadManager
     {
         private const int CacheSize = 15;
+
+        private readonly Dictionary<string, Dictionary<int, (HashSet<string> idAssets, HashSet<BaseNode> baseNodes)>> storyTreeCache = new(); //id story, depth, assets, nodes
+        private readonly Dictionary<string, Dictionary<int, HashSet<IAddressableAsset>>> loadedAssets = new(); //id story, depth, assets
         
         private readonly Dictionary<string, List<(string assetGuid, UniTaskCompletionSource<IAddressableAsset> task)>> nodeAssets = new();
 
-        public bool IsCompletePreload => nodeAssets.Values.SelectMany(x=> x.Select(z => z.task)).All(x => x.Task.Status == UniTaskStatus.Succeeded);
+        
+        public async UniTask InitStory(StoryObject obj, BaseNode startNode)
+        {
+            var tree = TraverseTree(startNode);
+
+            if (storyTreeCache.ContainsKey(obj.Id))
+            {
+                storyTreeCache.Remove(obj.Id); //вероятно нужно добавить выгрузку
+            }
+            
+            storyTreeCache.Add(obj.Id, new Dictionary<int, (HashSet<string> idAssets, HashSet<BaseNode> baseNodes)>());
+            
+            foreach (var (depth, nodes) in tree)
+            {
+                foreach (var node in nodes)
+                {
+                    if (!storyTreeCache[obj.Id].ContainsKey(depth))
+                    {
+                        storyTreeCache[obj.Id].Add(depth, (new HashSet<string>(), new HashSet<BaseNode>()));
+                    }
+                    
+                    var assets = node.GetAssets();
+                    
+                    if (assets == default) continue;
+                    
+                    foreach (var asset in assets)
+                    {
+                        storyTreeCache[obj.Id][depth].idAssets.Add(asset.AssetGUID);
+                    }
+                    
+                    storyTreeCache[obj.Id][depth].baseNodes.Add(node);
+                }
+            }
+            
+            await PrepareAssets(0, obj);
+        }
+
+        public async UniTask PrepareAssets(int currentDepth, StoryObject obj)
+        {
+            var endDepth = currentDepth + CacheSize;
+            if (endDepth > storyTreeCache[obj.Id].Count) endDepth = storyTreeCache[obj.Id].Count - 1;
+
+            var loadedTask = new List<UniTask>();
+
+            for (var i = currentDepth; i <= endDepth; i++)
+            {
+                if (loadedAssets.ContainsKey(obj.Id) && loadedAssets[obj.Id].ContainsKey(i)
+                    || !storyTreeCache[obj.Id].ContainsKey(i)) continue;
+                
+                loadedAssets.TryAdd(obj.Id, new Dictionary<int, HashSet<IAddressableAsset>>());
+                loadedAssets[obj.Id].Add(i, new HashSet<IAddressableAsset>());
+
+                var assets = storyTreeCache[obj.Id][i].baseNodes.SelectMany(x => x.GetAssets());
+                
+                foreach (var addressableAsset in assets)
+                {
+                    var task = LoadAssetAsync(addressableAsset);
+                    loadedTask.Add(task);
+                    
+                    loadedAssets[obj.Id][i].Add(addressableAsset);
+                }
+            }
+            
+            await UniTask.WhenAll(loadedTask);
+            
+            var unloadedAssets = new List<IAddressableAsset>();
+            var loadedAssetsDic = loadedAssets[obj.Id];
+            var needAssets = storyTreeCache[obj.Id]
+                .Where(x => x.Key >= currentDepth)
+                .SelectMany(x => x.Value.idAssets)
+                .ToHashSet();
+
+            foreach (var (depth , assets) in loadedAssetsDic)
+            {
+                foreach (var addressableAsset in assets)
+                {
+                    if (needAssets.Contains(addressableAsset.AssetGUID)) continue;
+                    unloadedAssets.Add(addressableAsset);
+                }
+            }
+            
+            foreach (var asset in unloadedAssets)
+            {
+                asset.Release().Forget();
+            }
+        }
         
         public void PrepareAssets(BaseNode current) 
         {
@@ -104,10 +192,10 @@ namespace Module.InteractiveEditor.Runtime
             await asset.PreloadAsync();
         }
 
-        public Dictionary<int, HashSet<BaseNode>> TraverseTree(BaseNode root)
+        public Dictionary<int, HashSet<BaseNode>> TraverseTree(BaseNode root, int maxDepth = int.MaxValue)
         {
             var result = new Dictionary<int, HashSet<BaseNode>>();
-            TraverseNode(root, 0, CacheSize, result);
+            TraverseNode(root, 0, maxDepth, result);
             return result;
         }
         

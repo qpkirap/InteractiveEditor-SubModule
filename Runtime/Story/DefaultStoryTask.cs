@@ -15,11 +15,12 @@ namespace Module.InteractiveEditor.Runtime
         private readonly PreloadManager preloadManager = new();
         private readonly LazyInject<SaveManager> saveManager = new();
         private readonly LazyInject<IRouter> router = new();
+        private readonly Dictionary<Type, INodeExecute> executes = new();
         
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
         
-        private readonly Dictionary<Type, INodeExecute> executes = new();
+        private int currentDepth = 0;
         
         public StoryObject StoryObject => storyObjectCache;
         
@@ -39,12 +40,9 @@ namespace Module.InteractiveEditor.Runtime
             
             currentNodeCache = GetStartNode();
             
-            preloadManager.PrepareAssets(currentNodeCache);
+            await preloadManager.InitStory(storyObject, currentNodeCache);
             
-            await UniTask.WaitUntil(() => preloadManager.IsCompletePreload).ContinueWith(() =>
-            {
-                router.Value.HideLoadingScreen();
-            });
+            router.Value.HideLoadingScreen();
         }
 
         private void InitExecutors(StoryObject storyObject)
@@ -70,7 +68,7 @@ namespace Module.InteractiveEditor.Runtime
                 executes.Add(executorType, executor);
             }
         }
-
+        
         public void Execute()
         {
             var (currentNode, result) = ExecuteNode(currentNodeCache);
@@ -79,7 +77,9 @@ namespace Module.InteractiveEditor.Runtime
 
             if (result == ExecuteResult.SuccessState)
             {
-                preloadManager.PrepareAssets(currentNodeCache);
+                currentDepth++;
+
+                preloadManager.PrepareAssets(currentDepth, storyObjectCache).Forget();
             }
         }
 
