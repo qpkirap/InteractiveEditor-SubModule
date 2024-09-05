@@ -16,9 +16,6 @@ namespace Module.InteractiveEditor.Runtime
         private readonly Dictionary<string, Dictionary<int, (HashSet<string> idAssets, HashSet<BaseNode> baseNodes)>> storyTreeCache = new(); //id story, depth, assets, nodes
         private readonly Dictionary<string, Dictionary<int, HashSet<IAddressableAsset>>> loadedAssets = new(); //id story, depth, assets
         
-        private readonly Dictionary<string, List<(string assetGuid, UniTaskCompletionSource<IAddressableAsset> task)>> nodeAssets = new();
-
-        
         public async UniTask InitStory(StoryObject obj, BaseNode startNode)
         {
             var tree = TraverseTree(startNode);
@@ -67,6 +64,11 @@ namespace Module.InteractiveEditor.Runtime
                 if (loadedAssets.ContainsKey(obj.Id) && loadedAssets[obj.Id].ContainsKey(i)
                     || !storyTreeCache[obj.Id].ContainsKey(i)) continue;
                 
+                foreach (var baseNode in storyTreeCache[obj.Id][i].baseNodes)
+                {
+                    Debug.Log($"Load {baseNode.Id}");
+                }
+                
                 loadedAssets.TryAdd(obj.Id, new Dictionary<int, HashSet<IAddressableAsset>>());
                 loadedAssets[obj.Id].Add(i, new HashSet<IAddressableAsset>());
 
@@ -104,86 +106,6 @@ namespace Module.InteractiveEditor.Runtime
                 asset.Release().Forget();
             }
         }
-        
-        public void PrepareAssets(BaseNode current) 
-        {
-            if (current == null)
-            {
-                return;
-            }
-
-            var tree = TraverseTree(current);
-            
-            foreach (var (depth, nodes) in tree)
-            {
-                foreach (var baseNode in nodes)
-                {
-                    if (!nodeAssets.ContainsKey(baseNode.Id))
-                    {
-                        var currentAssets = baseNode.GetAssets();
-            
-                        if (currentAssets == default) return;
-
-                        foreach (var asset in currentAssets)
-                        {
-                            var task = new UniTaskCompletionSource<IAddressableAsset>();
-
-                            if (nodeAssets.TryGetValue(baseNode.Id, out var list))
-                            {
-                                list.Add((asset.AssetGUID, task));
-                            }
-                            else
-                            {
-                                nodeAssets.Add(baseNode.Id, new List<(string assetGuid, UniTaskCompletionSource<IAddressableAsset> task)> { (asset.AssetGUID, task) });
-                            }
-                    
-                            Debug.Log($"load {baseNode.Id}");
-                
-                            LoadAssetAsync(asset).ContinueWith(() => task.TrySetResult(asset));
-                        }
-                    }
-                }
-            }
-            
-            UnloadAssets(tree);
-        }
-
-        private void UnloadAssets(Dictionary<int, HashSet<BaseNode>> tree)
-        {
-            var unloadList = new List<(string idNode, string idAsset, UniTaskCompletionSource<IAddressableAsset> asset)>();
-            var idNodes = tree.Values.SelectMany(x => x.Select(z => z.Id)).ToHashSet();
-            
-            foreach (var (idNode, list) in nodeAssets)
-            {
-                if (!idNodes.Contains(idNode))
-                {
-                    foreach (var (idAsset, task) in list)
-                    {
-                        unloadList.Add((idNode, idAsset, task));
-                    }
-                }
-            }
-            
-            foreach (var dataItem in unloadList)
-            {
-                Debug.Log($"Unload {dataItem.idNode}");
-                
-                UnloadAssetAsync(dataItem.asset).Forget();
-                    
-                nodeAssets.Remove(dataItem.idNode);
-            }
-        }
-
-        private async UniTask UnloadAssetAsync(UniTaskCompletionSource<IAddressableAsset> asset)
-        {
-            if (asset == null) return;
-
-            var item = await asset.Task;
-            
-            if (item == null) return;
-            
-            await item.Release();
-        }
 
         private async UniTask LoadAssetAsync(IAddressableAsset asset)
         {
@@ -192,7 +114,7 @@ namespace Module.InteractiveEditor.Runtime
             await asset.PreloadAsync();
         }
 
-        public Dictionary<int, HashSet<BaseNode>> TraverseTree(BaseNode root, int maxDepth = int.MaxValue)
+        private Dictionary<int, HashSet<BaseNode>> TraverseTree(BaseNode root, int maxDepth = int.MaxValue)
         {
             var result = new Dictionary<int, HashSet<BaseNode>>();
             TraverseNode(root, 0, maxDepth, result);
