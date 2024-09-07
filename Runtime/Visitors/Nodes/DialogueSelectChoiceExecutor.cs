@@ -112,6 +112,9 @@ namespace Module.InteractiveEditor.Runtime
             
             selectedIndex = -1;
             isOpenCanvas = false;
+            
+            background = null;
+            imageDataCache = null;
         }
     }
 }

@@ -49,8 +49,6 @@ namespace Module.InteractiveEditor.Runtime
             isNext = false;
             isOpenCanvas = false;
             
-            background?.Release();
-
             background = null;
             imageDataCache = null;
         }

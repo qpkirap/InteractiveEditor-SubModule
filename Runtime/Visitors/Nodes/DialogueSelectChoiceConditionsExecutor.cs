@@ -144,6 +144,9 @@ namespace Module.InteractiveEditor.Runtime
             
             SelectedIndex = -1;
             isOpenCanvas = false;
+            
+            background = null;
+            imageDataCache = null;
         }
     }
 }
