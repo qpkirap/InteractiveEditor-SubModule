@@ -23,6 +23,11 @@ namespace Module.InteractiveEditor.Runtime
         private int currentDepth = 0;
         
         public StoryObject StoryObject => storyObjectCache;
+
+        public async UniTask UnloadResources()
+        {
+            await preloadManager.UnloadAllAssets();
+        }
         
         public async UniTask Init(StoryObject storyObject)
         {
@@ -104,6 +109,8 @@ namespace Module.InteractiveEditor.Runtime
                     var next = executor.GetNext(calcNode);
                     
                     executor.ResetExecutor(calcNode);
+                    
+                    saveManager.Value.NodeSaveServices.SetLastIdNode(node.Id);
                     
                     saveManager.Value.ForceSave();
                     

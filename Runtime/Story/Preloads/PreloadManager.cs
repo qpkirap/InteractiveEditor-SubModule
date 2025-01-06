@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 using Module.InteractiveEditor.Configs;
-using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Rendering;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -15,6 +14,25 @@ namespace Module.InteractiveEditor.Runtime
 
         private readonly Dictionary<string, Dictionary<int, (HashSet<string> idAssets, HashSet<BaseNode> baseNodes)>> storyTreeCache = new(); //id story, depth, assets, nodes
         private readonly Dictionary<string, Dictionary<int, HashSet<IAddressableAsset>>> loadedAssets = new(); //id story, depth, assets
+
+        public async UniTask UnloadAllAssets()
+        {
+            var loadedAssets = this.loadedAssets.Values.SelectMany(x => x.Values).ToList();
+            
+            this.loadedAssets.Clear();
+
+            for (var i = 0; i < loadedAssets.Count; i++)
+            {
+                var assets = loadedAssets[i];
+
+                await assets.ToUniTaskAsyncEnumerable().ForEachAwaitAsync(async item =>
+                {
+                    await item.Release();
+                });
+            }
+            
+            storyTreeCache.Clear();
+        }
         
         public async UniTask InitStory(StoryObject obj, BaseNode startNode)
         {

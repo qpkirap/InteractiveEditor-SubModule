@@ -96,14 +96,17 @@ namespace Module.InteractiveEditor.Saves
         
         public void SetLast(string idStory, string idNode)
         {
-            if (string.IsNullOrEmpty(idNode) || string.IsNullOrEmpty(idStory)) return;
+            if (string.IsNullOrEmpty(idStory)) return;
             
             StoryLastNodes[idStory] = idNode;
         }
 
         public void SetLast(string idNode)
         {
-            if (string.IsNullOrEmpty(idNode)) return;
+            if (string.IsNullOrEmpty(idNode))
+            {
+                StoryLastNodes.Clear();
+            }
             
             if (storyObjectsCache == null) return;
             
@@ -135,6 +138,13 @@ namespace Module.InteractiveEditor.Saves
 
         public void PostLoad()
         {
+            UpdateIds();
+        }
+
+        public void Reset()
+        {
+            StoryLastNodes.Clear();
+            
             UpdateIds();
         }
 

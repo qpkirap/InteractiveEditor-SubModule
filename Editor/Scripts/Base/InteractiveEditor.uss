@@ -147,3 +147,7 @@ GridBackground {
 .conditions #input {
     background-color: rgb(255, 95, 3);
 }
+
+.end #input {
+    background-color: rgb(255, 245, 1);
+}

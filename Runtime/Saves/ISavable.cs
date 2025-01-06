@@ -6,5 +6,6 @@ namespace Module.InteractiveEditor.Saves
     {
         public string SaveKey { get; }
         public void PostLoad();
+        public void Reset();
     }
 }

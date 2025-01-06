@@ -38,6 +38,18 @@ namespace Module.InteractiveEditor.Saves
             var save = array.ToString();
         }
 
+        internal override UniTask Reset()
+        {
+            foreach (var savable in saves)
+            {
+                if (savable == null) continue;
+                
+                savable.Reset();
+            }
+            
+            return UniTask.CompletedTask;
+        }
+
         internal override async UniTask LoadAsync()
         {
             foreach (var savable in saves)

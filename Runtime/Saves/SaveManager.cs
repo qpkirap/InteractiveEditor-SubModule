@@ -44,6 +44,11 @@ namespace Module.InteractiveEditor.Saves
         {
             saveProvider.Save();
         }
+
+        public void Reset()
+        {
+            saveProvider.Reset();
+        }
         
         public void OnApplicationPause(bool pauseStatus)
         {

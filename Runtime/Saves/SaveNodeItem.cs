@@ -30,6 +30,10 @@ namespace Module.InteractiveEditor.Saves
         {
         }
 
+        public virtual void Reset()
+        {
+        }
+
         public bool Equals(ISavable other)
         {
             if (other == null) return false;

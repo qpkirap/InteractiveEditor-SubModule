@@ -13,10 +13,12 @@ namespace Module.InteractiveEditor.Runtime
         private readonly LazyInject<IConfigsProvider> configProvider = new();
         
         private readonly StoryConfigs storyConfigs;
-        private readonly IStoryTask defaultTask = new DefaultStoryTask();
         private readonly ReactiveProperty<StoryObject> currentStoryObject = new();
+
+        private readonly Subject onReload = new();
         
         public IReactiveProperty<StoryObject> CurrentStoryObject => currentStoryObject;
+        public IObservable OnReload => onReload;
 
         public StoryObjectManager()
         {
@@ -52,13 +54,19 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (obj == null) return null;
             
-            return defaultTask;
+            return new DefaultStoryTask();
+        }
+
+        public void Reload()
+        {
+            onReload.OnNext();
         }
     }
 
     public interface IStoryTask : IDisposable
     {
         StoryObject StoryObject { get; }
+        UniTask UnloadResources();
         UniTask Init(StoryObject storyObject);
         void Execute();
     }

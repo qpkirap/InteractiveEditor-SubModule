@@ -7,6 +7,7 @@ namespace Module.InteractiveEditor.Saves
         internal abstract void Add(ISavable savable);
         
         internal abstract UniTask Save();
+        internal abstract UniTask Reset();
         internal abstract UniTask LoadAsync();
     }
 }

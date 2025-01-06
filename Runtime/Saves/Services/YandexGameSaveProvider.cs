@@ -44,6 +44,16 @@ namespace Module.InteractiveEditor.Saves
             YandexGame.SaveProgress();
         }
 
+        internal override UniTask Reset()
+        {
+            foreach (var savable in saves)
+            {
+                savable?.Reset();
+            }
+            
+            return UniTask.CompletedTask;
+        }
+
         internal override async UniTask LoadAsync()
         {
             if (!YandexGame.SDKEnabled)

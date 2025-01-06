@@ -34,5 +34,12 @@ namespace Module.InteractiveEditor.Saves
         {
             IsSelected = true;
         }
+
+        public override void Reset()
+        {
+            base.Reset();
+            
+            IsSelected = false;
+        }
     }
 }
