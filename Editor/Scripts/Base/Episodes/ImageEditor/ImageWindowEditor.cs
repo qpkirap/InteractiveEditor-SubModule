@@ -122,13 +122,9 @@ public class ImageWindowEditor : EditorWindow
                 }
             }
             
-            if (imageData.Image is { RuntimeKeyIsValid: true })
+            if (imageData.ImageSprite != null)
             {
-                var guid = imageData.Image.AssetGUID;
-            
-                var asset = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
-            
-                imageField.SetValueWithoutNotify(asset);
+                imageField.SetValueWithoutNotify(imageData.ImageSprite);
             }
 
             LoadImage(imageData);
@@ -137,7 +133,7 @@ public class ImageWindowEditor : EditorWindow
     
     private void LoadImage(ImageData imageData)
     {
-        if (imageData == null || imageData.Image is not { RuntimeKeyIsValid: true })
+        if (imageData == null || imageData.ImageSprite == null)
         {
             image.style.backgroundImage = null;
             
@@ -147,8 +143,7 @@ public class ImageWindowEditor : EditorWindow
             return;
         }
 
-        var guid = imageData.Image.AssetGUID;
-        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
+        var sprite = imageData.ImageSprite;
 
         if (sprite != null)
         {

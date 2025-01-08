@@ -28,7 +28,7 @@ namespace Module.InteractiveEditor.Editor
 
             if (images != null)
             {
-                var first = images.FirstOrDefault(x=> x.Image is { RuntimeKeyIsValid: true });
+                var first = images.FirstOrDefault(x=> x.ImageSprite != null);
                 
                 if (first != default)
                 {
@@ -37,7 +37,7 @@ namespace Module.InteractiveEditor.Editor
             }
         }
 
-        private async UniTask CreateImageElementAsync(ImageData imageData)
+        private void CreateImageElementAsync(ImageData imageData)
         {
             if (imageData == null) return;
             
@@ -47,11 +47,11 @@ namespace Module.InteractiveEditor.Editor
             
             Add(imageElement);
             
-            if (imageData.Image is not { RuntimeKeyIsValid: true }) return;
+            if (imageData.ImageSprite == null) return;
 
             try
             {
-                var sprite = await imageData.Image.LoadAsync();
+                var sprite = imageData.ImageSprite;
                 
                 if (sprite == null) return;
             

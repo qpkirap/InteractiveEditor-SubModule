@@ -39,19 +39,10 @@ namespace Module.InteractiveEditor.Editor
                 
                 var random = array[Random.Range(0, array.Length)];
 
-                var adrSprite = random.Image;
+                var sprite = random.ImageSprite;
 
-                if (adrSprite.RuntimeKeyIsValid)
+                if (sprite != null)
                 {
-                    var guid = adrSprite.AssetGUID;
-                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
-
-                    if (sprite == null)
-                    {
-                        visualElement.style.backgroundImage = null;
-                        visualElement.style.height = 0;
-                    }
-            
                     visualElement.style.backgroundImage = sprite.texture;
                     visualElement.style.height = 100;
                     

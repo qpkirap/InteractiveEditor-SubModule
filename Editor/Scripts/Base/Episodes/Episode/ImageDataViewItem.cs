@@ -44,13 +44,11 @@ namespace Module.InteractiveEditor.Editor
         {
             if (imageData == null) return;
             
-            if (imageData.Image is not { RuntimeKeyIsValid: true }) return;
+            if (imageData.ImageSprite == null) return;
 
             try
             {
-                var guid = imageData.Image.AssetGUID;
-                
-                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
+                var sprite = imageData.ImageSprite;
                 
                 if (sprite == null) return;
             
