@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Editor;
 using Module.Utils;
@@ -107,6 +106,7 @@ public class ImageWindowEditor : EditorWindow
                     var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
                     
                     imageData.SetFieldValue(ImageData.ImageKey, assetReference);
+                    imageData.SetFieldValue(ImageData.ImageSpriteKey, sprite);
                     imageData.SetFieldValue(ImageData.ImageCacheKey, new AddressableSprite(assetReference));
                     imageData.SetFieldValue(ImageData.ImageSizeKey, sprite != null ? new Vector2(sprite.rect.width, sprite.rect.height) : default);
 

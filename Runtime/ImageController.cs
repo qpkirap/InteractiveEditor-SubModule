@@ -22,6 +22,8 @@ namespace Module.InteractiveEditor.Runtime
 
             image.sprite = null;
         }
+        
+        public void SetImage(Sprite sprite) => image.sprite = sprite;
 
         public async UniTask SetImage(AddressableSprite sprite)
         {

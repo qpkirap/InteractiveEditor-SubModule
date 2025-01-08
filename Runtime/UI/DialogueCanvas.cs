@@ -65,6 +65,13 @@ namespace Module.InteractiveEditor.Saves.UI.Story
         {
             bgImages.ForEach(item => item.SetImage(sprite));
         }
+
+#if UNITY_WEBGL || UNITY_EDITOR
+        public void SetImage(Sprite sprite)
+        {
+            bgImages.ForEach(item => item.SetImage(sprite));
+        }
+#endif
         
         public void SetText(LocalizedString localizedString)
         {

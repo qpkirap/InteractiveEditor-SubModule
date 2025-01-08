@@ -15,8 +15,12 @@ namespace Module.InteractiveEditor.Runtime
         {
             executor = execute;
             this.uiCanvas = uiCanvas;
-            
+
+#if UNITY_EDITOR || UNITY_WEBGL
+            this.uiCanvas.SetImage(executor.GetBackgroundSprite());
+#else
             this.uiCanvas.SetImage(executor.GetBackground());
+#endif
             this.uiCanvas.SetText(executor.GetText());
             this.uiCanvas.SetCensure(executor.GetCensures());
 
