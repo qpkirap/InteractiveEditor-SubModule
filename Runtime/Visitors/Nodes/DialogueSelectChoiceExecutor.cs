@@ -52,17 +52,6 @@ namespace Module.InteractiveEditor.Runtime
             return background;
         }
         
-#if UNITY_WEBGL || UNITY_EDITOR
-        public Sprite GetBackgroundSprite()
-        {
-            var data = GetImageData();
-
-            if (data == null) return null;
-
-            return data.ImageSprite;
-        }
-#endif
-        
         private ImageData GetImageData()
         {
             imageDataCache ??= node.RandomImage;
