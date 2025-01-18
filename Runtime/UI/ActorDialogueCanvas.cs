@@ -55,13 +55,11 @@ namespace Module.InteractiveEditor.Saves.UI.Story
             censorController.Disable();
             textController.Disable();
         }
-
-#if UNITY_WEBGL || UNITY_EDITOR
+        
         public void SetImage(Sprite sprite)
         {
             bgImages.ForEach(item => item.SetImage(sprite));
         }
-#endif
         
         public void SetImage(AddressableSprite sprite)
         {
