@@ -23,11 +23,14 @@ namespace Module.InteractiveEditor.Configs
         public const string CensuresKey = nameof(censures);
         
 #if UNITY_EDITOR
+        [SerializeField] private string fileName; //чтобы потерять файл при изменении разрешения
         [SerializeField] private Sprite imageSprite;
         
         public const string ImageSpriteKey = nameof(imageSprite);
+        public const string FileNameKey = nameof(fileName);
         
         public Sprite ImageSprite => imageSprite;
+        public string FileName => fileName;
 
 #endif
 
