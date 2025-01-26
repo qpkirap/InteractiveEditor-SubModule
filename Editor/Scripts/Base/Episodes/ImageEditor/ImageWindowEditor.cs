@@ -107,6 +107,7 @@ public class ImageWindowEditor : EditorWindow
                     
                     imageData.SetFieldValue(ImageData.ImageKey, assetReference);
                     imageData.SetFieldValue(ImageData.ImageSpriteKey, sprite);
+                    imageData.SetFieldValue(ImageData.FileNameKey, sprite != null ? sprite.name : default);
                     imageData.SetFieldValue(ImageData.ImageCacheKey, new AddressableSprite(assetReference));
                     imageData.SetFieldValue(ImageData.ImageSizeKey, sprite != null ? new Vector2(sprite.rect.width, sprite.rect.height) : default);
 

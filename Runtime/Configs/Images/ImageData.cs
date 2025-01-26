@@ -26,6 +26,15 @@ namespace Module.InteractiveEditor.Configs
         public const string ImageSizeKey = nameof(imageSize);
         public const string ImageCacheKey = nameof(imageCache);
         public const string CensuresKey = nameof(censures);
+        
+#if UNITY_EDITOR
+        [SerializeField] private string fileName; //чтобы потерять файл при изменении разрешения
+        
+        public const string FileNameKey = nameof(fileName);
+        
+        public string FileName => fileName;
+
+#endif
 
         #endregion
 
