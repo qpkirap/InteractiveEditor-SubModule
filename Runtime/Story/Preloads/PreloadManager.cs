@@ -10,7 +10,7 @@ namespace Module.InteractiveEditor.Runtime
 {
     public class PreloadManager
     {
-        private const int CacheSize = 15;
+        private const int CacheSize = 5;
 
         private readonly Dictionary<string, Dictionary<int, (HashSet<string> idAssets, HashSet<BaseNode> baseNodes)>> storyTreeCache = new(); //id story, depth, assets, nodes
         private readonly Dictionary<string, Dictionary<int, HashSet<IAddressableAsset>>> loadedAssets = new(); //id story, depth, assets
