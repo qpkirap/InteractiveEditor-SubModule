@@ -12,10 +12,13 @@ namespace Module.InteractiveEditor.Configs
     {
         [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true), OnValueChanged(nameof(OnGenerateId))] public List<IConditionComponent> Conditions = new();
 
+#if !UNITY_WEBGL
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
             return new List<IAddressableAsset>(0);
         }
+#endif
+        
 
         private void OnGenerateId()
         {

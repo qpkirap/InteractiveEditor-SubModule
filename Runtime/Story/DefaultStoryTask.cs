@@ -15,7 +15,9 @@ namespace Module.InteractiveEditor.Runtime
 #endif
     public class DefaultStoryTask : IStoryTask
     {
-        private readonly PreloadManager preloadManager = new();
+#if !UNITY_WEBGL
+                private readonly PreloadManager preloadManager = new();
+#endif
         private readonly LazyInject<SaveManager> saveManager = new();
         private readonly LazyInject<IRouter> router = new();
         private readonly Dictionary<Type, INodeExecute> executes = new();
@@ -29,7 +31,9 @@ namespace Module.InteractiveEditor.Runtime
 
         public async UniTask UnloadResources()
         {
-            await preloadManager.UnloadAllAssets();
+#if !UNITY_WEBGL
+        await preloadManager.UnloadAllAssets();
+#endif
         }
         
         public async UniTask Init(StoryObject storyObject)
@@ -47,8 +51,10 @@ namespace Module.InteractiveEditor.Runtime
             InitExecutors(storyObjectCache);
             
             currentNodeCache = GetStartNode();
-            
+
+#if !UNITY_WEBGL
             await preloadManager.InitStory(storyObject, currentNodeCache);
+#endif
             
             router.Value.HideLoadingScreen();
         }
@@ -86,8 +92,10 @@ namespace Module.InteractiveEditor.Runtime
             if (result == ExecuteResult.SuccessState)
             {
                 currentDepth++;
-                
+
+#if !UNITY_WEBGL
                 preloadManager.PrepareAssets(currentDepth, storyObjectCache).Forget();
+#endif
             }
         }
 

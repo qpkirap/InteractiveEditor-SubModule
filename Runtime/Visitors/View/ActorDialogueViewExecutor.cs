@@ -16,7 +16,7 @@ namespace Module.InteractiveEditor.Runtime
             executor = execute;
             this.uiCanvas = uiCanvas;
             
-            this.uiCanvas.SetImage(executor.GetBackground());
+            this.uiCanvas.SetImage(executor.GetBackgroundSprite());
             
             this.uiCanvas.SetText(executor.GetText());
             this.uiCanvas.SetActor(executor.GetActor());

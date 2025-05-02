@@ -102,21 +102,16 @@ public class ImageWindowEditor : EditorWindow
 
                 if (!string.IsNullOrEmpty(guid))
                 {
-                    var assetReference = new AssetReference(guid);
                     var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid));
                     
-                    imageData.SetFieldValue(ImageData.ImageKey, assetReference);
                     imageData.SetFieldValue(ImageData.ImageSpriteKey, sprite);
                     imageData.SetFieldValue(ImageData.FileNameKey, sprite != null ? sprite.name : default);
-                    imageData.SetFieldValue(ImageData.ImageCacheKey, new AddressableSprite(assetReference));
                     imageData.SetFieldValue(ImageData.ImageSizeKey, sprite != null ? new Vector2(sprite.rect.width, sprite.rect.height) : default);
 
                     UpdateCensureImageSize();
                 }
                 else
                 {
-                    imageData.SetFieldValue<AssetReference>(ImageData.ImageKey, default);
-                    imageData.SetFieldValue<AddressableSprite>(ImageData.ImageCacheKey, new(default));
                     imageData.SetFieldValue<Vector2>(ImageData.ImageSizeKey, default);
 
                     UpdateCensureImageSize();

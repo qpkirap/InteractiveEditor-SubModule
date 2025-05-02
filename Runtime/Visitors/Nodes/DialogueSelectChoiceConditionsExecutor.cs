@@ -16,8 +16,10 @@ namespace Module.InteractiveEditor.Runtime
         
         private readonly Dictionary<int, (IEnumerable<ICondition> conditions, BaseNode node)> answersConditions = new();
         private readonly List<LocalizedString> answersCache = new();
-        
+
+#if !UNITY_WEBGL
         private AddressableSprite background;
+#endif
         private ImageData imageDataCache;
         private SelectChoiceDialogueConditionsNode node;
         
@@ -67,7 +69,8 @@ namespace Module.InteractiveEditor.Runtime
 
             return answersCache;
         }
-        
+
+#if !UNITY_WEBGL
         public AddressableSprite GetBackground()
         {
             var data = GetImageData();
@@ -78,10 +81,16 @@ namespace Module.InteractiveEditor.Runtime
             
             return background;
         }
+#endif
+        
+        public Sprite GetSprite()
+        {
+            return GetImageData()?.ImageSprite;
+        }
         
         private ImageData GetImageData()
         {
-            imageDataCache ??= node.RandomImage;
+            imageDataCache ??= node.GetRandomData;
 
             return imageDataCache;
         }
@@ -145,8 +154,10 @@ namespace Module.InteractiveEditor.Runtime
             
             SelectedIndex = -1;
             isOpenCanvas = false;
-            
-            background = null;
+
+#if !UNITY_WEBGL
+                        background = null;
+#endif
             imageDataCache = null;
         }
     }

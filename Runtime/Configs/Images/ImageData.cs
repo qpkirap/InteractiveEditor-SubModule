@@ -10,61 +10,57 @@ namespace Module.InteractiveEditor.Configs
     [Serializable]
     public class ImageData : Component
     {
-        [SerializeField] private AssetReference image;
-        
         [SerializeField] private List<CensureData> censures;
         [SerializeField] private Vector2 imageSize;
+        
+        [SerializeField] private Sprite imageSprite;
+        
+        public Sprite ImageSprite => imageSprite;
+        
+        public IReadOnlyList<CensureData> Censures => censures;
 
         #region Editor
         
-        public const string ImageKey = nameof(image);
+        
         public const string ImageSizeKey = nameof(imageSize);
-        public const string ImageCacheKey = nameof(imageCache);
         public const string CensuresKey = nameof(censures);
         
 #if UNITY_EDITOR
         [SerializeField] private string fileName; //чтобы потерять файл при изменении разрешения
-        [SerializeField] private Sprite imageSprite;
         
         public const string ImageSpriteKey = nameof(imageSprite);
         public const string FileNameKey = nameof(fileName);
         
-        public Sprite ImageSprite => imageSprite;
         public string FileName => fileName;
 
 #endif
 
         #endregion
 
-        [NonSerialized] private AddressableSprite imageCache;
-
-        public AddressableSprite Image => imageCache == null || string.IsNullOrEmpty(imageCache.AssetGUID) ?
-            imageCache = image != null ? new AddressableSprite(image) : default
-            : imageCache;
-        
-        public IReadOnlyList<CensureData> Censures => censures;
-
+#if UNITY_EDITOR
         public override object Clone()
         {
-            var item = base.Clone();
+                var item = base.Clone();
             
-            item.SetFieldValue(ImageKey, image);
+                item.SetFieldValue(ImageSpriteKey, imageSprite);
 
-            var censureClone = new List<CensureData>();
+                var censureClone = new List<CensureData>();
             
-            if (censures != null)
-            {
-                foreach (var censure in censures)
+                if (censures != null)
                 {
-                    if (censure == null) continue;
+                        foreach (var censure in censures)
+                        {
+                                if (censure == null) continue;
                     
-                    censureClone.Add(censure.Clone());
+                                censureClone.Add(censure.Clone());
+                        }
                 }
-            }
             
-            item.SetFieldValue(CensuresKey, censureClone);
+                item.SetFieldValue(CensuresKey, censureClone);
             
-            return item;
+                return item;
         }
+
+#endif
     }
 }

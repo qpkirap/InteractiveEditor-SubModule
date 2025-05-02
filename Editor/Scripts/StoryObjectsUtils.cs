@@ -28,8 +28,7 @@ namespace Module.InteractiveEditor
                     
                     foreach (var imageData in imageDatas)
                     {
-                        var asset = imageData.GetFieldValue<AssetReference>(ImageData.ImageKey);
-                        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(asset.AssetGUID));
+                        var sprite = imageData.ImageSprite;
                         imageData.SetFieldValue(ImageData.ImageSpriteKey, sprite);
                     }
                 }
@@ -93,9 +92,6 @@ namespace Module.InteractiveEditor
                         
                         var sprite = allSprites.FirstOrDefault(x => x.name == fileName);
                         imageData.SetFieldValue(ImageData.ImageSpriteKey, sprite);
-                        
-                        var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sprite));
-                        imageData.SetFieldValue(ImageData.ImageKey, new AssetReference(guid));
                         
                         imageData.SetFieldValue(ImageData.ImageSizeKey, sprite != null ? new Vector2(sprite.rect.width, sprite.rect.height) : default);
                     }

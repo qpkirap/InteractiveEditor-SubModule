@@ -20,10 +20,12 @@ namespace Module.InteractiveEditor.Configs
         
         public LocalizedString AnswerText => this.answerText;
 
+#if !UNITY_WEBGL
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
             return new List<IAddressableAsset>(0);
         }
+#endif
 
         public override object Clone()
         {

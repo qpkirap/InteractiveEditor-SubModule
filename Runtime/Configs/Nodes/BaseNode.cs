@@ -52,7 +52,9 @@ namespace Module.InteractiveEditor.Configs
 
         public IReadOnlyList<BaseNode> ChildrenNodes => childrenNodes;
 
-        public abstract IReadOnlyCollection<IAddressableAsset> GetAssets();
+#if !UNITY_WEBGL
+                public abstract IReadOnlyCollection<IAddressableAsset> GetAssets();
+#endif
         public abstract Type GetExecutorType();
 
         public virtual Type GetSaveItemType()

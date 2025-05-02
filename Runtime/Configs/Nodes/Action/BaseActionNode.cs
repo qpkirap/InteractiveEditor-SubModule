@@ -22,11 +22,13 @@ namespace Module.InteractiveEditor.Configs
         #endregion
 
 
+#if !UNITY_WEBGL
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
             return new List<IAddressableAsset>(0);
         }
-
+#endif
+        
         public override object Clone()
         {
             var item = (BaseNode)base.Clone();

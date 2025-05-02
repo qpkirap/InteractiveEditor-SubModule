@@ -23,15 +23,20 @@ namespace Module.InteractiveEditor.Configs
 
         [NonSerialized] private IReadOnlyList<ImageData> spritesCache;
         [NonSerialized] private IReadOnlyList<IAddressableAsset> addressableAssets;
+        
+        public LocalizedString Dialogue => dialogue;
+        
+        public IReadOnlyList<ImageData> ImageData => imageDatas;
+        
+        public ImageData GetRandomData => imageDatas.RandomItem();
 
+#if !UNITY_WEBGL
         public IReadOnlyList<ImageData> AddressableSprites =>
             spritesCache ??= imageDatas != default 
                 ? imageDatas.Where(x=> x != default && !string.IsNullOrEmpty(x?.Image?.AssetGUID) ? x : null).Where(x=> x != default).ToList() : new List<ImageData>(0);
         
-        public ImageData RandomImage => AddressableSprites.RandomItem();
-        public LocalizedString Dialogue => dialogue;
-
-
+        public ImageData RandomAddressableImage => AddressableSprites.RandomItem();
+        
         public override IReadOnlyCollection<IAddressableAsset> GetAssets()
         {
             try
@@ -46,7 +51,8 @@ namespace Module.InteractiveEditor.Configs
             
             return addressableAssets;
         }
-
+#endif
+        
         public override object Clone()
         {
             var item =  base.Clone();

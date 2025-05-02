@@ -52,8 +52,9 @@ namespace Module.InteractiveEditor.Runtime
             background = null;
             imageDataCache = null;
         }
-        
-        public AddressableSprite GetBackground()
+
+#if !UNITY_WEBGL
+         public AddressableSprite GetBackground()
         {
             var data = GetImageData();
 
@@ -63,6 +64,12 @@ namespace Module.InteractiveEditor.Runtime
             
             return background;
         }
+#endif
+       
+        public Sprite GetSprite()
+        {
+            return GetImageData()?.ImageSprite;
+        }
         
         public IReadOnlyList<CensureData> GetCensures()
         {
@@ -71,7 +78,7 @@ namespace Module.InteractiveEditor.Runtime
         
         private ImageData GetImageData()
         {
-            imageDataCache ??= node.RandomImage;
+            imageDataCache ??= node.GetRandomData;
 
             return imageDataCache;
         }

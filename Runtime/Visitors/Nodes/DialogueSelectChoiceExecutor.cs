@@ -40,7 +40,8 @@ namespace Module.InteractiveEditor.Runtime
 
             return answersCache;
         }
-        
+
+#if !UNITY_WEBGL
         public AddressableSprite GetBackground()
         {
             var data = GetImageData();
@@ -51,10 +52,16 @@ namespace Module.InteractiveEditor.Runtime
             
             return background;
         }
+#endif
+        
+        public Sprite GetSprite()
+        {
+            return GetImageData()?.ImageSprite;
+        }
         
         private ImageData GetImageData()
         {
-            imageDataCache ??= node.RandomImage;
+            imageDataCache ??= node.GetRandomData;
 
             return imageDataCache;
         }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#if !UNITY_WEBGL
+
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
@@ -157,3 +159,4 @@ namespace Module.InteractiveEditor.Runtime
         }
     }
 }
+#endif

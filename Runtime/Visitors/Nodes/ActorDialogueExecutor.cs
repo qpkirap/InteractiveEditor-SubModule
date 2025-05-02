@@ -16,11 +16,14 @@ namespace Module.InteractiveEditor.Runtime
 
         private ImageData imageDataCache;
         private ActorDialogueNode node;
-        private AddressableSprite background;
         
         private bool isOpenCanvas;
         private bool isNext;
-        
+
+#if !UNITY_WEBGL
+
+        private AddressableSprite background;
+
         public AddressableSprite GetBackground()
         {
             var data = GetImageData();
@@ -31,6 +34,16 @@ namespace Module.InteractiveEditor.Runtime
             
             return background;
         }
+#endif
+        
+        public Sprite GetBackgroundSprite()
+        {
+            var data = GetImageData();
+            
+            if (data == null) return null;
+
+            return data.ImageSprite;
+        }
 
         public IReadOnlyList<CensureData> GetCensure()
         {
@@ -39,7 +52,7 @@ namespace Module.InteractiveEditor.Runtime
 
         private ImageData GetImageData()
         {
-            imageDataCache ??= node.RandomImage;
+            imageDataCache ??= node.GetRandomData;
 
             return imageDataCache;
         }
@@ -94,8 +107,11 @@ namespace Module.InteractiveEditor.Runtime
             isNext = false;
             isOpenCanvas = false;
             
-            background = null;
             imageDataCache = null;
+            
+#if !UNITY_WEBGL
+    background = null;
+#endif
         }
     }
 }
