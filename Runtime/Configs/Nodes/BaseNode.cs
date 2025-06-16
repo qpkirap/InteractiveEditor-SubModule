@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.InteractiveEditor.Saves;
 using Module.Utils.Configs;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -32,9 +33,9 @@ namespace Module.InteractiveEditor.Configs
         }
     }
     
-    public abstract class BaseNode : ScriptableEntity
+    public abstract class BaseNode : ScriptableEntity, ISearchFilterable
     {
-        [HideInInspector][SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
+        [SerializeField] private List<BaseNode> childrenNodes = new(); //input nodes
 
         #region Editor
 

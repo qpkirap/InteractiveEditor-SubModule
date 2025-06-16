@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Module.Utils;
 using Module.Utils.Configs;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
@@ -10,7 +11,7 @@ namespace Module.InteractiveEditor.Configs
     [CreateAssetMenu][Serializable]
     public class StoryObject : BaseConfig
     {
-        [SerializeField] private List<BaseNode> nodes;
+        [SerializeField, Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)] private List<BaseNode> nodes;
         [SerializeField] private List<Actor> actors;
         [SerializeField] private List<EpisodeData> episodeDatas;
         [SerializeField] private string idStartNode;
