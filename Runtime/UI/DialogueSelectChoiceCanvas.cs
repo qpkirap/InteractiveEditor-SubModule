@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
@@ -11,7 +11,7 @@ using UnityEngine.Localization;
 namespace Module.InteractiveEditor.Saves.UI.Story
 {
     public abstract class DialogueSelectChoiceCanvas<T> : UICanvas<T>
-        where T : IViewNodeExecute
+        where T : INodeExecutor, new()
     {
         [SerializeField] private List<ImageController> bgImages;
         [SerializeField] private CensorContainerController censorController;
@@ -83,7 +83,7 @@ namespace Module.InteractiveEditor.Saves.UI.Story
         }
     }
     
-    public class DialogueSelectChoiceCanvas : DialogueSelectChoiceCanvas<DialogueSelectChoiceViewExecutor>
+    public class DialogueSelectChoiceCanvas : DialogueSelectChoiceCanvas<DialogueSelectChoiceExecutor>
     {
     }
 }

@@ -1,7 +1,8 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
@@ -10,6 +11,8 @@ namespace Module.InteractiveEditor.Configs
 {
     public class AnswerChoiceDialogueNode : BaseNode<DialogueAnswerExecutor>
     {
+        [FoldoutGroup("Answer Settings")]
+        [LabelText("Answer Text")]
         [SerializeField] private LocalizedString answerText;
 
         #region Editor
@@ -38,7 +41,7 @@ namespace Module.InteractiveEditor.Configs
     }
 
     public class AnswerChoiceDialogueNode<T> : AnswerChoiceDialogueNode
-        where T : INodeExecute
+        where T : INodeExecutor
     {
         public override Type GetExecutorType()
         {

@@ -1,110 +1,91 @@
-﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public abstract class BaseData<TComponent> : ScriptableObject, IConfigData
-        where TComponent : IBaseComponent
+    [ShowOdinSerializedPropertiesInInspector]
+    public abstract class BaseData : ScriptableObject, IConfigData
     {
-        [field: SerializeField] public string Id { get; private set; }
-        [field: SerializeField, HorizontalGroup, ValueDropdown(nameof(GetPrefixNames)), LabelText("Title")] public string Prefix { get; private set; }
-        [field: SerializeField, HorizontalGroup, LabelText("")] public string Title { get; private set; }
-        [field: SerializeField, SerializeReference, TabGroup("Компоненты"), ListDrawerSettings(ShowFoldout = false, ListElementLabelName = "GetTitle"), OnValueChanged(nameof(OnComponentsChanged))]
-        public List<TComponent> Components { get; private set; } = new();
+        [ShowInInspector, ReadOnly, PropertyOrder(-1)]
+        public string Id { get; private set; }
+        
+        [HorizontalGroup("Title", 0.3f), ValueDropdown(nameof(GetPrefixNames)), LabelText("Prefix")]
+        [SerializeField] public string Prefix;
+        
+        [HorizontalGroup("Title", 0.7f), LabelText("Title")]
+        [SerializeField] private string title;
+        
+        public string Title => title;
+        
+        [ShowInInspector, TabGroup("Components"), ListDrawerSettings(ShowFoldout = false, ListElementLabelName = "@GetTitle()"), OnValueChanged(nameof(OnComponentsChanged))]
+        [SerializeField, SerializeReference]
+        private List<IBaseComponent> components = new();
+        
+        public List<IBaseComponent> Components => components;
+        
 #if UNITY_EDITOR
-        public abstract List<TComponent> DefaultComponents { get; }
+        public abstract List<IBaseComponent> DefaultComponents { get; }
 #endif
 
-        
-        public IEnumerable<IBaseComponent> GetComponents()
-        {
-            return Components.Select(item => item as IBaseComponent);
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual T GetComponent<T>()
-            where T : class
-        {
-            foreach (var compnent in Components)
-            {
-                if (compnent is T tcompnent)
-                {
-                    return tcompnent;
-                }
-            }
+        public IEnumerable<IBaseComponent> GetComponents() => Components ?? Enumerable.Empty<IBaseComponent>();
 
-            return null;
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual bool HasComponent<T>()
-            where T : class
-        {
-            foreach (var compnent in Components)
-            {
-                if (compnent is T)
-                {
-                    return true;
-                }
-            }
+        public virtual T GetComponent<T>() where T : class => Components?.OfType<T>().FirstOrDefault();
 
-            return false;
-        }
+        public virtual bool HasComponent<T>() where T : class => Components?.OfType<T>().Any() ?? false;
         
         protected virtual IEnumerable GetPrefixNames()
         {
-            return new ValueDropdownList<string>()
-            {
-            };
+            return new ValueDropdownList<string>();
         }
         
-        protected virtual void OnComponentsChanged()
+        private void OnComponentsChanged()
         {
             GenerateIdComponents(false);
         }
         
-        protected virtual void GenerateIdComponents(bool force = false)
+        private void GenerateIdComponents(bool force = false)
         {
             if (Components == null) return;
             
-            foreach (var baseComponent in Components)
+            foreach (var component in Components.OfType<BaseComponent>())
             {
-                if (baseComponent is BaseComponent component)
+                component.GenerateId(force);
+                GenerateIdForReferences(component, force);
+            }
+        }
+        
+        private void GenerateIdForReferences(IBaseComponent component, bool force = false)
+        {
+            if (component is IReferenceComponent referenceComponent)
+            {
+                foreach (var reference in referenceComponent.GetReferences())
                 {
-                    GenerateIdComponent(component, force);
+                    if (reference is BaseComponent baseComponent)
+                    {
+                        baseComponent.GenerateId(force);
+                        GenerateIdForReferences(reference, force);
+                    }
                 }
             }
         }
         
-        protected void GenerateIdComponent(IBaseComponent component, bool force = false)
-        {
-            if (component is BaseComponent baseComponent)
-            {
-                baseComponent.GenerateId(force);
-            }
-
-            if (component is IReferenceComponent referenceComponent)
-            {
-                referenceComponent.GetReferences().ForEach(item => GenerateIdComponent(item, force));
-            }
-        }
-        
 #if UNITY_EDITOR
-        [Button("GenerateIdComponents")]
-        internal void GenerateIdsComponentsEditor()
+        [FoldoutGroup("Development Tools", expanded: false)]
+        [Button("Generate Component IDs", ButtonSizes.Small)]
+        private void GenerateIdsComponentsEditor()
         {
-            GenerateIdComponents();
+            GenerateIdComponents(true);
+            EditorUtility.SetDirty(this);
         }
         
-        [Button("Generate Id")]
-        internal void GenerateId(bool force = false)
+        [FoldoutGroup("Development Tools")]
+        [Button("Generate New ID", ButtonSizes.Small)]
+        public void GenerateId(bool force = false)
         {
             Id = Guid.NewGuid().ToString();
             EditorUtility.SetDirty(this);
@@ -112,19 +93,19 @@ namespace Module.InteractiveEditor.Configs
             GenerateIdComponents(force);
 
             var path = AssetDatabase.GetAssetPath(this);
-            AssetDatabase.RenameAsset(path, $"Data_{Id}");
+            if (!string.IsNullOrEmpty(path))
+            {
+                AssetDatabase.RenameAsset(path, $"Data_{Id}");
+            }
         }
         
-        [Button("Reset To Default Components")]
-        internal void ResetToDefaultComponents()
+        [FoldoutGroup("Development Tools")]
+        [Button("Reset To Defaults", ButtonSizes.Small)]
+        public void ResetToDefaultComponents()
         {
             Components.Clear();
-
-            foreach (var defaultComponent in DefaultComponents)
-            {
-                Components.Add(defaultComponent);
-            }
-
+            Components.AddRange(DefaultComponents);
+            GenerateIdComponents(true);
             EditorUtility.SetDirty(this);
         }
 #endif

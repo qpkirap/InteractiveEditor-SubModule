@@ -1,18 +1,21 @@
-﻿using System.Linq;
+﻿﻿﻿﻿using System.Linq;
 using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
+using Module.InteractiveEditor.UI;
+using UniRx;
 using UnityEngine;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class EndGameExecutor : INodeExecute<EndGameNode>
+    public class EndGameExecutor : INodeExecutor<EndGameNode, EndGameCanvas>
     {
         private static LazyInject<IRouter> router = new();
         private static LazyInject<StoryObjectManager> storyManager = new();
         private static LazyInject<SaveManager> saveManager = new();
+        private readonly CompositeDisposable disp = new();
         
         private EndGameNode node;
         
@@ -34,7 +37,7 @@ namespace Module.InteractiveEditor.Runtime
             {
                 router.Value.GoTo(RoutKeys.endGame, routArgs: new (string, object)[]
                 {
-                    (INodeExecute.NodeExecutorKey, this)
+                    (INodeExecutor.NodeExecutorKey, this)
                 });
                 
                 isOpenCanvas = true;
@@ -53,6 +56,25 @@ namespace Module.InteractiveEditor.Runtime
             node = null;
             isNext = false;
             isOpenCanvas = false;
+            disp.Clear();
+        }
+        
+        // View execution methods
+        public void InitializeView(EndGameCanvas uiCanvas)
+        {
+            if (uiCanvas == null) return;
+            
+            // Subscribe to next button if available
+            if (uiCanvas.OnNextButtonPressed != null)
+            {
+                uiCanvas.OnNextButtonPressed.Subscribe(_ => Complete()).AddTo(disp);
+            }
+        }
+        
+        public void ResetView()
+        {
+            // Reset any view-specific state if needed
+            disp.Clear();
         }
         
         public void Complete()

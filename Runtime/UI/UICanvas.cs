@@ -1,44 +1,45 @@
-﻿using System;
+﻿﻿﻿using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class UICanvas<TIViewNodeExecutor> : Managers.Router.UICanvas
-        where TIViewNodeExecutor : IViewNodeExecute
+    public class UICanvas<TNodeExecutor> : Managers.Router.UICanvas
+        where TNodeExecutor : INodeExecutor, new()
     {
-        protected TIViewNodeExecutor viewModel;
-        
+        protected TNodeExecutor nodeExecutor;
         protected readonly CompositeDisposable disp = new();
-        
+
         public override async UniTask Init()
         {
             await base.Init();
-
-            viewModel ??= Activator.CreateInstance<TIViewNodeExecutor>();
+            nodeExecutor ??= new TNodeExecutor();
         }
 
         protected override void OnShow()
         {
             base.OnShow();
             
-            viewModel?.Reset();
+            nodeExecutor?.ResetView();
 
-            var model = router.Value.GetRoutArgData<INodeExecute>(INodeExecute.NodeExecutorKey);
-            
-            viewModel?.Inject(model, this);
+            var model = router.Value.GetRoutArgData<INodeExecutor>(INodeExecutor.NodeExecutorKey);
+            if (model != null)
+            {
+                nodeExecutor = (TNodeExecutor)model;
+                nodeExecutor.InitializeView(this);
+            }
         }
 
         protected override void OnHide()
         {
             base.OnHide();
-            
             disp.Clear();
         }
         
         protected virtual void OnDestroy()
         {
-            if (disp is { IsDisposed: false }) disp.Dispose();
+            if (disp is { IsDisposed: false }) 
+                disp.Dispose();
         }
     }
 }

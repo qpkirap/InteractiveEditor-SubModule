@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Saves.UI.Story
 {
-    public class DialogueCanvas : UICanvas<BaseDialogueViewExecutor>
+    public class DialogueCanvas : UICanvas<BaseDialogueExecutor>
     {
         [SerializeField] private List<ImageController> bgImages;
         [SerializeField] private CensorContainerController censorController;

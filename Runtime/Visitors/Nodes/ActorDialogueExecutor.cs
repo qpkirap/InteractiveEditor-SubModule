@@ -1,21 +1,25 @@
-﻿using System.Collections.Generic;
+﻿﻿﻿﻿﻿using System.Collections.Generic;
 using System.Linq;
 using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
+using Module.InteractiveEditor.Saves.UI.Story;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class ActorDialogueExecutor : INodeExecute<ActorDialogueNode>
+    public class ActorDialogueExecutor : INodeExecutor<ActorDialogueNode, ActorDialogueCanvas>
     {
         private static LazyInject<IRouter> router = new();
+        private readonly CompositeDisposable disp = new();
 
         private ImageData imageDataCache;
         private ActorDialogueNode node;
+        private ActorDialogueCanvas uiCanvas;
         
         private bool isOpenCanvas;
         private bool isNext;
@@ -87,7 +91,7 @@ namespace Module.InteractiveEditor.Runtime
             {
                 router.Value.GoTo(RoutKeys.actorDialogueCanvas, routArgs: new (string, object)[]
                 {
-                    (INodeExecute.NodeExecutorKey, this)
+                    (INodeExecutor.NodeExecutorKey, this)
                 });
                 
                 isOpenCanvas = true;
@@ -110,8 +114,34 @@ namespace Module.InteractiveEditor.Runtime
             imageDataCache = null;
             
 #if !UNITY_WEBGL
-    background = null;
+            background = null;
 #endif
+        }
+        
+        // View execution methods
+        public void InitializeView(ActorDialogueCanvas canvas)
+        {
+            uiCanvas = canvas;
+            
+            if (node != null)
+            {
+                uiCanvas.SetImage(GetBackgroundSprite());
+                uiCanvas.SetText(GetText());
+                uiCanvas.SetActor(GetActor());
+                uiCanvas.SetCensure(GetCensure());
+                
+                uiCanvas.OnNextButtonPressed.Subscribe(_ => Complete()).AddTo(disp);
+            }
+        }
+
+        public void ResetView()
+        {
+            if (uiCanvas != null)
+            {
+                uiCanvas.SetText(new LocalizedString());
+                uiCanvas.SetActor(null);
+            }
+            disp.Clear();
         }
     }
 }

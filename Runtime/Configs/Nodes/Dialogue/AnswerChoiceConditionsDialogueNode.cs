@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
@@ -9,7 +9,10 @@ namespace Module.InteractiveEditor.Configs
 {
     public class AnswerChoiceConditionsDialogueNode : AnswerChoiceDialogueNode<DialogueAnswerExecutor>
     {
-        [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true),  OnValueChanged(nameof(OnGenerateId))] public List<IConditionComponent> Conditions = new();
+        [FoldoutGroup("Conditions")]
+        [LabelText("Answer Conditions")]
+        [field: SerializeField, SerializeReference, ListDrawerSettings(Expanded = true),  OnValueChanged(nameof(OnGenerateId))] 
+        public List<IConditionComponent> Conditions = new();
 
         private const string ConditionsKey = nameof(Conditions);
 
@@ -29,7 +32,7 @@ namespace Module.InteractiveEditor.Configs
     }
 
     public abstract class AnswerChoiceConditionsDialogueNode<TNodeExecute> : AnswerChoiceConditionsDialogueNode
-        where TNodeExecute : INodeExecute
+        where TNodeExecute : INodeExecutor
     {
         public override Type GetExecutorType()
         {

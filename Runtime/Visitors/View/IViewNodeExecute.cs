@@ -1,23 +1,25 @@
-﻿using Managers.Router;
+﻿﻿using Managers.Router;
 
 namespace Module.InteractiveEditor.Runtime
 {
+    // Legacy interface - use INodeExecutor instead
+    [System.Obsolete("Use INodeExecutor interface instead. This interface will be removed in future versions.")]
     public interface IViewNodeExecute
     {
-        void Inject(INodeExecute execute, UICanvas uiCanvas);
-        
+        void Inject(INodeExecutor execute, UICanvas uiCanvas);
         void Reset();
     }
     
-    public interface IViewNodeExecute<in TINodeExecute, in TUICanvas> : IViewNodeExecute
-        where TINodeExecute : INodeExecute
+    [System.Obsolete("Use INodeExecutor<TNode, TCanvas> interface instead. This interface will be removed in future versions.")]
+    public interface IViewNodeExecute<in TNodeExecutor, in TUICanvas> : IViewNodeExecute
+        where TNodeExecutor : INodeExecutor
         where TUICanvas : UICanvas
     {
-        void IViewNodeExecute.Inject(INodeExecute execute, UICanvas uiCanvas)
+        void IViewNodeExecute.Inject(INodeExecutor execute, UICanvas uiCanvas)
         {
-            Inject((TINodeExecute) execute, (TUICanvas) uiCanvas);
+            Inject((TNodeExecutor)execute, (TUICanvas)uiCanvas);
         }
 
-        void Inject(TINodeExecute execute, TUICanvas uiCanvas);
+        void Inject(TNodeExecutor execute, TUICanvas uiCanvas);
     }
 }

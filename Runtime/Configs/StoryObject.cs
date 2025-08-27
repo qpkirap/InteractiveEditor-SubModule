@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Module.Utils;
@@ -11,10 +11,27 @@ namespace Module.InteractiveEditor.Configs
     [CreateAssetMenu][Serializable]
     public class StoryObject : BaseConfig
     {
-        [SerializeField, Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)] private List<BaseNode> nodes;
-        [SerializeField] private List<Actor> actors;
-        [SerializeField] private List<EpisodeData> episodeDatas;
-        [SerializeField] private string idStartNode;
+        [FoldoutGroup("Story Content")]
+        [LabelText("Story Nodes")]
+        [SerializeField, Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)] 
+        private List<BaseNode> nodes;
+        
+        [FoldoutGroup("Story Content")]
+        [LabelText("Actors")]
+        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "title")]
+        [SerializeField] 
+        private List<Actor> actors;
+        
+        [FoldoutGroup("Story Content")]
+        [LabelText("Episodes")]
+        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "title")]
+        [SerializeField] 
+        private List<EpisodeData> episodeDatas;
+        
+        [FoldoutGroup("Story Settings")]
+        [LabelText("Start Node ID")]
+        [SerializeField] 
+        private string idStartNode;
 
         #region Editor
 
@@ -32,6 +49,7 @@ namespace Module.InteractiveEditor.Configs
 
         public IReadOnlyList<BaseNode> Nodes => nodes;
         public IReadOnlyList<Actor> Actors => actors;
+        public IReadOnlyList<EpisodeData> Episodes => episodeDatas;
         public string IdStartNode => idStartNode;
 
         public BaseNode Traverse(BaseNode firstNode, Action<BaseNode> visitor)

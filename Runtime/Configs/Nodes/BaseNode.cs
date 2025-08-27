@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using Module.InteractiveEditor.Runtime;
 using Module.InteractiveEditor.Saves;
@@ -10,7 +10,7 @@ using UnityEngine.AddressableAssets;
 namespace Module.InteractiveEditor.Configs
 {
     public abstract class BaseNode<TNodeExecutor, TSaveNodeItem> : BaseNode
-        where TNodeExecutor : INodeExecute
+        where TNodeExecutor : INodeExecutor
         where TSaveNodeItem : SaveNodeItem
     {
         public override Type GetSaveItemType()
@@ -25,7 +25,7 @@ namespace Module.InteractiveEditor.Configs
     }
     
     public abstract class BaseNode<TINodeExecutor> : BaseNode
-        where TINodeExecutor : INodeExecute
+        where TINodeExecutor : INodeExecutor
     {
         public override Type GetExecutorType()
         {

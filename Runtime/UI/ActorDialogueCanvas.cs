@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Managers.Router;
@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.Saves.UI.Story
 {
-    public class ActorDialogueCanvas : UICanvas<ActorDialogueViewExecutor>
+    public class ActorDialogueCanvas : UICanvas<ActorDialogueExecutor>
     {
         [SerializeField] private TextController actorNameController;
         [SerializeField] private List<ImageController> bgImages;

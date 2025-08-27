@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace Module.InteractiveEditor.Runtime
 #endif
         private readonly LazyInject<SaveManager> saveManager = new();
         private readonly LazyInject<IRouter> router = new();
-        private readonly Dictionary<Type, INodeExecute> executes = new();
+        private readonly Dictionary<Type, INodeExecutor> executes = new();
         
         private StoryObject storyObjectCache;
         private BaseNode currentNodeCache;
@@ -77,7 +77,7 @@ namespace Module.InteractiveEditor.Runtime
                     continue;
                 }
                 
-                var executor = (INodeExecute)Activator.CreateInstance(executorType);
+                var executor = (INodeExecutor)Activator.CreateInstance(executorType);
             
                 executes.Add(executorType, executor);
             }

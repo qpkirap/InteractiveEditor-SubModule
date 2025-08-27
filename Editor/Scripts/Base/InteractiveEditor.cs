@@ -95,13 +95,17 @@ namespace Module.InteractiveEditor.Editor
             }
         }
 
-        [OnOpenAsset]
+        // OnOpenAsset handler for StoryObject assets only
+        // Priority 1 ensures InteractiveEditorMenu handles specific asset types first
+        [OnOpenAsset(1)] // Priority 1 = lower than InteractiveEditorMenu priority
         public static bool OnOpenAsset(int instanceId, int line)
         {
-            if (Selection.activeObject != null && Selection.activeObject is StoryObject entity)
+            var asset = EditorUtility.InstanceIDToObject(instanceId);
+            
+            // Only handle StoryObject assets
+            if (asset is StoryObject storyObject)
             {
                 OpenWindow();
-
                 return true;
             }
 

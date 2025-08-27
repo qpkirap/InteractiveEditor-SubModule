@@ -1,6 +1,7 @@
-﻿using System;
+﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using Module.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Component = Module.InteractiveEditor.Runtime.Component;
@@ -10,9 +11,19 @@ namespace Module.InteractiveEditor.Configs
     [Serializable]
     public class ImageData : Component
     {
+        [FoldoutGroup("Censure Areas")]
+        [LabelText("Censure Data")]
+        [ListDrawerSettings(ShowIndexLabels = true, DraggableItems = false, ShowItemCount = true)]
         [SerializeField] private List<CensureData> censures;
+        
+        [FoldoutGroup("Image Content")]
+        [LabelText("Image Size")]
+        [ReadOnly]
         [SerializeField] private Vector2 imageSize;
         
+        [FoldoutGroup("Image Content")]
+        [LabelText("Sprite")]
+        [PreviewField(50, ObjectFieldAlignment.Left)]
         [SerializeField] private Sprite imageSprite;
         
         public Sprite ImageSprite => imageSprite;

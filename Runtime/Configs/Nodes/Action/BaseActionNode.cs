@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Runtime;
 using Module.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -9,7 +10,11 @@ namespace Module.InteractiveEditor.Configs
 {
     public class BaseActionNode : BaseNode<ActionExecutor>
     {
-        [SerializeField] [HideInInspector] private List<ActionTaskComponent> tasks = new();
+        [FoldoutGroup("Action Tasks")]
+        [LabelText("Tasks")]
+        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "title")]
+        [SerializeField] 
+        private List<ActionTaskComponent> tasks = new();
 
         private IUniTaskAsyncEnumerable<ActionTaskComponent> collection;
 

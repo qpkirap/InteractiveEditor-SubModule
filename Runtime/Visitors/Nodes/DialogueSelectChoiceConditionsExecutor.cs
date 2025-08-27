@@ -1,18 +1,21 @@
-﻿using System.Collections.Generic;
+﻿﻿﻿﻿using System.Collections.Generic;
 using System.Linq;
 using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
+using Module.InteractiveEditor.Saves.UI.Story;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class DialogueSelectChoiceConditionsExecutor : INodeExecute<SelectChoiceDialogueConditionsNode>
+    public class DialogueSelectChoiceConditionsExecutor : INodeExecutor<SelectChoiceDialogueConditionsNode, DialogueSelectChoiceConditionsCanvas>
     {
         private static LazyInject<IRouter> router = new();
+        private readonly CompositeDisposable disp = new();
         
         private readonly Dictionary<int, (IEnumerable<ICondition> conditions, BaseNode node)> answersConditions = new();
         private readonly List<LocalizedString> answersCache = new();
@@ -130,7 +133,7 @@ namespace Module.InteractiveEditor.Runtime
             {
                 router.Value.GoTo(RoutKeys.dialogueSelectChoiceConditions, routArgs: new (string, object)[]
                 {
-                    (INodeExecute.NodeExecutorKey, this)
+                    (INodeExecutor.NodeExecutorKey, this)
                 });
                 
                 isOpenCanvas = true;
@@ -156,9 +159,69 @@ namespace Module.InteractiveEditor.Runtime
             isOpenCanvas = false;
 
 #if !UNITY_WEBGL
-                        background = null;
+            background = null;
 #endif
             imageDataCache = null;
+            disp.Clear();
+        }
+        
+        // View execution methods
+        public void InitializeView(DialogueSelectChoiceConditionsCanvas uiCanvas)
+        {
+            if (uiCanvas == null) return;
+            
+            // Set up the dialogue UI with current node data
+            UpdateDialogueUI(uiCanvas);
+            
+            // Set up choices and handle selection
+            var answers = GetAnswers();
+            if (answers != null && answers.Count > 0)
+            {
+                uiCanvas.SetChoices(answers, out var choiceObservable);
+                
+                if (choiceObservable != null)
+                {
+                    choiceObservable.Subscribe(index => SetSelectedIndex(index)).AddTo(disp);
+                }
+            }
+        }
+        
+        public void ResetView()
+        {
+            // Reset any view-specific state if needed
+            disp.Clear();
+        }
+        
+        private void UpdateDialogueUI(DialogueSelectChoiceConditionsCanvas uiCanvas)
+        {
+            if (node == null) return;
+            
+            // Set text
+            uiCanvas.SetText(GetText());
+            
+            // Set background image
+#if !UNITY_WEBGL
+            var background = GetBackground();
+            if (background != null)
+            {
+                uiCanvas.SetImage(background);
+            }
+            else
+#endif
+            {
+                var sprite = GetSprite();
+                if (sprite != null)
+                {
+                    uiCanvas.SetImage(sprite);
+                }
+            }
+            
+            // Set censures
+            var censures = GetCensures();
+            if (censures != null)
+            {
+                uiCanvas.SetCensure(censures);
+            }
         }
     }
 }

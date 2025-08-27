@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 using System.Linq;
 using Module.InteractiveEditor.Configs.Utils;
@@ -9,36 +9,45 @@ using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public abstract class BaseTitleData<TData, TComponent> : ITitleData
-        where TData : BaseData<TComponent>
-        where TComponent : IBaseComponent
+    [System.Serializable]
+    public abstract class BaseTitleData<TData> : ITitleData
+        where TData : BaseData, new()
     {
-        [ShowInInspector, LabelText("")]
-        public string Title => EntityData == null ? string.Empty : EntityData.Prefix + EntityData.Title;
+        [ShowInInspector, DisplayAsString, LabelText("")]
+        public string Title => EntityData?.Prefix + EntityData?.Title ?? string.Empty;
 
-        [field: SerializeField, LabelText("")]
-        public TData EntityData { get; internal set; }
+        [InlineEditor(InlineEditorModes.GUIAndHeader), LabelText("")]
+        public TData EntityData;
 
 #if UNITY_EDITOR
         internal void GenerateData(UnityEngine.Object config, TData source = null, bool forceGenerateId = false)
         {
-            var configPath = AssetDatabase.GetAssetPath(config);
-            var directoryPath = $"{Path.GetDirectoryName(configPath)}/Data";
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
+            try
+            {
+                var configPath = AssetDatabase.GetAssetPath(config);
+                var directoryPath = Path.Combine(Path.GetDirectoryName(configPath), "Data");
+                
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
 
-            var assetPath = $"{directoryPath}/Data_TEMP.asset";
-            EntityData = Activator.CreateInstance<TData>();
-            AssetDatabase.CreateAsset(EntityData, assetPath);
-            EntityData.ResetToDefaultComponents();
+                var assetPath = Path.Combine(directoryPath, "Data_TEMP.asset");
+                EntityData = new TData();
+                AssetDatabase.CreateAsset(EntityData, assetPath);
+                EntityData.ResetToDefaultComponents();
 
-            if (source != null)
-                EditorUtility.CopySerialized(source, EntityData);
+                if (source != null)
+                    EditorUtility.CopySerialized(source, EntityData);
 
-            EntityData.GenerateId(forceGenerateId);
+                EntityData.GenerateId(forceGenerateId);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to generate data: {e.Message}");
+            }
         }
 
-        [Button("Удалить"), ShowIf(nameof(EntityData))]
+        [FoldoutGroup("Entity Actions", expanded: false)]
+        [Button("Remove Entity", ButtonSizes.Small), ShowIf(nameof(EntityData))]
         private void RemoveEntity()
         {
             var config = GetParentConfig();
@@ -47,20 +56,24 @@ namespace Module.InteractiveEditor.Configs
                 if (config.RemoveTitleData(this))
                 {
                     var path = AssetDatabase.GetAssetPath(EntityData);
-                    AssetDatabase.DeleteAsset(path);
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        AssetDatabase.DeleteAsset(path);
+                    }
                 }
                 else
                 {
-                    Debug.Log("ALARM! Не получилось удалить заголовок!");
+                    Debug.LogWarning("Failed to remove entity title data!");
                 }
             }
             else
             {
-                Debug.Log("ALARM! В родительской папке не найден конфиг!");
+                Debug.LogWarning("Parent config not found!");
             }
         }
 
-        [Button("Клонировать"), ShowIf(nameof(EntityData))]
+        [FoldoutGroup("Entity Actions")]
+        [Button("Clone Entity", ButtonSizes.Small), ShowIf(nameof(EntityData))]
         private void CloneEntity()
         {
             var config = GetParentConfig();
@@ -68,47 +81,59 @@ namespace Module.InteractiveEditor.Configs
             {
                 if (!config.CloneEntity(EntityData.Id))
                 {
-                    Debug.Log("ALARM! Не получилось клонировать! В родительском конфиге не найден исходный элемент!");
+                    Debug.LogWarning("Failed to clone entity! Source not found in parent config!");
                 }
             }
             else
             {
-                Debug.Log("ALARM! В родительской папке не найден конфиг!");
+                Debug.LogWarning("Parent config not found!");
             }
         }
 
-        [Button("Показать"), ShowIf(nameof(EntityData))]
+        [FoldoutGroup("Entity Actions")]
+        [Button("Show Entity", ButtonSizes.Small), ShowIf(nameof(EntityData))]
         private void ShowEntity()
         {
             if (EntityData != null)
             {
+                // Auto-add missing default components
                 foreach (var defaultComponent in EntityData.DefaultComponents)
                 {
-                    var any = EntityData.Components.Any(item => item.GetType() == defaultComponent.GetType());
-                    if (!any)
+                    var hasComponent = EntityData.Components.Any(item => item.GetType() == defaultComponent.GetType());
+                    if (!hasComponent)
                     {
                         EntityData.Components.Add(defaultComponent);
-
-                        Debug.Log($"[HELPER] Вы забыли добавить компонент {defaultComponent.GetType().Name}, мы добавили его за вас, не забудьте его настроить!");
+                        Debug.Log($"[AUTO-FIX] Added missing component: {defaultComponent.GetType().Name}");
                     }
                 }
 
                 EditorUtility.SetDirty(EntityData);
+                ConfigUtils.ShowInspector(EntityData);
             }
-
-            ConfigUtils.ShowInspector(EntityData);
         }
-        
         private IEntityConfig GetParentConfig()
         {
-            var path = AssetDatabase.GetAssetPath(EntityData);
-            var directoryName = Path.GetDirectoryName(path);
-            var configDirectory = directoryName.Replace($"{Path.DirectorySeparatorChar}Data", "");
-            var assets = AssetDatabase.FindAssets("t: BaseConfig", new string[1] { configDirectory });
-            if (assets.Length > 0)
+            if (EntityData == null) return null;
+            
+            try
             {
-                var baseConfig = AssetDatabase.LoadAssetAtPath<BaseConfig>(AssetDatabase.GUIDToAssetPath(assets[0]));
-                return baseConfig as IEntityConfig;
+                var path = AssetDatabase.GetAssetPath(EntityData);
+                var directoryName = Path.GetDirectoryName(path);
+                var configDirectory = directoryName?.Replace($"{Path.DirectorySeparatorChar}Data", "");
+                
+                if (!string.IsNullOrEmpty(configDirectory))
+                {
+                    var assets = AssetDatabase.FindAssets("t: BaseConfig", new[] { configDirectory });
+                    if (assets.Length > 0)
+                    {
+                        var baseConfig = AssetDatabase.LoadAssetAtPath<BaseConfig>(AssetDatabase.GUIDToAssetPath(assets[0]));
+                        return baseConfig as IEntityConfig;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error finding parent config: {e.Message}");
             }
 
             return null;

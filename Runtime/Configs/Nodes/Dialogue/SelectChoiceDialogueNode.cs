@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Module.InteractiveEditor.Runtime;
 
 namespace Module.InteractiveEditor.Configs
@@ -8,7 +8,7 @@ namespace Module.InteractiveEditor.Configs
     }
     
     public class SelectChoiceDialogueNode<T> : SelectChoiceDialogueNode
-        where T : INodeExecute
+        where T : INodeExecutor
     {
         public override Type GetExecutorType()
         {

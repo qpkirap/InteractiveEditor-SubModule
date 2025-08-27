@@ -1,4 +1,4 @@
-﻿using DepedencyInjection;
+﻿﻿using DepedencyInjection;
 using Managers.Router;
 using Module.InteractiveEditor.Runtime;
 using UniRx;
@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Module.InteractiveEditor.UI
 {
-    public class EndGameCanvas : UICanvas<EndGameViewExecutor>
+    public class EndGameCanvas : UICanvas<EndGameExecutor>
     {
         [SerializeField] private Button nextButton;
         

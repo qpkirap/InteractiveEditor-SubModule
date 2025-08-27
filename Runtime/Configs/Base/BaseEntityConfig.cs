@@ -1,9 +1,8 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using Module.Utils.Configs;
 using SimpleJSON;
@@ -13,93 +12,163 @@ using UnityEngine;
 
 namespace Module.InteractiveEditor.Configs
 {
-    public abstract class BaseEntityConfig<TTitleData, TData, TComponent> : BaseConfig, IEntityConfig
-        where TTitleData : BaseTitleData<TData, TComponent>
-        where TData : BaseData<TComponent>
-        where TComponent : IBaseComponent
+    [ShowOdinSerializedPropertiesInInspector]
+    public abstract class BaseEntityConfig<TTitleData, TData> : BaseConfig, IEntityConfig
+        where TTitleData : BaseTitleData<TData>, new()
+        where TData : BaseData, new()
     {
-        [field: SerializeField, HideInInspector]
-        public List<TTitleData> DataList { get; protected set; }
+        [ShowInInspector, ListDrawerSettings(Expanded = true, ShowFoldout = false, ListElementLabelName = "@Title")]
+        [OnValueChanged(nameof(OnDataListChanged))]
+        public List<TTitleData> DataList { get; protected set; } = new();
 
         public string Name => GetType().Name;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TTitleData GetTitleDataById(string id)
-        {
-            return DataList.Find(item => item.EntityData?.Id == id);
-        }
+        public TTitleData GetTitleDataById(string id) => DataList?.Find(item => item.EntityData?.Id == id);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IConfigData GetDataById(string id)
-        {
-            return GetTitleDataById(id)?.EntityData;
-        }
+        public IConfigData GetDataById(string id) => GetTitleDataById(id)?.EntityData;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<IConfigData> GetDataList()
-        {
-            return DataList.Select(item => item.EntityData as IConfigData);
-        }
+        public IEnumerable<IConfigData> GetDataList() => DataList?.Select(item => item.EntityData as IConfigData) ?? Enumerable.Empty<IConfigData>();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TData GetDataWithComponent<T>()
-            where T : class
+        public TData GetDataWithComponent<T>() where T : class
         {
-            foreach (var data in DataList)
-            {
-                if (data.EntityData.HasComponent<T>())
-                {
-                    return data.EntityData;
-                }
-            }
-
-            return null;
+            return DataList?.FirstOrDefault(data => data.EntityData.HasComponent<T>())?.EntityData;
         }
 
         public IEnumerable GetValueDropdownList<T>()
         {
             var ids = new ValueDropdownList<T>();
-
-            foreach (var titleData in DataList)
+            if (DataList != null)
             {
-                var instance = (T)Activator.CreateInstance(typeof(T), args: titleData.EntityData.Id.ToCharArray());
-                ids.Add(titleData.Title, instance);
+                foreach (var titleData in DataList)
+                {
+                    var instance = (T)Activator.CreateInstance(typeof(T), args: titleData.EntityData.Id.ToCharArray());
+                    ids.Add(titleData.Title, instance);
+                }
             }
-
             return ids;
         }
 
         public async UniTask LoadFromJSON(string json)
         {
-            var array = await UniTask.RunOnThreadPool(() => JSONNode.Parse(json).AsArray);
-            for (int i = 0; i < array.Count; i++)
+            try
             {
-                if (i == 0)
+                var array = await UniTask.RunOnThreadPool(() => JSONNode.Parse(json).AsArray);
+                if (array?.Count > 0)
                 {
-                    JsonUtility.FromJsonOverwrite(array[i].ToString(), this);
-
+                    JsonUtility.FromJsonOverwrite(array[0].ToString(), this);
+                    
+                    for (int i = 1; i < array.Count && i - 1 < DataList.Count; i++)
+                    {
+                        JsonUtility.FromJsonOverwrite(array[i].ToString(), DataList[i - 1].EntityData);
+                    }
+                    
 #if UNITY_EDITOR
                     EditorUtility.SetDirty(this);
 #endif
                 }
-                else
-                {
-                    JsonUtility.FromJsonOverwrite(array[i].ToString(), DataList[i - 1].EntityData);
-
-#if UNITY_EDITOR
-                    EditorUtility.SetDirty(DataList[i - 1].EntityData);
-#endif
-                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to load config from JSON: {e.Message}");
             }
         }
 
 #if UNITY_EDITOR
+        [FoldoutGroup("Entity Management", expanded: false)]
+        [Button("Add New Entity", ButtonSizes.Medium)]
+        private void AddNewEntity()
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogWarning("Cannot add entities during play mode!");
+                return;
+            }
+
+            var newTitleData = new TTitleData();
+            newTitleData.GenerateData(this);
+            DataList.Add(newTitleData);
+            EditorUtility.SetDirty(this);
+        }
+
+        [FoldoutGroup("Entity Management")]
+        [Button("Clear Component From All", ButtonSizes.Small)]
+        private void ClearComponentsFromUnits([ValueDropdown("@GetComponentTypeNames()")] string componentName)
+        {
+            if (string.IsNullOrEmpty(componentName)) return;
+            
+            int removedCount = 0;
+            foreach (var titleData in DataList)
+            {
+                var component = titleData.EntityData.Components?.Find(item => item.GetType().Name.Equals(componentName));
+                if (component != null)
+                {
+                    titleData.EntityData.Components.Remove(component);
+                    removedCount++;
+                    EditorUtility.SetDirty(titleData.EntityData);
+                }
+            }
+            Debug.Log($"Removed {removedCount} components of type {componentName}");
+        }
+        
+        private IEnumerable<string> GetComponentTypeNames()
+        {
+            return DataList?.SelectMany(td => td.EntityData.Components ?? new List<IBaseComponent>())
+                          .Select(c => c.GetType().Name)
+                          .Distinct() ?? Enumerable.Empty<string>();
+        }
+
+        [FoldoutGroup("Import/Export", expanded: false)]
+        [HorizontalGroup("Import/Export/Buttons")]
+        [Button("Export JSON", ButtonSizes.Medium)]
+        private void SaveConfigToJSON()
+        {
+            var assetPath = EditorUtility.SaveFilePanel(
+                "Export Config JSON",
+                Application.dataPath,
+                Name,
+                "json");
+
+            if (!string.IsNullOrEmpty(assetPath))
+            {
+                try
+                {
+                    var array = new JSONArray();
+                    array.Add(JSONNode.Parse(JsonUtility.ToJson(this)));
+                    foreach (var titleData in DataList)
+                    {
+                        array.Add(JSONNode.Parse(JsonUtility.ToJson(titleData.EntityData)));
+                    }
+                    File.WriteAllText(assetPath, array.ToString());
+                    Debug.Log($"Config exported to: {assetPath}");
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to export config: {e.Message}");
+                }
+            }
+        }
+
+        [HorizontalGroup("Import/Export/Buttons")]
+        [Button("Import JSON", ButtonSizes.Medium)]
+        private void LoadConfigFromJSON()
+        {
+            var assetPath = EditorUtility.OpenFilePanel(
+                "Import Config JSON",
+                Application.dataPath,
+                "json");
+
+            if (!string.IsNullOrEmpty(assetPath))
+            {
+                var data = File.ReadAllText(assetPath);
+                LoadFromJSON(data).Forget();
+            }
+        }
+
         public bool RemoveTitleData(ITitleData titleData)
         {
             if (Application.isPlaying)
             {
-                Debug.Log(
-                    "ALARM! Ты делаешь что-то неправильное, почему удаляешь элементы конфига при запущенной игре?");
+                Debug.LogWarning("Cannot remove entities during play mode!");
                 return false;
             }
 
@@ -107,91 +176,28 @@ namespace Module.InteractiveEditor.Configs
             if (success)
             {
                 EditorUtility.SetDirty(this);
-                return true;
             }
-
-            return false;
+            return success;
         }
 
         public bool CloneEntity(string entityId)
         {
-            var unitData = GetDataById(entityId) as TData;
-            if (unitData == null) return false;
+            var sourceData = GetDataById(entityId) as TData;
+            if (sourceData == null) return false;
 
-            var unitTitleData = Activator.CreateInstance<TTitleData>();
-            unitTitleData.GenerateData(this, unitData, true);
-            DataList.Add(unitTitleData);
-
+            var clonedTitleData = new TTitleData();
+            clonedTitleData.GenerateData(this, sourceData, true);
+            DataList.Add(clonedTitleData);
             EditorUtility.SetDirty(this);
-
             return true;
         }
-
-        [Title("Стандартный функционал", TitleAlignment = TitleAlignments.Centered)]
-        [Button("Добавить новую сущность", ButtonSizes.Medium), PropertyOrder(1)]
-        protected void AddNewEntity()
+        
+        private void OnDataListChanged()
         {
-            var unitTitleData = Activator.CreateInstance<TTitleData>();
-            unitTitleData.GenerateData(this);
-            DataList.Add(unitTitleData);
-
-            EditorUtility.SetDirty(this);
-        }
-
-        [Button("Очистить все сущности от компонента", ButtonSizes.Medium), PropertyOrder(1)]
-        protected void ClearComponentsFromUnits(string componentName)
-        {
-            foreach (var titleData in DataList)
+            if (!Application.isPlaying)
             {
-                var component = titleData.EntityData.Components.Find(item => item.GetType().Name.Equals(componentName));
-                if (component != null)
-                {
-                    titleData.EntityData.Components.Remove(component);
-                }
-
-                EditorUtility.SetDirty(titleData.EntityData);
+                EditorUtility.SetDirty(this);
             }
-        }
-
-        [Button("Сохранить конфиг в json", ButtonSizes.Medium), PropertyOrder(1), HorizontalGroup()]
-        protected void SaveConfigToJSON()
-        {
-            var assetPath = EditorUtility.SaveFilePanel(
-                title: $"Куда сохранить файл json",
-                directory: Application.dataPath,
-                defaultName: Name,
-                extension: "json");
-
-            if (string.IsNullOrEmpty(assetPath))
-            {
-                return;
-            }
-
-            var array = new JSONArray();
-            array.Add(JSONNode.Parse(JsonUtility.ToJson(this)));
-            foreach (var titleData in DataList)
-            {
-                array.Add(JSONNode.Parse(JsonUtility.ToJson(titleData.EntityData)));
-            }
-
-            File.WriteAllText(assetPath, array.ToString());
-        }
-
-        [Button("Загрузить конфиг из json", ButtonSizes.Medium), PropertyOrder(1), HorizontalGroup()]
-        protected void LoadConfigFromJSON()
-        {
-            var assetPath = EditorUtility.OpenFilePanel(
-                title: $"Открыть файл json конфига",
-                directory: Application.dataPath,
-                extension: "json");
-
-            if (string.IsNullOrEmpty(assetPath))
-            {
-                return;
-            }
-
-            var data = File.ReadAllText(assetPath);
-            LoadFromJSON(data);
         }
 #endif
     }

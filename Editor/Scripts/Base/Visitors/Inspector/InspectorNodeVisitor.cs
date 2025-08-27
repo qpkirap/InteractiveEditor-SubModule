@@ -1,4 +1,4 @@
-﻿namespace Module.InteractiveEditor.Editor
+﻿﻿namespace Module.InteractiveEditor.Editor
 {
     public class InspectorNodeVisitor : INodeVisitor
     {
@@ -19,12 +19,8 @@
 
         public void BaseDialogueNodeView(BaseDialogueNodeView nodeView)
         {
-            var currentEditor = inspectorView.GetCurrentEditor;
-            
-            if (currentEditor != null && currentEditor is BaseDialogueEditor dialogueEditor)
-            {
-                nodeView.InjectEditor(dialogueEditor);
-            } 
+            // Node view now handles its own updates through Odin Inspector
+            // No need for custom editor injection
         }
     }
 }

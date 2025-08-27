@@ -12,7 +12,6 @@ namespace Module.InteractiveEditor.Editor
     public class BaseDialogueNodeView : NodeView
     {
         private readonly ImageListVisualController imagePreview;
-        private BaseDialogueEditor dialogueEditor;
 
         public BaseDialogueNodeView(BaseNode node) : base(node)
         {
@@ -27,14 +26,6 @@ namespace Module.InteractiveEditor.Editor
         public override Port.Capacity InputPortCapacity => Port.Capacity.Multi;
         public override Port.Capacity OutputPortCapacity => Port.Capacity.Single;
         public override string GetClassTag => "dialogue";
-
-        public void InjectEditor(BaseDialogueEditor dialogueEditor)
-        {
-            this.dialogueEditor = dialogueEditor;
-
-            dialogueEditor.OnUpdate = null;
-            dialogueEditor.OnUpdate += UpdateImages;
-        }
 
         public override void OnSelected()
         {
