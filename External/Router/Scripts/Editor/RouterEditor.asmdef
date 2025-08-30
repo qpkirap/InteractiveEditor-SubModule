@@ -1,0 +1,22 @@
+{
+    "name": "RouterEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1c61ac8f4ca4a924cb5d2d30a7c78376",
+        "GUID:aba1eceac4ebe40a6a90278fc57ed3a1",
+        "GUID:f04d2478eb0e843b3a28c2fa51d06640",
+        "GUID:71dff240f9f9d423dabb47153228118a",
+        "GUID:a4865f1ab4504ed8a368670db22f409c"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

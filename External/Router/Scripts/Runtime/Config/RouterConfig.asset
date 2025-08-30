@@ -1,0 +1,303 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8630966982555564379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: e6d369f4-27da-479d-9b86-eefe6283d717
+  title: EndGame
+  asset:
+    m_AssetGUID: 52542c646d98c9b4daf60e13775dce67
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &-6346081398276400677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a920130b0a646dab6fec39494003912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 19a0beed-e04a-4bb2-bcf9-acdfc64b64ae
+  title: 
+--- !u!114 &-3204789630924226151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a920130b0a646dab6fec39494003912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: a6c5cf15-d234-410e-9c78-0ed7b61cb34d
+  title: 
+--- !u!114 &-2526752136831039929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: b94ffae0-2bba-420d-9b31-6987e29f2391
+  title: SelectCharacter
+  asset:
+    m_AssetGUID: ee300e7aabbbd214e82d879243392976
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData:
+  - {fileID: -3204789630924226151}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a22283ad0144447cb8e3c6b6783d9c88, type: 3}
+  m_Name: RouterConfig
+  m_EditorClassIdentifier: 
+  id: 
+  title: 
+  scenes:
+  - {fileID: 774363680802687638}
+  routs:
+  - {fileID: 6699452407497666125}
+  - {fileID: 7853047734815468438}
+  - {fileID: 2426378844441437848}
+  - {fileID: 6930436463326835171}
+  - {fileID: -2526752136831039929}
+  - {fileID: 454300854756311517}
+  - {fileID: -8630966982555564379}
+  loadings:
+  - {fileID: 4244188379245285938}
+  loadingScreenControllerAsset:
+    m_AssetGUID: bd5cd7de7d82e46ee9ec61c9e5f7ff1c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  routerControllerAsset:
+    m_AssetGUID: 4f08c28737d6e44fb9444f1677f46d86
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  sceneKeysScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Scenes/SceneKeys.cs
+  routsKeysScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Routs/RoutKeys.cs
+  routsArgsScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Routs/RoutArgKeys.cs
+  loadingsScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Loading/LoadingScreenKeys.cs
+--- !u!114 &454300854756311517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 7f73cb67-7da4-433d-9c9b-c0b3bb6c2702
+  title: DialogueSelectChoiceConditions
+  asset:
+    m_AssetGUID: a2f0d5d3566e53e478c26438a713f883
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &774363680802687638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8170ff1967bf46468fc0f79781c597a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 58a177c6aa46843a7ac41e21ed240e6a
+  title: Game
+  sceneAsset:
+    m_AssetGUID: 2cda990e2423bbf4892e6590ba056729
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+--- !u!114 &2426378844441437848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 75da80fa-adaf-42a7-a819-f36d91a5949e
+  title: DialogueSelectChoice
+  asset:
+    m_AssetGUID: 5a6c03edcdeb6984f9360fd2db062065
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &4244188379245285938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2912b6d1a54cd7b707eaa1f8fbd76b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0eb9053829c1f41aaacd46a494945bed
+  title: Start
+  asset:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+--- !u!114 &5027403731319287146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a920130b0a646dab6fec39494003912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: b90eb0e9-df99-4d50-b9b4-70e6b7b776a3
+  title: fsafsadf
+--- !u!114 &6699452407497666125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: ee9931d2870874a1995872dfc363f284
+  title: BaseDialogue
+  asset:
+    m_AssetGUID: 51120723631d146cbb1020491afa6358
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &6930436463326835171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 29c284b3-d313-47ae-8b42-3cdbce210432
+  title: DanceSceneMain
+  asset:
+    m_AssetGUID: 470f2688666ccee4583f543042017dc5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData:
+  - {fileID: -6346081398276400677}
+--- !u!114 &7853047734815468438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 2b44d075-d9ee-4ead-8f32-2a2a96dde74a
+  title: ActorDialogueCanvas
+  asset:
+    m_AssetGUID: fbf9868bb274bf14ca67eb0e483608fb
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
