@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Managers.Router.Config
 {
+    [Serializable]
     public class BaseKey : ICloneable, IEquatable<BaseKey>
     {
         [JsonProperty, SerializeField] protected string key = "";
