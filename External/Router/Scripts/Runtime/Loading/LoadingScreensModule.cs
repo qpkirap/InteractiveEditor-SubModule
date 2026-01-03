@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Managers.Router.Config;
 using UnityEngine.AddressableAssets;
+using VContainer;
 
 namespace Managers.Router
 {
@@ -10,7 +11,7 @@ namespace Managers.Router
     {
         private const string controllerName = "--- Loading Screen Controller ---";
 
-        private readonly RouterConfig config;
+        [Inject] private readonly RouterConfig config;
 
         private LoadingScreensController controller;
         private AddressableGameObject controllerAsset;
@@ -21,11 +22,6 @@ namespace Managers.Router
         private readonly List<LoadingScreenKey> currentKeys = new();
         
         public bool IsLoadingActive { get; private set; }
-        
-        public LoadingScreensModule(RouterConfig config)
-        {
-            this.config = config;
-        }
         
         public async UniTask Init()
         {

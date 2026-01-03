@@ -1,5 +1,4 @@
-﻿﻿using DepedencyInjection;
-using Managers.Router;
+﻿﻿using Managers.Router;
 using Module.InteractiveEditor.Runtime;
 using UniRx;
 using UnityEngine;

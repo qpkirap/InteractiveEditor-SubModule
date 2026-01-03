@@ -1,11 +1,16 @@
 ﻿using System;
+using Module.InteractiveEditor.DI;
 
 namespace Module.InteractiveEditor.Saves
 {
-    public interface ISavable : IEquatable<ISavable>
+    /// <summary>
+    /// Интерфейс для сохраняемых состояний.
+    /// Реализует IAsyncStateInitializable для автоматической инициализации.
+    /// </summary>
+    public interface ISavable : IEquatable<ISavable>, IAsyncStateInitializable
     {
-        public string SaveKey { get; }
-        public void PostLoad();
-        public void Reset();
+        string SaveKey { get; }
+        void PostLoad();
+        void Reset();
     }
 }

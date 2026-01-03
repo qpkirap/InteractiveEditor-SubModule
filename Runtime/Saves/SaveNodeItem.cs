@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Configs;
 using Newtonsoft.Json;
 
@@ -25,6 +26,11 @@ namespace Module.InteractiveEditor.Saves
     public abstract class SaveNodeItem : ISavable
     {
         public abstract string SaveKey { get; }
+        
+        public virtual UniTask Init()
+        {
+            return UniTask.CompletedTask;
+        }
         
         public void PostLoad()
         {

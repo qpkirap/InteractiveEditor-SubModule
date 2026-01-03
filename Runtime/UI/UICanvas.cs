@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
 
@@ -22,7 +22,7 @@ namespace Module.InteractiveEditor.Runtime
             
             nodeExecutor?.ResetView();
 
-            var model = router.Value.GetRoutArgData<INodeExecutor>(INodeExecutor.NodeExecutorKey);
+            var model = router.GetRoutArgData<INodeExecutor>(INodeExecutor.NodeExecutorKey);
             if (model != null)
             {
                 nodeExecutor = (TNodeExecutor)model;

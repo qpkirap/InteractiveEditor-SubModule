@@ -12,7 +12,7 @@ namespace Module.InteractiveEditor.Saves
             this.saveProvider = saveProvider;
         }
         
-        public void Init(ISavable[] saveItems)
+        public void Init(IEnumerable<ISavable> saveItems)
         {
             if (saveItems == null) return;
             

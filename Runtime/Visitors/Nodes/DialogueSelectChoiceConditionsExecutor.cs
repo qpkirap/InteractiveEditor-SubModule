@@ -1,6 +1,5 @@
-﻿﻿﻿﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Linq;
-using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
@@ -9,12 +8,15 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class DialogueSelectChoiceConditionsExecutor : INodeExecutor<SelectChoiceDialogueConditionsNode, DialogueSelectChoiceConditionsCanvas>
     {
-        private static LazyInject<IRouter> router = new();
+        [Inject] private readonly IRouter router;
+        [Inject] private readonly IObjectResolver resolver;
+        
         private readonly CompositeDisposable disp = new();
         
         private readonly Dictionary<int, (IEnumerable<ICondition> conditions, BaseNode node)> answersConditions = new();
@@ -46,7 +48,13 @@ namespace Module.InteractiveEditor.Runtime
             
             for (var i = 0; i < answerChoice.Length; i++)
             {
-                var conditions = answerChoice[i].Conditions.Select(x => x.GetCondition());
+                var conditions = answerChoice[i].Conditions
+                    .Select(x =>
+                    {
+                        var condition = x.GetCondition();
+                        resolver.Inject(condition);
+                        return condition;
+                    });
 
                 answersConditions.Add(i, (conditions, answerChoice[i]));
             }
@@ -131,7 +139,7 @@ namespace Module.InteractiveEditor.Runtime
             
             if (!isOpenCanvas)
             {
-                router.Value.GoTo(RoutKeys.dialogueSelectChoiceConditions, routArgs: new (string, object)[]
+                router.GoTo(RoutKeys.dialogueSelectChoiceConditions, routArgs: new (string, object)[]
                 {
                     (INodeExecutor.NodeExecutorKey, this)
                 });

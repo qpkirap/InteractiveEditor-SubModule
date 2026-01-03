@@ -60,7 +60,6 @@ namespace Managers.Router.Config
         public const string RoutArgsScriptPathKey = nameof(routsArgsScriptPath);
         public const string LoadingsScriptPathKey = nameof(loadingsScriptPath);
 
-        // Public properties for editor access
         public List<SceneData> Scenes
         {
             get => scenes;
@@ -79,7 +78,6 @@ namespace Managers.Router.Config
             set => loadings = value;
         }
         
-        // Public properties for script paths (editor access)
         public string SceneKeysScriptPath
         {
             get => sceneKeysScriptPath;

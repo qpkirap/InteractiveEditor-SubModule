@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
@@ -18,8 +18,10 @@ namespace Module.InteractiveEditor.Runtime
 #if !UNITY_WEBGL
                 private readonly PreloadManager preloadManager = new();
 #endif
-        private readonly LazyInject<SaveManager> saveManager = new();
-        private readonly LazyInject<IRouter> router = new();
+        [Inject] private readonly SaveManager saveManager;
+        [Inject] private readonly IRouter router;
+        [Inject] private readonly IObjectResolver resolver;
+        
         private readonly Dictionary<Type, INodeExecutor> executes = new();
         
         private StoryObject storyObjectCache;
@@ -38,7 +40,7 @@ namespace Module.InteractiveEditor.Runtime
         
         public async UniTask Init(StoryObject storyObject)
         {
-            router.Value.ShowLoadingScreen(LoadingScreenKeys.start);
+            router.ShowLoadingScreen(LoadingScreenKeys.start);
             
             if (currentNodeCache != null)
             {
@@ -56,7 +58,7 @@ namespace Module.InteractiveEditor.Runtime
             await preloadManager.InitStory(storyObject, currentNodeCache);
 #endif
             
-            router.Value.HideLoadingScreen();
+            router.HideLoadingScreen();
         }
 
         private void InitExecutors(StoryObject storyObject)
@@ -78,6 +80,7 @@ namespace Module.InteractiveEditor.Runtime
                 }
                 
                 var executor = (INodeExecutor)Activator.CreateInstance(executorType);
+                resolver.Inject(executor);
             
                 executes.Add(executorType, executor);
             }
@@ -121,9 +124,9 @@ namespace Module.InteractiveEditor.Runtime
                     
                     executor.ResetExecutor(calcNode);
                     
-                    saveManager.Value.NodeSaveServices.SetLastIdNode(node.Id);
+                    saveManager.NodeSaveServices.SetLastIdNode(node.Id);
                     
-                    saveManager.Value.ForceSave();
+                    saveManager.ForceSave();
                     
                     return (next, ExecuteResult.SuccessState);
                 }
@@ -140,7 +143,7 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (StoryObject == null || StoryObject.Nodes == null) return null;
 
-            var lastId = saveManager.Value.NodeSaveServices.GetIdLastNode(StoryObject.Id);
+            var lastId = saveManager.NodeSaveServices.GetIdLastNode(StoryObject.Id);
             
             var startNode = StoryObject.Nodes
                 .FirstOrDefault(x=> x != null

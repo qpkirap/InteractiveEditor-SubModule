@@ -2,22 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using DepedencyInjection;
 using Managers.Router.Config;
 using Managers.Router.Routs;
 using Managers.Router.Scene;
+using Module.InteractiveEditor.DI;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VContainer;
 
 namespace Managers.Router
 {
-    public class Router : IRouter
+    public class Router : IRouter, IAsyncInitializable
     {
         private static readonly TimeSpan delay = TimeSpan.FromSeconds(.1f);
         
         private readonly ReactiveProperty<RoutContainer> currentRout = new();
-        private readonly RouterConfig config;
+        
+        [Inject] private readonly RouterConfig config;
+        [Inject] private readonly IObjectResolver resolver;
         
         private RouterModule routerModule;
         private RoutArgsModule routArgsModule;
@@ -32,12 +35,8 @@ namespace Managers.Router
         public IReadOnlyReactiveProperty<RoutContainer> CurrentRout => currentRout;
         public IReadOnlyCollection<RoutContainer> CurrentRouts => routerModule.Routs;
         
-        public Router(RouterConfig routerConfig)
-        {
-            this.config = routerConfig;
-            
-            DI.Add<IRouter>(this);
-        }
+        // IInitializable - порядок инициализации (Router должен инициализироваться раньше других)
+        public int InitOrder => 10;
         
         public async UniTask Init()
         {
@@ -50,12 +49,17 @@ namespace Managers.Router
 
         private async UniTask PostInit()
         {
-            loadingScreensModule = new(config);
+            loadingScreensModule = new();
+            resolver.Inject(loadingScreensModule);
             
             await loadingScreensModule.Init();
             
-            scenesModule = new(config);
-            routerModule = new(config);
+            scenesModule = new();
+            resolver.Inject(scenesModule);
+            
+            routerModule = new();
+            resolver.Inject(routerModule);
+            
             routArgsModule = new();
             
             await routerModule.Init();
@@ -307,6 +311,11 @@ namespace Managers.Router
         {
             await Observable.Timer(delay);
             await Resources.UnloadUnusedAssets().ToUniTask();
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
     }
 }

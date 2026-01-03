@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Module.InteractiveEditor.Configs;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class CheckConditionsNodeExecutor : INodeExecute<CheckConditionsNode>
     {
+        [Inject] private readonly IObjectResolver resolver;
+        
         private Dictionary<int, List<ICondition>> conditionsByIndex = new();
         private bool isCreateCondition = false;
         private int selectIndexNode = -1;
@@ -32,7 +35,13 @@ namespace Module.InteractiveEditor.Runtime
 
                     if (node is ConditionsNode conditionNode)
                     {
-                        var conditions = conditionNode.Conditions.Select(x => x.GetCondition());
+                        var conditions = conditionNode.Conditions
+                            .Select(x =>
+                            {
+                                var condition = x.GetCondition();
+                                resolver.Inject(condition);
+                                return condition;
+                            });
                         conditionsByIndex.Add(i, conditions.ToList());
                     }
                 }

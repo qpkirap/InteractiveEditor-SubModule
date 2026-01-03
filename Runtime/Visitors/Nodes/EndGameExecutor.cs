@@ -1,5 +1,4 @@
-﻿﻿﻿﻿using System.Linq;
-using DepedencyInjection;
+﻿﻿using System.Linq;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
@@ -7,14 +6,16 @@ using Module.InteractiveEditor.Saves;
 using Module.InteractiveEditor.UI;
 using UniRx;
 using UnityEngine;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class EndGameExecutor : INodeExecutor<EndGameNode, EndGameCanvas>
     {
-        private static LazyInject<IRouter> router = new();
-        private static LazyInject<StoryObjectManager> storyManager = new();
-        private static LazyInject<SaveManager> saveManager = new();
+        [Inject] private readonly IRouter router;
+        [Inject] private readonly StoryObjectManager storyManager;
+        [Inject] private readonly SaveManager saveManager;
+        
         private readonly CompositeDisposable disp = new();
         
         private EndGameNode node;
@@ -35,7 +36,7 @@ namespace Module.InteractiveEditor.Runtime
             
             if (!isOpenCanvas)
             {
-                router.Value.GoTo(RoutKeys.endGame, routArgs: new (string, object)[]
+                router.GoTo(RoutKeys.endGame, routArgs: new (string, object)[]
                 {
                     (INodeExecutor.NodeExecutorKey, this)
                 });
@@ -79,9 +80,9 @@ namespace Module.InteractiveEditor.Runtime
         
         public void Complete()
         {
-            saveManager.Value.NodeSaveServices.SetLastIdNode(string.Empty);
-            saveManager.Value.Reset();
-            storyManager.Value.Reload();
+            saveManager.NodeSaveServices.SetLastIdNode(string.Empty);
+            saveManager.Reset();
+            storyManager.Reload();
             
             isNext = true;
         }

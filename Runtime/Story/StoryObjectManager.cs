@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
-using Provider.Runtime;
+using Module.InteractiveEditor.DI;
 using UniRx;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class StoryObjectManager
+    public class StoryObjectManager : IAsyncManagerInitializable
     {
-        private readonly LazyInject<IConfigsProvider> configProvider = new();
+        [Inject] private readonly StoryConfigs storyConfigs;
+        [Inject] private readonly IObjectResolver resolver;
         
-        private readonly StoryConfigs storyConfigs;
         private readonly ReactiveProperty<StoryObject> currentStoryObject = new();
 
         private readonly Subject onReload = new();
@@ -20,20 +20,11 @@ namespace Module.InteractiveEditor.Runtime
         public IReactiveProperty<StoryObject> CurrentStoryObject => currentStoryObject;
         public IObservable OnReload => onReload;
 
-        public StoryObjectManager()
-        {
-            DI.Add(this);
-
-            configProvider.Value.GetConfig<StoryConfigs>();
-            
-            storyConfigs = configProvider.Value.GetConfig<StoryConfigs>();
-            
-            Init();
-        }
-
-        private void Init()
+        public UniTask Init()
         {
             UpdateCurrentSelectedStoryObject();
+            
+            return UniTask.CompletedTask;
         }
         
         private void UpdateCurrentSelectedStoryObject()
@@ -54,7 +45,9 @@ namespace Module.InteractiveEditor.Runtime
         {
             if (obj == null) return null;
             
-            return new DefaultStoryTask();
+            var task = new DefaultStoryTask();
+            resolver.Inject(task);
+            return task;
         }
 
         public void Reload()

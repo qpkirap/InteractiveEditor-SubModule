@@ -1,12 +1,12 @@
-﻿using DepedencyInjection;
-using Module.InteractiveEditor.Runtime;
+﻿using Module.InteractiveEditor.Runtime;
 using Module.InteractiveEditor.Saves;
+using VContainer;
 
 namespace Module.InteractiveEditor.Configs
 {
     public class CheckAnswerCondition : ICondition
     {
-        private static LazyInject<SaveManager> saveManager = new();
+        [Inject] private readonly SaveManager saveManager;
 
         private readonly string idCheckNode;
         private readonly bool isInverse;
@@ -19,7 +19,7 @@ namespace Module.InteractiveEditor.Configs
         
         public bool IsTrue(BaseNode baseNode)
         {
-            var saveItem = saveManager.Value.NodeSaveServices.GetSaveItem(idCheckNode);
+            var saveItem = saveManager.NodeSaveServices.GetSaveItem(idCheckNode);
             
             if (isInverse)
             {

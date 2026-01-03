@@ -1,18 +1,18 @@
-using DepedencyInjection;
 using Managers.Router.Routs;
 using UnityEngine;
+using VContainer;
 
 namespace Managers.Router
 {
     public abstract class UICanvas : RoutContainer
     {
-        protected LazyInject<IRouter> router = new();
+        [Inject] protected IRouter router;
         
         protected virtual void GoBack()
         {
-            if (router.Value.CurrentRouts is { Count: > 0 })
+            if (router.CurrentRouts is { Count: > 0 })
             {
-                router.Value.GoBack();
+                router.GoBack();
             }
         }
         

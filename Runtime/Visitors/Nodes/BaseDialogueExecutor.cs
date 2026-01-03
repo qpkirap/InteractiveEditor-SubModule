@@ -1,6 +1,5 @@
-﻿﻿﻿﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Linq;
-using DepedencyInjection;
 using Managers.Router;
 using Managers.Router.Config;
 using Module.InteractiveEditor.Configs;
@@ -9,12 +8,14 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class BaseDialogueExecutor : INodeExecutor<BaseDialogueNode, DialogueCanvas>
     {
-        private static LazyInject<IRouter> router = new();
+        [Inject] private readonly IRouter router;
+        
         private readonly CompositeDisposable disp = new();
 
         private ImageData imageDataCache;
@@ -30,7 +31,7 @@ namespace Module.InteractiveEditor.Runtime
             
             if (!isOpenCanvas)
             {
-                router.Value.GoTo(RoutKeys.baseDialogue, routArgs: new (string, object)[]
+                router.GoTo(RoutKeys.baseDialogue, routArgs: new (string, object)[]
                 {
                     (INodeExecutor.NodeExecutorKey, this)
                 });

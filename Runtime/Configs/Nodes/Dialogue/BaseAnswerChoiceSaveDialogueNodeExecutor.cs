@@ -1,8 +1,8 @@
 ﻿﻿using System.Linq;
-using DepedencyInjection;
 using Module.InteractiveEditor.Runtime;
 using Module.InteractiveEditor.Saves;
 using UnityEngine;
+using VContainer;
 
 namespace Module.InteractiveEditor.Configs
 {
@@ -15,7 +15,7 @@ namespace Module.InteractiveEditor.Configs
         where TSave : AnswerChoiceSave<TNode>
         where TNode : BaseNode
     {
-        private static LazyInject<SaveManager> saveManager = new();
+        [Inject] private readonly SaveManager saveManager;
         
         public BaseNode GetNext(TNode baseNode)
         {
@@ -26,7 +26,7 @@ namespace Module.InteractiveEditor.Configs
 
         public ExecuteResult Execute(TNode baseNode)
         {
-            if (saveManager.Value.NodeSaveServices.GetSaveItem(baseNode.Id) is not TSave saveItem) return ExecuteResult.SuccessState;
+            if (saveManager.NodeSaveServices.GetSaveItem(baseNode.Id) is not TSave saveItem) return ExecuteResult.SuccessState;
 
             saveItem.UpdateData();
             

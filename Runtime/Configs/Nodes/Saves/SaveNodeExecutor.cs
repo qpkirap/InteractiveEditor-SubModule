@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using DepedencyInjection;
 using Module.InteractiveEditor.Configs;
 using Module.InteractiveEditor.Saves;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
-    public class SaveNodeExecutor  : INodeExecute<SaveNode>
+    public class SaveNodeExecutor : INodeExecute<SaveNode>
     {
-        private readonly LazyInject<SaveManager> saveManager = new();
+        [Inject] private readonly SaveManager saveManager;
         
         public BaseNode GetNext(SaveNode baseNode)
         {
@@ -18,8 +18,8 @@ namespace Module.InteractiveEditor.Runtime
 
         public ExecuteResult Execute(SaveNode baseNode)
         {
-            saveManager.Value.NodeSaveServices.SetLastIdNode(baseNode.Id);
-            saveManager.Value.ForceSave();
+            saveManager.NodeSaveServices.SetLastIdNode(baseNode.Id);
+            saveManager.ForceSave();
             
             return ExecuteResult.SuccessState;
         }

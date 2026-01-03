@@ -4,19 +4,15 @@ using Cysharp.Threading.Tasks;
 using Managers.Router.Config;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
+using VContainer;
 
 namespace Managers.Router.Scene
 {
     public class ScenesModule : IDisposable
     {
-        private readonly RouterConfig config;
+        [Inject] private readonly RouterConfig config;
 
         private readonly Dictionary<SceneKey, AddressableSceneAsset> loadedScenes = new();
-
-        public ScenesModule(RouterConfig config)
-        {
-            this.config = config;
-        }
 
         public async UniTask<bool> LoadScene(SceneKey sceneKey, LoadSceneMode sceneMode = LoadSceneMode.Additive)
         {

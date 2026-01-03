@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Module.InteractiveEditor.Configs;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -84,6 +85,11 @@ namespace Module.InteractiveEditor.Saves
         [JsonIgnore] public string SaveKey => nameof(SaveLastNodeState);
 
         [JsonIgnore] private List<StoryObject> storyObjectsCache;
+
+        public UniTask Init()
+        {
+            return UniTask.CompletedTask;
+        }
 
         public void Init(IEnumerable<StoryObject> storyObjects)
         {

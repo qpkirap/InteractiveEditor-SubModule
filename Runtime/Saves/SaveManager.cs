@@ -1,33 +1,40 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
-using DepedencyInjection;
-using Module.InteractiveEditor.Configs;
+using Module.InteractiveEditor.DI;
+using Module.InteractiveEditor.Runtime;
+using VContainer;
 
 namespace Module.InteractiveEditor.Saves
 {
-    public class SaveManager
+    /// <summary>
+    /// Управляет сохранением и загрузкой данных.
+    /// Реализует IAsyncManagerInitializable для автоматической инициализации.
+    /// </summary>
+    public class SaveManager : IAsyncManagerInitializable
     {
-        private readonly SaveProvider saveProvider;
-        private readonly NodeSaveServices nodeSaveServices;
-        private readonly StateSaveServices stateSaveServices;
+        [Inject] private readonly StoryConfigs storyConfigs;
+        [Inject] private readonly IEnumerable<ISavable> savables;
+        
+        private SaveProvider saveProvider;
+        private NodeSaveServices nodeSaveServices;
+        private StateSaveServices stateSaveServices;
         
         public INodeSaveServices NodeSaveServices => nodeSaveServices;
         
-        public SaveManager()
+        public async UniTask Init()
         {
             saveProvider = SaveProviderFactory.Create();
             nodeSaveServices = new NodeSaveServices(saveProvider);
             stateSaveServices = new StateSaveServices(saveProvider);
+            var storyObjects = storyConfigs.StoryObjects
+                .Where(x => x.StoryObject != null)
+                .Select(x => x.StoryObject);
             
-            DI.Add(this);
-        }
-        
-        public async UniTask InitAsync(IEnumerable<StoryObject> storyObject, params ISavable[] saveItems)
-        {
-            nodeSaveServices.Init(storyObject);
-            stateSaveServices.Init(saveItems);
+            nodeSaveServices.Init(storyObjects);
+            stateSaveServices.Init(savables);
             
-           await ForceLoadAsync();
+            await ForceLoadAsync();
         }
 
         public void AddSaveNode(ISavable saveItem)

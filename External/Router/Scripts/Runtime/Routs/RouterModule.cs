@@ -5,6 +5,8 @@ using Managers.Router.Config;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using VContainer;
+using VContainer.Unity;
 
 namespace Managers.Router.Routs
 {
@@ -12,7 +14,8 @@ namespace Managers.Router.Routs
     {
         private const string controllerName = "--- Router Controller ---";
         
-        private readonly RouterConfig config;
+        [Inject] private readonly RouterConfig config;
+        [Inject] private readonly IObjectResolver resolver;
         
         private readonly LinkedList<RoutContainer> routs = new();
         private readonly LinkedList<RoutKey> routKeysHistory = new();
@@ -26,11 +29,6 @@ namespace Managers.Router.Routs
         public Subject<RoutData> OnStartLoadRout { get; } = new();
         
         public bool IsAvailableBack => routKeysHistory.Count > 1;
-        
-        public RouterModule(RouterConfig config)
-        {
-            this.config = config;
-        }
         
         public async UniTask Init()
         {
@@ -91,6 +89,8 @@ namespace Managers.Router.Routs
             
             rout.SetLoadStatus(true);
             rout.SetRoutData(routData);
+            
+            resolver.InjectGameObject(rout.gameObject);
 
             if (isNewLoad)
             {
