@@ -4,11 +4,14 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Module.InteractiveEditor.Configs;
 using UnityEngine;
+using VContainer;
 
 namespace Module.InteractiveEditor.Runtime
 {
     public class ActionExecutor : INodeExecute<BaseActionNode>
     {
+        [Inject] private readonly IObjectResolver resolver;
+        
         private IUniTaskAsyncEnumerable<ActionTaskComponent> collection;
         
         private readonly CancellationTokenHandler executeTokenHandler = new();
@@ -86,13 +89,26 @@ namespace Module.InteractiveEditor.Runtime
             {
                 await collection.ForEachAwaitAsync(async item =>
                 {
+                    var action = item.GetAction();
+                    
+                    if (action != null)
+                    {
+                        resolver.Inject(action);
+                    }
+                    
                     if (!isCancel)
                     {
-                        await item.Execute(executeTokenHandler.Token);
+                        if (action != null)
+                        {
+                            await action.Execute(executeTokenHandler.Token);
+                        }
                     }
                     else
                     {
-                        await item.Undo(executeTokenHandler.Token);
+                        if (action != null)
+                        {
+                            await action.Undo(executeTokenHandler.Token);
+                        }
                     }
 
                     executeTokenHandler.Token.ThrowIfCancellationRequested();
