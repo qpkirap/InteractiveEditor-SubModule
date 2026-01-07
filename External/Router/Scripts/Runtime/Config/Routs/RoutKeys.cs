@@ -6,12 +6,10 @@ namespace Managers.Router.Config
     public static class RoutKeys
     {
 
-        public static readonly RoutKey baseDialogue = new("ee9931d2870874a1995872dfc363f284");
-        public static readonly RoutKey actorDialogueCanvas = new("2b44d075-d9ee-4ead-8f32-2a2a96dde74a");
-        public static readonly RoutKey dialogueSelectChoice = new("75da80fa-adaf-42a7-a819-f36d91a5949e");
-        public static readonly RoutKey danceSceneMain = new("29c284b3-d313-47ae-8b42-3cdbce210432");
-        public static readonly RoutKey selectCharacter = new("b94ffae0-2bba-420d-9b31-6987e29f2391");
-        public static readonly RoutKey dialogueSelectChoiceConditions = new("7f73cb67-7da4-433d-9c9b-c0b3bb6c2702");
-        public static readonly RoutKey endGame = new("e6d369f4-27da-479d-9b86-eefe6283d717");
+        public static readonly RoutKey baseDialogue = new("ef15ea53-96ef-4d53-bd51-8dc4d234f0a4");
+        public static readonly RoutKey actorDialogueCanvas = new("d231d4cb-c8e7-426d-b307-e1355787611d");
+        public static readonly RoutKey dialogueSelectChoice = new("252c1225-da6d-4ee1-a913-ec304cf34b3a");
+        public static readonly RoutKey dialogueSelectChoiceConditions = new("36735e1e-68a2-43b9-80b8-95e54d9883ce");
+        public static readonly RoutKey endGame = new("b75b3d4c-bcc9-4429-b325-83276043f85f");
     }
 }

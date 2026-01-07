@@ -42,15 +42,15 @@ namespace Managers.Router.Config
         
         private static void UpdateParentRouterConfigScriptFiles(RoutData routData)
         {
-            // Find the parent RouterConfig that contains this RoutData
-            var routerConfigs = AssetDatabase.FindAssets($"t:{typeof(RouterConfig).Name}");
+            // Find the parent BaseRouterConfig that contains this RoutData
+            var routerConfigs = AssetDatabase.FindAssets($"t:{typeof(BaseRouterConfig).Name}");
             foreach (var guid in routerConfigs)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var routerConfig = AssetDatabase.LoadAssetAtPath<RouterConfig>(path);
+                var routerConfig = AssetDatabase.LoadAssetAtPath<BaseRouterConfig>(path);
                 if (routerConfig != null)
                 {
-                    // Check if this RoutData belongs to this RouterConfig
+                    // Check if this RoutData belongs to this config
                     var routs = routerConfig.Routs;
                     if (routs != null && routs.Contains(routData))
                     {

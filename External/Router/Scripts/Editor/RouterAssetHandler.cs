@@ -19,10 +19,10 @@ namespace Submodules.Router.Editor
         {
             var asset = EditorUtility.InstanceIDToObject(instanceId);
             
-            // Handle RouterConfig double-click
-            if (asset is RouterConfig routerConfig)
+            // Handle BaseRouterConfig double-click
+            if (asset is BaseRouterConfig routerConfig)
             {
-                RouterConfigWindow.ShowWindow(routerConfig);
+                BaseRouterConfigWindow.ShowWindow(routerConfig);
                 return true;
             }
             

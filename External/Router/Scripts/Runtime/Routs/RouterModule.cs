@@ -14,7 +14,8 @@ namespace Managers.Router.Routs
     {
         private const string controllerName = "--- Router Controller ---";
         
-        [Inject] private readonly RouterConfig config;
+        [Inject] private readonly RouterSettings settings;
+        [Inject] private readonly IReadOnlyList<IRouterConfig> routerConfigs;
         [Inject] private readonly IObjectResolver resolver;
         
         private readonly LinkedList<RoutContainer> routs = new();
@@ -29,6 +30,43 @@ namespace Managers.Router.Routs
         public Subject<RoutData> OnStartLoadRout { get; } = new();
         
         public bool IsAvailableBack => routKeysHistory.Count > 1;
+
+        #region Config Aggregation
+
+        private Dictionary<RoutKey, RoutData> routsDict;
+        private Dictionary<string, int> routSortOrderDict;
+
+        private RoutData GetRout(RoutKey key)
+        {
+            routsDict ??= routerConfigs
+                .Where(c => c != null && c.Routs != null)
+                .SelectMany(c => c.Routs)
+                .Where(x => x != null)
+                .ToDictionary(x => (RoutKey)x.Id, x => x);
+
+            if (routsDict.TryGetValue(key, out var routData))
+            {
+                return routData;
+            }
+
+            Debug.LogWarning($"Route with key not found: {key}");
+            return null;
+        }
+
+        private int GetRoutSortOrder(RoutData data)
+        {
+            if (data == default) return 0;
+
+            routSortOrderDict ??= routerConfigs
+                .Where(c => c != null && c.Routs != null)
+                .SelectMany(c => c.Routs)
+                .Where(x => x != null)
+                .ToDictionary(x => x.Id, x => x.SortOrder);
+
+            return routSortOrderDict.TryGetValue(data.Id, out var sortOrder) ? sortOrder : 0;
+        }
+
+        #endregion
         
         public async UniTask Init()
         {
@@ -50,7 +88,7 @@ namespace Managers.Router.Routs
                 ClearRouts();
             }
             
-            var routData = config.GetRout(routKey);
+            var routData = GetRout(routKey);
 
             var rout = await ShowRoutContainer(routKey, useAnimation);
 
@@ -80,8 +118,8 @@ namespace Managers.Router.Routs
 
             await CheckController();
             
-            var routData = config.GetRout(routKey);
-            var sortOrder = config.GetRoutSortOrder(routData) + routKeysHistory.Count;
+            var routData = GetRout(routKey);
+            var sortOrder = GetRoutSortOrder(routData) + routKeysHistory.Count;
             
             OnStartLoadRout.OnNext(routData);
             
@@ -163,7 +201,7 @@ namespace Managers.Router.Routs
         {
             if (controller == null)
             {
-                controllerAsset = config.RouterControllerAsset;
+                controllerAsset = settings.RouterControllerAsset;
 
                 var containerGO = await controllerAsset.LoadAsync();
 

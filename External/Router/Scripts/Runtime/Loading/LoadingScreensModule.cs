@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Managers.Router.Config;
+using Managers.Router.Config.Loading;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using VContainer;
 
@@ -11,7 +13,8 @@ namespace Managers.Router
     {
         private const string controllerName = "--- Loading Screen Controller ---";
 
-        [Inject] private readonly RouterConfig config;
+        [Inject] private readonly RouterSettings settings;
+        [Inject] private readonly IReadOnlyList<IRouterConfig> routerConfigs;
 
         private LoadingScreensController controller;
         private AddressableGameObject controllerAsset;
@@ -21,11 +24,32 @@ namespace Managers.Router
         private readonly List<UniTaskCompletionSource> tasks = new();
         private readonly List<LoadingScreenKey> currentKeys = new();
         
+        private Dictionary<LoadingScreenKey, LoadingScreenData> loadingScreenDict;
+
         public bool IsLoadingActive { get; private set; }
+
+        private LoadingScreenData GetLoadingScreen(LoadingScreenKey key)
+        {
+            if (key == null) return null;
+
+            loadingScreenDict ??= routerConfigs
+                .Where(c => c != null && c.Loadings != null)
+                .SelectMany(c => c.Loadings)
+                .Where(x => x != null)
+                .ToDictionary(x => (LoadingScreenKey)x.Id, x => x);
+
+            if (loadingScreenDict.TryGetValue(key, out var loadingScreenData))
+            {
+                return loadingScreenData;
+            }
+
+            Debug.LogWarning($"Loading screen with key not found: {key}");
+            return null;
+        }
         
         public async UniTask Init()
         {
-            controllerAsset = config.LoadingScreenControllerAsset;
+            controllerAsset = settings.LoadingScreenControllerAsset;
 
             var containerGO = await controllerAsset.LoadAsync();
 
@@ -117,7 +141,7 @@ namespace Managers.Router
 
             currentKeys.Add(screenKey);
 
-            var screenData = config.GetLoadingScreen(screenKey);
+            var screenData = GetLoadingScreen(screenKey);
             var screen = await controller.GetOrCreateScreen(screenKey, screenData);
 
             screen.gameObject.SetActive(true);

@@ -19,7 +19,8 @@ namespace Managers.Router
         
         private readonly ReactiveProperty<RoutContainer> currentRout = new();
         
-        [Inject] private readonly RouterConfig config;
+        [Inject] private readonly RouterSettings settings;
+        [Inject] private readonly IReadOnlyList<IRouterConfig> routerConfigs;
         [Inject] private readonly IObjectResolver resolver;
         
         private RouterModule routerModule;

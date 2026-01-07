@@ -13,7 +13,7 @@ namespace Submodules.Router.Editor
         [MenuItem("Router/Router Config Editor", priority = 10)]
         public static void OpenRouterConfigEditor()
         {
-            RouterConfigWindow.ShowWindow();
+            BaseRouterConfigWindow.ShowWindow();
         }
     }
 }

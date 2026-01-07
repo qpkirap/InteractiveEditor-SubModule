@@ -1,0 +1,175 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8442876481321926636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 36735e1e-68a2-43b9-80b8-95e54d9883ce
+  title: DialogueSelectChoiceConditions
+  asset:
+    m_AssetGUID: a2f0d5d3566e53e478c26438a713f883
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &-7262663411239798513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 252c1225-da6d-4ee1-a913-ec304cf34b3a
+  title: DialogueSelectChoice
+  asset:
+    m_AssetGUID: 5a6c03edcdeb6984f9360fd2db062065
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &-5571444194206588232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: d231d4cb-c8e7-426d-b307-e1355787611d
+  title: ActorDialogueCanvas
+  asset:
+    m_AssetGUID: fbf9868bb274bf14ca67eb0e483608fb
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d05655798793679438f835671aabfdc9, type: 3}
+  m_Name: RouterConfig
+  m_EditorClassIdentifier: 
+  id: 
+  title: 
+  scenes: []
+  routs:
+  - {fileID: 3071776132597849865}
+  - {fileID: -5571444194206588232}
+  - {fileID: -7262663411239798513}
+  - {fileID: -8442876481321926636}
+  - {fileID: 2618686804071544651}
+  loadings:
+  - {fileID: 7574537240029779254}
+  keysPrefix: 
+  sceneKeysScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Scenes/SceneKeys.cs
+  routsKeysScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Routs/RoutKeys.cs
+  routsArgsScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Routs/RoutArgKeys.cs
+  loadingsScriptPath: /6 - Submodules/InteractiveEditor/External/Router/Scripts/Runtime/Config/Loading/LoadingScreenKeys.cs
+--- !u!114 &2618686804071544651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: b75b3d4c-bcc9-4429-b325-83276043f85f
+  title: EndGame
+  asset:
+    m_AssetGUID: 52542c646d98c9b4daf60e13775dce67
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &3071776132597849865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8014dd1a40e488fa222a8de0f6bd767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: ef15ea53-96ef-4d53-bd51-8dc4d234f0a4
+  title: BaseDialogue
+  asset:
+    m_AssetGUID: 51120723631d146cbb1020491afa6358
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  renderMode: 0
+  overrideSortOrder: 0
+  hidePrevRout: 1
+  sortOrder: 0
+  argsData: []
+--- !u!114 &7574537240029779254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2912b6d1a54cd7b707eaa1f8fbd76b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 216fb173-fb1f-409e-a592-d99bb04ff778
+  title: Start
+  asset:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

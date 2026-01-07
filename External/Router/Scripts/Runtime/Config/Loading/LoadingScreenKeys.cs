@@ -6,6 +6,6 @@ namespace Managers.Router.Config
     public static class LoadingScreenKeys
     {
 
-        public static readonly LoadingScreenKey start = new("0eb9053829c1f41aaacd46a494945bed");
+        public static readonly LoadingScreenKey start = new("216fb173-fb1f-409e-a592-d99bb04ff778");
     }
 }
